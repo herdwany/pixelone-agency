@@ -55,6 +55,9 @@ form.addEventListener('submit', async (e) => {
             const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
             if (error) throw error;
             showMsg("تم الدخول بنجاح! جاري تحويلك...", "success");
+            setTimeout(() => {
+        window.location.href = "dashboard.html";
+    }, 1500);
         } else {
             // ✅ تم تحديث المناداة هنا لتستخدم _supabase
             const { data, error } = await _supabase.auth.signUp({ email, password });
