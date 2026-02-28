@@ -8,7 +8,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-gray-900 text-white font-sans">
+<body class="bg-gray-900 text-white font-sans"
+    style="display: none;"> <!-- إخفاء المحتوى حتى يتم التحقق من المستخدم -->
 
     <nav class="bg-gray-800 p-4 border-b border-gray-700 flex justify-between items-center">
         <h1 class="text-xl font-bold text-blue-500">PixelOne Dashboard</h1>
@@ -37,29 +38,39 @@
         </div>
     </main>
 
-    <script>
-        // مفاتيح Supabase (يجب أن تكون متطابقة مع app.js)
-        const SUPABASE_URL = 'https://grdjidvagrxavuwykqjf.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_09I_ZPReuprW9qZRqlG0nA_vxCBY6WS';
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+<script>
+    // تهيئة Supabase بنفس بياناتك السابقة
+    const SUPABASE_URL = 'https://grdjidvagrxavuwykqjf.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_09I_ZPReuprW9qZRqlG0nA_vxCBY6WS';
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // التحقق من أن المستخدم مسجل دخول بالفعل
-        async function checkUser() {
-            const { data: { user } } = await _supabase.auth.getUser();
-            if (!user) {
-                window.location.href = "index.html"; // طرده إذا حاول الدخول بدون حساب
-            } else {
-                document.getElementById('userEmail').textContent = user.email;
-            }
-        }
+    // 🛡️ دالة حماية المسار (تشتغل فوراً عند تحميل الصفحة)
+    async function protectRoute() {
+        // التحقق من وجود مستخدم مسجل دخول
+        const { data: { user }, error } = await _supabase.auth.getUser();
 
-        checkUser();
-
-        // زر تسجيل الخروج
-        document.getElementById('logoutBtn').addEventListener('click', async () => {
-            await _supabase.auth.signOut();
+        if (error || !user) {
+            // إذا لم يوجد مستخدم أو حدث خطأ، يتم تحويله لصفحة الدخول
+            console.log("غير مصرح بالدخول، جاري التحويل...");
             window.location.href = "index.html";
-        });
-    </script>
+        } else {
+            // إذا كان المستخدم موجوداً، نعرض بريده الإلكتروني في اللوحة
+            document.getElementById('userEmail').textContent = user.email;
+            // إظهار محتوى الصفحة (اختياري إذا كنت تخفي المحتوى بالـ CSS)
+            document.body.style.display = "block";
+        }
+    }
+
+    // تشغيل الحماية
+    protectRoute();
+
+    // زر تسجيل الخروج
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+        const { error } = await _supabase.auth.signOut();
+        if (!error) {
+            window.location.href = "index.html";
+        }
+    });
+</script>
 </body>
 </html>
