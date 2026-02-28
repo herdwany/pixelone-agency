@@ -1,0 +1,13 @@
+/* استيراد خط "كايرو" الجميل */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+
+/* تطبيق الخط على كامل الموقع */
+body {
+    font-family: 'Cairo', sans-serif;
+}
+
+/* تأثير بسيط عند الكتابة داخل الحقول */
+input::placeholder {
+    color: #9ca3af;
+    opacity: 0.7;
+}
