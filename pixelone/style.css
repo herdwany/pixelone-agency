@@ -26,7 +26,7 @@
 /* ==========================================================================
    1. المتغيرات والخطوط
    ========================================================================== */
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Inter:wght@300;400;600;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Caveat:wght@700&family=Inter:wght@300;400;600;800;900&display=swap');
 
 :root {
     /* الألوان الأساسية */
@@ -54,6 +54,7 @@
     /* الخطوط */
     --font-ar: 'Cairo', sans-serif;
     --font-en: 'Inter', sans-serif;
+    --font-loader: 'Caveat', cursive;
     
     /* الترانزيشن والأنيميشن */
     --transition-fast: 0.2s ease;
@@ -192,6 +193,148 @@ input:focus-visible,
 textarea:focus-visible {
     outline: 2px solid var(--brand-red-light);
     outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Global Branded Loader
+   ========================================================================== */
+.app-loading-active {
+    overflow: hidden;
+}
+
+.app-loading-active > *:not(.pixel-loader-overlay) {
+    visibility: hidden;
+}
+
+.pixel-loader-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: grid;
+    place-items: center;
+    background:
+        radial-gradient(circle at 22% 25%, rgba(229, 9, 20, 0.24), transparent 44%),
+        radial-gradient(circle at 80% 75%, rgba(255, 255, 255, 0.08), transparent 46%),
+        linear-gradient(155deg, #010101 0%, #080808 54%, #120203 100%);
+    transition: opacity 0.55s ease, visibility 0.55s ease;
+}
+
+.pixel-loader-overlay.is-exit {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.pixel-loader-stage {
+    width: min(90vw, 760px);
+    padding: 2.2rem 1.4rem;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1.25rem;
+    background: rgba(8, 8, 8, 0.62);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    box-shadow:
+        0 34px 70px rgba(0, 0, 0, 0.62),
+        inset 0 0 0 1px rgba(229, 9, 20, 0.13);
+}
+
+.pixel-loader-kicker {
+    font-family: var(--font-en);
+    letter-spacing: 0.35em;
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.58);
+    margin-bottom: 0.65rem;
+}
+
+.pixel-loader-wordmark {
+    --write-duration: 1.85s;
+    position: relative;
+    margin: 0 auto;
+    width: fit-content;
+    font-family: var(--font-loader);
+    font-size: clamp(2.6rem, 7.5vw, 5.7rem);
+    line-height: 1;
+    letter-spacing: 0.04em;
+    color: transparent;
+    background: linear-gradient(92deg, #ff6666 0%, #ff1f36 50%, #ffd3d9 100%);
+    background-size: 185% 100%;
+    background-position: 100% 50%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    clip-path: inset(0 100% 0 0);
+    filter: drop-shadow(0 0 20px rgba(229, 9, 20, 0.34));
+    animation:
+        loaderWriteReveal var(--write-duration) cubic-bezier(0.26, 0.04, 0.17, 1) infinite,
+        loaderInkFlow var(--write-duration) linear infinite;
+}
+
+.pixel-loader-wordmark::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    width: clamp(24px, 4.5vw, 46px);
+    height: clamp(24px, 4.5vw, 46px);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(255, 89, 105, 0.72) 45%, rgba(229, 9, 20, 0) 72%);
+    transform: translateY(-50%);
+    filter: blur(0.6px);
+    animation: loaderBrushCursor var(--write-duration) cubic-bezier(0.26, 0.04, 0.17, 1) infinite;
+}
+
+.pixel-loader-status {
+    margin-top: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.84rem;
+    font-weight: 600;
+}
+
+@keyframes loaderWriteReveal {
+    0% {
+        clip-path: inset(0 100% 0 0);
+    }
+    68%,
+    100% {
+        clip-path: inset(0 0 0 0);
+    }
+}
+
+@keyframes loaderBrushCursor {
+    0% {
+        right: 100%;
+        opacity: 0;
+    }
+    12% {
+        opacity: 1;
+    }
+    70% {
+        right: -10%;
+        opacity: 0.96;
+    }
+    100% {
+        right: -10%;
+        opacity: 0;
+    }
+}
+
+@keyframes loaderInkFlow {
+    0% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@media (max-width: 640px) {
+    .pixel-loader-stage {
+        padding: 1.8rem 1rem;
+    }
+
+    .pixel-loader-kicker {
+        letter-spacing: 0.27em;
+    }
 }
 
 /* ==========================================================================

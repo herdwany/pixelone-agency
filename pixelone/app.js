@@ -175,6 +175,102 @@ const DEFAULT_MANAGED_SERVICES = [
 let siteSettings = { ...DEFAULT_SITE_SETTINGS };
 let currentSessionUser = null;
 let dataSourceMode = 'fallback';
+let pageLoaderController = null;
+
+function getLoaderContext() {
+    if (document.getElementById('view-admin-dashboard')) {
+        return { key: 'admin-dashboard', status: 'Preparing admin data and access rules...' };
+    }
+    if (document.getElementById('view-dashboard')) {
+        return { key: 'dashboard', status: 'Loading your projects and timeline...' };
+    }
+    if (document.getElementById('view-auth-callback')) {
+        return { key: 'auth-callback', status: 'Validating secure sign-in link...' };
+    }
+    if (document.getElementById('authForm')) {
+        return { key: 'auth', status: 'Connecting to secure authentication service...' };
+    }
+    if (document.getElementById('servicesGrid')) {
+        return { key: 'home', status: 'Building services and personalized offers...' };
+    }
+    return null;
+}
+
+function createPageLoader(initialStatus) {
+    if (!document.body || document.getElementById('pixelLoader')) return null;
+
+    const isBodyHidden = window.getComputedStyle(document.body).display === 'none';
+    if (isBodyHidden) {
+        document.body.dataset.loaderDisplayFix = 'true';
+        document.body.style.display = 'block';
+    }
+
+    const overlay = document.createElement('div');
+    overlay.id = 'pixelLoader';
+    overlay.className = 'pixel-loader-overlay';
+    overlay.setAttribute('role', 'status');
+    overlay.setAttribute('aria-live', 'polite');
+    overlay.setAttribute('aria-label', 'Loading page content');
+    overlay.innerHTML = `
+        <div class="pixel-loader-stage">
+            <p class="pixel-loader-kicker">PIXEL ONE VISUALS</p>
+            <h2 class="pixel-loader-wordmark" aria-label="Pixel One">Pixel One</h2>
+            <p class="pixel-loader-status" id="pixelLoaderStatus">${escapeHtml(initialStatus || 'Preparing your page...')}</p>
+        </div>
+    `;
+
+    document.body.classList.add('app-loading-active');
+    document.body.appendChild(overlay);
+
+    const startedAt = Date.now();
+    const minDurationMs = 1450;
+
+    return {
+        setStatus(text) {
+            const statusNode = document.getElementById('pixelLoaderStatus');
+            if (statusNode && text) {
+                statusNode.textContent = text;
+            }
+        },
+        async complete() {
+            const waitMs = Math.max(0, minDurationMs - (Date.now() - startedAt));
+            if (waitMs > 0) {
+                await new Promise((resolve) => setTimeout(resolve, waitMs));
+            }
+
+            overlay.classList.add('is-exit');
+            await new Promise((resolve) => setTimeout(resolve, 560));
+
+            overlay.remove();
+            document.body.classList.remove('app-loading-active');
+
+            if (document.body.dataset.loaderDisplayFix === 'true') {
+                delete document.body.dataset.loaderDisplayFix;
+            }
+        },
+    };
+}
+
+function ensurePageLoader() {
+    const context = getLoaderContext();
+    if (!context) return null;
+    if (pageLoaderController) return pageLoaderController;
+
+    pageLoaderController = createPageLoader(context.status);
+    return pageLoaderController;
+}
+
+function setPageLoaderStatus(text) {
+    if (pageLoaderController && typeof pageLoaderController.setStatus === 'function') {
+        pageLoaderController.setStatus(text);
+    }
+}
+
+async function finalizePageLoader() {
+    if (!pageLoaderController) return;
+    await pageLoaderController.complete();
+    pageLoaderController = null;
+}
 
 const runtimeStore = {
     orders: [],
@@ -2781,79 +2877,92 @@ async function initializeAdminDashboard() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await loadSiteSettings();
+    ensurePageLoader();
 
-    const hasServicesGrid = Boolean(document.getElementById('servicesGrid'));
-    const hasAuthForm = Boolean(document.getElementById('authForm'));
-    const hasAuthCallbackView = Boolean(document.getElementById('view-auth-callback'));
-    const hasDashboardView = Boolean(document.getElementById('view-dashboard'));
-    const hasAdminDashboardView = Boolean(document.getElementById('view-admin-dashboard'));
+    try {
+        setPageLoaderStatus('Loading brand settings...');
+        await loadSiteSettings();
 
-    if (hasAuthCallbackView) {
-        await setupAuthCallbackPage();
-        return;
-    }
+        const hasServicesGrid = Boolean(document.getElementById('servicesGrid'));
+        const hasAuthForm = Boolean(document.getElementById('authForm'));
+        const hasAuthCallbackView = Boolean(document.getElementById('view-auth-callback'));
+        const hasDashboardView = Boolean(document.getElementById('view-dashboard'));
+        const hasAdminDashboardView = Boolean(document.getElementById('view-admin-dashboard'));
 
-    if (hasAuthForm) {
-        await setupAuthentication();
-        return;
-    }
+        if (hasAuthCallbackView) {
+            setPageLoaderStatus('Verifying your secure callback link...');
+            await setupAuthCallbackPage();
+            return;
+        }
 
-    await loadAdminEmailsFromDatabase();
-    await hydrateDataStores();
+        if (hasAuthForm) {
+            setPageLoaderStatus('Preparing secure sign-in flow...');
+            await setupAuthentication();
+            return;
+        }
 
-    if (hasServicesGrid) {
-        await setupHomeSessionUI();
+        setPageLoaderStatus('Connecting to data source...');
+        await loadAdminEmailsFromDatabase();
         await hydrateDataStores();
-        await loadServices();
-        renderOffersForHome();
 
-        const servicesGrid = document.getElementById('servicesGrid');
-        if (servicesGrid) {
-            servicesGrid.addEventListener('click', (e) => {
-                const btn = e.target.closest('button[data-service-name]');
-                if (!btn || btn.disabled) return;
+        if (hasServicesGrid) {
+            setPageLoaderStatus('Rendering services and dynamic pricing...');
+            await setupHomeSessionUI();
+            await hydrateDataStores();
+            await loadServices();
+            renderOffersForHome();
 
-                openOrderModal(btn.dataset.serviceName || 'خدمة غير مسماة', {
-                    finalPrice: btn.dataset.finalPrice || '',
-                    discountCode: btn.dataset.discountCode || '',
+            const servicesGrid = document.getElementById('servicesGrid');
+            if (servicesGrid) {
+                servicesGrid.addEventListener('click', (e) => {
+                    const btn = e.target.closest('button[data-service-name]');
+                    if (!btn || btn.disabled) return;
+
+                    openOrderModal(btn.dataset.serviceName || 'خدمة غير مسماة', {
+                        finalPrice: btn.dataset.finalPrice || '',
+                        discountCode: btn.dataset.discountCode || '',
+                    });
                 });
-            });
-        }
-
-        const orderForm = document.getElementById('orderForm');
-        if (orderForm) orderForm.addEventListener('submit', handleOrderSubmit);
-
-        const modalOverlay = document.getElementById('orderModal');
-        if (modalOverlay) {
-            modalOverlay.addEventListener('click', function(e) {
-                if (e.target === this) closeOrderModal();
-            });
-        }
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && modalOverlay?.classList.contains('active')) {
-                closeOrderModal();
             }
-        });
-    }
 
-    if (hasDashboardView) {
-        const user = await protectDashboardRoute();
-        if (user) {
-            await hydrateDataStores();
-            renderDashboardOrders(user);
-            setupDashboardSecurity(user);
-        }
-        setupLogout();
-    }
+            const orderForm = document.getElementById('orderForm');
+            if (orderForm) orderForm.addEventListener('submit', handleOrderSubmit);
 
-    if (hasAdminDashboardView) {
-        const user = await protectAdminDashboardRoute();
-        if (user) {
-            await hydrateDataStores();
-            await initializeAdminDashboard();
+            const modalOverlay = document.getElementById('orderModal');
+            if (modalOverlay) {
+                modalOverlay.addEventListener('click', function(e) {
+                    if (e.target === this) closeOrderModal();
+                });
+            }
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modalOverlay?.classList.contains('active')) {
+                    closeOrderModal();
+                }
+            });
         }
-        setupLogout();
+
+        if (hasDashboardView) {
+            setPageLoaderStatus('Checking account access and loading orders...');
+            const user = await protectDashboardRoute();
+            if (user) {
+                await hydrateDataStores();
+                renderDashboardOrders(user);
+                setupDashboardSecurity(user);
+            }
+            setupLogout();
+        }
+
+        if (hasAdminDashboardView) {
+            setPageLoaderStatus('Syncing admin workspace and controls...');
+            const user = await protectAdminDashboardRoute();
+            if (user) {
+                await hydrateDataStores();
+                await initializeAdminDashboard();
+            }
+            setupLogout();
+        }
+    } finally {
+        await finalizePageLoader();
     }
 });
