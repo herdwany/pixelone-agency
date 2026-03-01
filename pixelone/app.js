@@ -214,8 +214,7 @@ function createPageLoader(initialStatus) {
     overlay.innerHTML = `
         <div class="pixel-loader-stage">
             <div class="pixel-loader-logo-wrap" aria-hidden="true">
-                <img class="pixel-loader-logo" src="icone/favicon.svg" alt="Pixel One Logo" width="168" height="168" loading="eager" decoding="async">
-                <span class="pixel-loader-shimmer"></span>
+                <img class="pixel-loader-logo" src="icone/favicon-96x96.png" alt="Pixel One Logo" width="168" height="168" loading="eager" decoding="async">
             </div>
             <p class="pixel-loader-status" id="pixelLoaderStatus">${escapeHtml(initialStatus || 'Preparing your page...')}</p>
         </div>
