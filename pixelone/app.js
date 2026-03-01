@@ -6,21 +6,27 @@ const SUPABASE_URL = 'https://grdjidvagrxavuwykqjf.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_09I_ZPReuprW9qZRqlG0nA_vxCBY6WS';
 const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+const ORDER_STORAGE_FALLBACK_KEY = 'pixelone_orders_v1';
+const OFFERS_STORAGE_KEY = 'pixelone_offers_v1';
+const SERVICES_STORAGE_KEY = 'pixelone_services_v1';
+const DISPUTES_STORAGE_KEY = 'pixelone_disputes_v1';
+const DISCOUNTS_STORAGE_KEY = 'pixelone_discounts_v1';
+
 const DEFAULT_SITE_SETTINGS = {
     brand: {
         name: 'Pixel One Visuals',
         supportEmail: 'support@pixelonevisuals.tech',
     },
     orders: {
-        storageKey: 'pixelone_orders_v1',
+        storageKey: ORDER_STORAGE_FALLBACK_KEY,
         defaultStatus: 'تم استلام الطلب',
         showOnlyCurrentUser: true,
         adminEmails: [
             'superadmin@pixelonevisuals.tech',
+            'support@pixelonevisuals.tech',
+            'contact@pixelonevisuals.tech',
         ],
-        adminDomains: [
-            'pixelonevisuals.tech',
-        ],
+        adminDomains: ['pixelonevisuals.tech'],
     },
     contact: {
         whatsappNumber: '212600000000',
@@ -29,30 +35,7 @@ const DEFAULT_SITE_SETTINGS = {
     },
 };
 
-const ORDER_STATUS_OPTIONS = [
-    'تم استلام الطلب',
-    'مقبول',
-    'يحتاج تعديلات',
-    'قيد التنفيذ',
-    'مكتمل',
-];
-
-const ORDER_STORAGE_FALLBACK_KEY = 'pixelone_orders_v1';
-const OFFERS_STORAGE_KEY = 'pixelone_offers_v1';
-const DISPUTES_STORAGE_KEY = 'pixelone_disputes_v1';
-const DISCOUNTS_STORAGE_KEY = 'pixelone_discounts_v1';
-const SERVICES_STORAGE_KEY = 'pixelone_services_v1';
-
-const TABLES = {
-    services: 'pixel_services',
-    offers: 'pixel_offers',
-    orders: 'pixel_orders',
-    disputes: 'pixel_disputes',
-    discountsGlobal: 'pixel_discounts_global',
-    discountsCustomer: 'pixel_discounts_customer',
-    adminUsers: 'pixel_admin_users',
-    inviteAudit: 'pixel_invite_audit',
-};
+const DEFAULT_OFFERS = [];
 
 const DEFAULT_DISCOUNT_SETTINGS = {
     global: {
@@ -65,112 +48,63 @@ const DEFAULT_DISCOUNT_SETTINGS = {
     customerRules: [],
 };
 
-const DEFAULT_OFFERS = [
-    {
-        id: 'offer-welcome-10',
-        title: 'عرض ترحيبي للعملاء الجدد',
-        description: 'خصم خاص على أول طلب تصميم ضمن نطاق الخدمات المتاحة حالياً.',
-        badge: 'WELCOME10',
-        target: 'all',
-        targetEmail: '',
-        enabled: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-    },
-];
-
 const DEFAULT_MANAGED_SERVICES = [
     {
-        id: 'svc-social-fixed',
-        titles: { ar: 'تصاميم سوشيال ميديا ثابتة' },
-        price: '60',
-        descriptions: { ar: 'بوستات إعلانية واحترافية (Instagram/Facebook/LinkedIn) متوافقة مع الهوية.' },
-        category: 'سوشيال ميديا',
+        id: 'svc-banner-design',
+        titles: { ar: 'تصميم بانر إعلاني (Banner Design)' },
+        price: '100',
+        descriptions: { ar: 'تصميم مخصص وجاهز للإعلانات الممولة (يجذب النقرات).' },
+        category: 'تصميم إعلاني',
+        serviceType: 'خدمة لمرة واحدة',
         is_coming_soon: false,
         popularity: 1,
         enabled: true,
     },
     {
-        id: 'svc-logo',
-        titles: { ar: 'تصميم شعار احترافي' },
+        id: 'svc-reels-tiktok',
+        titles: { ar: 'مونتاج الفيديوهات القصيرة (Reels / TikToks)' },
         price: '150',
-        descriptions: { ar: 'شعار واضح وقابل للاستخدام على كل المنصات مع نسخة شفافة وتسليم منظم.' },
-        category: 'هوية بصرية',
+        descriptions: { ar: 'مونتاج ديناميكي سريع مواكب للتريند مع نصوص جذابة (Captions).' },
+        category: 'مونتاج فيديو',
+        serviceType: 'خدمة لمرة واحدة',
         is_coming_soon: false,
         popularity: 2,
         enabled: true,
     },
     {
-        id: 'svc-banners',
-        titles: { ar: 'بنرات وإعلانات رقمية' },
-        price: '80',
-        descriptions: { ar: 'بنرات للمتاجر والمواقع والحملات الإعلانية بمقاسات جاهزة للنشر.' },
-        category: 'إعلانات',
+        id: 'svc-brand-identity-basic',
+        titles: { ar: 'الهوية البصرية الأساسية (Basic Brand Identity)' },
+        price: '400',
+        descriptions: { ar: 'تصميم شعار احترافي + تحديد ألوان العلامة + صور البروفايل والغلاف.' },
+        category: 'هوية بصرية',
+        serviceType: 'خدمة لمرة واحدة',
         is_coming_soon: false,
         popularity: 3,
         enabled: true,
     },
     {
-        id: 'svc-pitch',
-        titles: { ar: 'تصميم عروض تقديمية (Pitch/Deck)' },
-        price: '200',
-        descriptions: { ar: 'ترتيب المحتوى بصرياً ضمن شرائح قوية ومقنعة للعرض التجاري أو الاستثماري.' },
-        category: 'تصميم أعمال',
+        id: 'svc-social-management',
+        titles: { ar: 'إدارة السوشيال ميديا (Social Media Management)' },
+        price: '900',
+        descriptions: { ar: 'باقة شهرية تشمل 12 تصميماً + كتابة نصوص النشر + تنسيق الحساب.' },
+        category: 'إدارة محتوى',
+        serviceType: 'اشتراك شهري',
         is_coming_soon: false,
         popularity: 4,
         enabled: true,
     },
-    {
-        id: 'svc-reels',
-        titles: { ar: 'فيديو قصير بسيط وسريع (Reels/TikTok)' },
-        price: '120',
-        descriptions: { ar: 'مونتاج خفيف وسريع بانتقالات بسيطة ونصوص واضحة، مناسب للمحتوى اليومي.' },
-        category: 'فيديو قصير',
-        is_coming_soon: false,
-        popularity: 5,
-        enabled: true,
-    },
-    {
-        id: 'svc-design-pro',
-        titles: { ar: 'خدمات التصميم الاحترافي' },
-        price: '500',
-        descriptions: { ar: 'تصاميم احترافية تشمل الهوية البصرية، الشعارات، والمنشورات.' },
-        category: 'design',
-        is_coming_soon: false,
-        popularity: 6,
-        enabled: true,
-    },
-    {
-        id: 'svc-video-short',
-        titles: { ar: 'فيديوهات قصيرة (أقل من دقيقة)' },
-        price: '300',
-        descriptions: { ar: 'مونتاج احترافي للفيديوهات القصيرة (Reels, TikTok) بجودة عالية.' },
-        category: 'video',
-        is_coming_soon: false,
-        popularity: 7,
-        enabled: true,
-    },
-    {
-        id: 'svc-video-advanced',
-        titles: { ar: 'فيديو دعائي احترافي متعدد المشاهد' },
-        price: 'قريباً',
-        descriptions: { ar: 'خدمة متقدمة تحتاج تجهيزات إنتاج أقوى، سيتم توفيرها قريباً بجودة أعلى.' },
-        category: 'فيديو متقدم',
-        is_coming_soon: true,
-        popularity: 8,
-        enabled: true,
-    },
-    {
-        id: 'svc-web-landing',
-        titles: { ar: 'تصميم المواقع وصفحات الهبوط' },
-        price: '1500',
-        descriptions: { ar: 'قريباً: تصميم وبرمجة صفحات هبوط احترافية تزيد من مبيعاتك.' },
-        category: 'web',
-        is_coming_soon: true,
-        popularity: 9,
-        enabled: true,
-    },
 ];
+
+const TABLES = {
+    services: 'pixel_services',
+    offers: 'pixel_offers',
+    orders: 'pixel_orders',
+    disputes: 'pixel_disputes',
+    discountsGlobal: 'pixel_discounts_global',
+    discountsCustomer: 'pixel_discounts_customer',
+    adminUsers: 'pixel_admin_users',
+    inviteAudit: 'pixel_invite_audit',
+};
 
 let siteSettings = { ...DEFAULT_SITE_SETTINGS };
 let currentSessionUser = null;
@@ -178,91 +112,12 @@ let dataSourceMode = 'fallback';
 let pageLoaderController = null;
 
 function getLoaderContext() {
-    if (document.getElementById('view-admin-dashboard')) {
-        return { key: 'admin-dashboard', status: 'Preparing admin data and access rules...' };
-    }
-    if (document.getElementById('view-dashboard')) {
-        return { key: 'dashboard', status: 'Loading your projects and timeline...' };
-    }
-    if (document.getElementById('view-auth-callback')) {
-        return { key: 'auth-callback', status: 'Validating secure sign-in link...' };
-    }
-    if (document.getElementById('authForm')) {
-        return { key: 'auth', status: 'Connecting to secure authentication service...' };
-    }
-    if (document.getElementById('servicesGrid')) {
-        return { key: 'home', status: 'Building services and personalized offers...' };
-    }
     return null;
 }
 
 function createPageLoader(initialStatus) {
-    if (!document.body || document.getElementById('pixelLoader')) return null;
-
-    const isBodyHidden = window.getComputedStyle(document.body).display === 'none';
-    if (isBodyHidden) {
-        document.body.dataset.loaderDisplayFix = 'true';
-        document.body.style.display = 'block';
-    }
-
-    const overlay = document.createElement('div');
-    overlay.id = 'pixelLoader';
-    overlay.className = 'pixel-loader-overlay';
-    overlay.setAttribute('role', 'status');
-    overlay.setAttribute('aria-live', 'polite');
-    overlay.setAttribute('aria-label', 'Loading page content');
-    overlay.innerHTML = `
-        <div class="pixel-loader-stage">
-            <div class="pixel-loader-logo-wrap" aria-hidden="true">
-                <img class="pixel-loader-logo" src="icone/favicon-96x96.png" alt="Pixel One Logo" width="168" height="168" loading="eager" decoding="async">
-            </div>
-            <p class="pixel-loader-status" id="pixelLoaderStatus">${escapeHtml(initialStatus || 'Preparing your page...')}</p>
-        </div>
-    `;
-
-    document.body.classList.add('app-loading-active');
-    document.body.appendChild(overlay);
-
-    const startedAt = Date.now();
-    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-    const effectiveType = String(connection?.effectiveType || '').toLowerCase();
-
-    // Keep a short minimum to show the brush-writing identity, then exit based on real load time.
-    let minDurationMs = 820;
-    if (connection?.saveData) {
-        minDurationMs = 520;
-    } else if (effectiveType.includes('slow-2g') || effectiveType.includes('2g')) {
-        minDurationMs = 1250;
-    } else if (effectiveType.includes('3g')) {
-        minDurationMs = 980;
-    } else if (effectiveType.includes('4g')) {
-        minDurationMs = 700;
-    }
-
-    return {
-        setStatus(text) {
-            const statusNode = document.getElementById('pixelLoaderStatus');
-            if (statusNode && text) {
-                statusNode.textContent = text;
-            }
-        },
-        async complete() {
-            const waitMs = Math.max(0, minDurationMs - (Date.now() - startedAt));
-            if (waitMs > 0) {
-                await new Promise((resolve) => setTimeout(resolve, waitMs));
-            }
-
-            overlay.classList.add('is-exit');
-            await new Promise((resolve) => setTimeout(resolve, 560));
-
-            overlay.remove();
-            document.body.classList.remove('app-loading-active');
-
-            if (document.body.dataset.loaderDisplayFix === 'true') {
-                delete document.body.dataset.loaderDisplayFix;
-            }
-        },
-    };
+    void initialStatus;
+    return null;
 }
 
 function ensurePageLoader() {
@@ -282,7 +137,6 @@ function setPageLoaderStatus(text) {
 
 async function finalizePageLoader() {
     if (!pageLoaderController) return;
-    await pageLoaderController.complete();
     pageLoaderController = null;
 }
 
@@ -759,9 +613,13 @@ function getLocalOffers() {
 }
 
 function getLocalServices() {
-    const parsed = readLocalJson(SERVICES_STORAGE_KEY, DEFAULT_MANAGED_SERVICES);
-    const list = Array.isArray(parsed) && parsed.length > 0 ? parsed : DEFAULT_MANAGED_SERVICES;
-    return list.map((service, index) => normalizeManagedService(service, index));
+    // Enforce exactly the curated four services regardless of legacy stored data.
+    return DEFAULT_MANAGED_SERVICES.map((service, index) => normalizeManagedService(service, index));
+}
+
+function enforceExclusiveServiceCatalog() {
+    runtimeStore.services = DEFAULT_MANAGED_SERVICES.map((service, index) => normalizeManagedService(service, index));
+    writeLocalJson(SERVICES_STORAGE_KEY, runtimeStore.services);
 }
 
 function getLocalDisputes() {
@@ -828,6 +686,8 @@ async function hydrateDataStores() {
     runtimeStore.services = servicesResult.status === 'fulfilled' && servicesResult.value.length > 0
         ? servicesResult.value.map((row, index) => serviceFromRow(row, index))
         : getLocalServices();
+
+    enforceExclusiveServiceCatalog();
 
     runtimeStore.offers = offersResult.status === 'fulfilled' && offersResult.value.length > 0
         ? offersResult.value.map(offerFromRow)
@@ -970,6 +830,7 @@ function normalizeManagedService(service, index = 0) {
         titles: { ar: title },
         descriptions: { ar: description },
         category,
+        serviceType: String(service?.serviceType || 'خدمة لمرة واحدة').trim(),
         price: String(service?.price ?? '0').trim(),
         is_coming_soon: Boolean(service?.is_coming_soon),
         popularity: Number.isFinite(rawPopularity) ? rawPopularity : index + 1,
@@ -1223,11 +1084,13 @@ function renderServices(grid, services, discountContext) {
         const servicePrice = service.price || '0';
         const serviceDesc = service.descriptions?.ar || 'وصف الخدمة غير متوفر حالياً.';
         const category = service.category || 'خدمة بصرية';
+        const serviceType = service.serviceType || 'خدمة لمرة واحدة';
 
         const safeCategory = escapeHtml(category);
         const safePrice = escapeHtml(servicePrice);
         const safeName = escapeHtml(serviceName);
         const safeDesc = escapeHtml(serviceDesc);
+        const safeType = escapeHtml(serviceType);
         const safeServiceNameAttr = escapeHtml(serviceName);
         const statusLabel = isSoon ? 'قريباً' : 'متاح الآن';
         const statusClass = isSoon
@@ -1262,6 +1125,7 @@ function renderServices(grid, services, discountContext) {
                             <span class="text-[10px] font-bold tracking-[0.2em] text-red-500 uppercase">${safeCategory}</span>
                             <div class="flex gap-2 items-center flex-wrap">
                                 <span class="text-[10px] px-2 py-1 rounded-full border w-fit ${statusClass}">${statusLabel}</span>
+                                <span class="text-[10px] px-2 py-1 rounded-full border border-white/10 bg-white/5 text-gray-300">${safeType}</span>
                                 ${discountBadgeHtml}
                             </div>
                         </div>
