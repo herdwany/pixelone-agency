@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#030303">
+    <meta name="robots" content="noindex, nofollow">
     <title>لوحة تحكم الوكالة - Pixel One</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -40,6 +41,7 @@
             <div class="mb-10">
                 <h2 class="text-4xl font-black mb-2 text-white">مرحباً بك مجدداً!</h2>
                 <p class="text-gray-400">نظرة عامة على نشاط وكالتك وإحصائيات المشاريع الحالية.</p>
+                <p id="dashboardRoleHint" class="text-xs text-gray-500 mt-2">جاري تحديد الصلاحيات...</p>
             </div>
             
             <!-- بطاقات الإحصائيات -->
@@ -92,14 +94,20 @@
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
                     <div>
                         <h3 class="text-2xl font-black text-white">سجل الطلبات</h3>
-                        <p class="text-sm text-gray-500">كل طلب يتم إرساله من الصفحة الرئيسية يظهر هنا تلقائياً.</p>
+                        <p class="text-sm text-gray-500">كل طلب يتم إرساله من الصفحة الرئيسية يظهر هنا تلقائياً مع حالة التنفيذ.</p>
                     </div>
-                    <a id="supportEmailLink" href="mailto:support@pixelone.com" class="px-5 py-2 border border-brand-red text-brand-red rounded-lg text-sm hover:bg-brand-red hover:text-white transition font-bold text-center">
+                    <a id="supportEmailLink" href="mailto:support@pixelonevisuals.tech" class="px-5 py-2 border border-brand-red text-brand-red rounded-lg text-sm hover:bg-brand-red hover:text-white transition font-bold text-center">
                         مراسلة خدمة العملاء عبر البريد
                     </a>
                 </div>
 
-                <div class="overflow-x-auto rounded-xl border border-white/10">
+                <p class="text-xs text-gray-500 mb-4">حالات الطلب المتاحة: تم استلام الطلب، مقبول، يحتاج تعديلات، قيد التنفيذ، مكتمل.</p>
+
+                <div id="ordersMobileList" class="md:hidden space-y-4 mb-5">
+                    <article class="border border-white/10 rounded-xl p-4 bg-black/30 text-gray-400 text-sm text-center">لا توجد طلبات حالياً.</article>
+                </div>
+
+                <div class="hidden md:block overflow-x-auto rounded-xl border border-white/10">
                     <table class="w-full min-w-[900px] text-sm">
                         <thead class="bg-black/50 text-gray-300">
                             <tr>

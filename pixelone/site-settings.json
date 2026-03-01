@@ -1,15 +1,23 @@
 {
   "brand": {
     "name": "Pixel One Visuals",
-    "supportEmail": "support@pixelone.com"
+    "supportEmail": "support@pixelonevisuals.tech"
   },
   "orders": {
     "storageKey": "pixelone_orders_v1",
-    "defaultStatus": "قيد المراجعة",
-    "showOnlyCurrentUser": true
+    "defaultStatus": "تم استلام الطلب",
+    "showOnlyCurrentUser": true,
+    "adminEmails": [
+      "superadmin@pixelonevisuals.tech",
+      "support@pixelonevisuals.tech",
+      "contact@pixelonevisuals.tech"
+    ],
+    "adminDomains": [
+      "pixelonevisuals.tech"
+    ]
   },
   "contact": {
     "whatsappNumber": "212661234567",
-    "email": "support@pixelone.com"
+    "email": "contact@pixelonevisuals.tech"
   }
 }

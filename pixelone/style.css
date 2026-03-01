@@ -644,6 +644,14 @@ textarea.input-luxury {
         gap: 1rem;
         text-align: center;
     }
+
+    .dashboard-main {
+        padding: 1rem;
+    }
+
+    .stat-card {
+        padding: 1rem;
+    }
 }
 
 @media (max-width: 480px) {
