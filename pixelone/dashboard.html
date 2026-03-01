@@ -3,74 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PixelOne V2 - لوحة التحكم</title>
+    <meta name="theme-color" content="#030303">
+    <title>لوحة تحكم الوكالة - Pixel One</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <!-- استدعاء بيئة العمل -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-gray-900 text-white font-sans"
-    style="display: none;"> <!-- إخفاء المحتوى حتى يتم التحقق من المستخدم -->
+<!-- إخفاء محتوى البودي بالكامل بـ CSS حتى نتأكد من صلاحيات المستخدم في الجافاسكريبت -->
+<body id="view-dashboard" style="display: none;" class="dashboard-layout">
 
-    <nav class="bg-gray-800 p-4 border-b border-gray-700 flex justify-between items-center">
-        <h1 class="text-xl font-bold text-blue-500">PixelOne Dashboard</h1>
-        <button id="logoutBtn" class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded text-sm transition">تسجيل الخروج</button>
+    <!-- شريط تنقل لوحة التحكم -->
+    <nav class="dashboard-nav" aria-label="تنقل لوحة التحكم">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='index.html'">
+            <span class="logo-p text-xl">P</span>
+            <span class="text-lg font-black tracking-widest text-white uppercase font-en">Dashboard</span>
+        </div>
+        
+        <div class="flex items-center gap-4">
+            <div class="text-sm text-gray-400">
+                متصل كـ: <span id="userEmail" class="text-white font-bold font-en bg-black/50 px-3 py-1 rounded-full border border-white/10">...</span>
+            </div>
+            <button id="logoutBtn" class="px-5 py-2 bg-red-600/20 text-red-500 hover:bg-red-600 hover:text-white border border-red-600/50 rounded-lg text-sm transition font-bold cursor-pointer">
+                خروج
+            </button>
+        </div>
     </nav>
-
-    <main class="p-8">
-        <div class="max-w-4xl mx-auto">
-            <h2 class="text-3xl font-bold mb-4">أهلاً بك، <span id="userEmail" class="text-blue-400">...</span></h2>
-            <p class="text-gray-400">هذه هي بداية مشروعك الجديد. من هنا سنبدأ بإدارة الوكالة الخاصة بك.</p>
+    
+    <!-- محتوى لوحة التحكم الرئيسي -->
+    <main class="dashboard-main">
+        <div class="max-w-6xl mx-auto animate-fade-up">
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-                <div class="p-6 bg-gray-800 rounded-lg border border-gray-700">
-                    <h3 class="text-lg font-semibold mb-2">المشاريع</h3>
-                    <p class="text-2xl font-bold">0</p>
+            <div class="mb-10">
+                <h2 class="text-4xl font-black mb-2 text-white">مرحباً بك مجدداً!</h2>
+                <p class="text-gray-400">نظرة عامة على نشاط وكالتك وإحصائيات المشاريع الحالية.</p>
+            </div>
+            
+            <!-- بطاقات الإحصائيات -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                <div class="stat-card">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-3 bg-blue-500/10 text-blue-500 rounded-lg">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                        </div>
+                    </div>
+                    <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">المشاريع النشطة</h3>
+                    <p id="statActiveProjects" class="text-3xl font-black text-white number-font">0</p>
                 </div>
-                <div class="p-6 bg-gray-800 rounded-lg border border-gray-700">
-                    <h3 class="text-lg font-semibold mb-2">الطلبات</h3>
-                    <p class="text-2xl font-bold">0</p>
+
+                <div class="stat-card">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-3 bg-purple-500/10 text-purple-500 rounded-lg">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                        </div>
+                    </div>
+                    <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">الطلبات المعلقة</h3>
+                    <p id="statPendingOrders" class="text-3xl font-black text-white number-font">0</p>
                 </div>
-                <div class="p-6 bg-gray-800 rounded-lg border border-gray-700">
-                    <h3 class="text-lg font-semibold mb-2">الرصيد</h3>
-                    <p class="text-2xl font-bold">$0</p>
+
+                <div class="stat-card">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-3 bg-green-500/10 text-green-500 rounded-lg">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                    </div>
+                    <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">إجمالي الطلبات</h3>
+                    <p id="statTotalOrders" class="text-3xl font-black text-green-400 number-font">0</p>
+                </div>
+
+                <div class="stat-card">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-3 bg-red-500/10 text-red-500 rounded-lg">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        </div>
+                    </div>
+                    <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">العملاء</h3>
+                    <p id="statCustomers" class="text-3xl font-black text-white number-font">1</p>
+                </div>
+                
+            </div>
+            
+            <!-- جدول الطلبات -->
+            <div class="mt-12 bg-[#121212] border border-[#222] rounded-2xl p-6 md:p-8 animate-fade-up delay-200">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+                    <div>
+                        <h3 class="text-2xl font-black text-white">سجل الطلبات</h3>
+                        <p class="text-sm text-gray-500">كل طلب يتم إرساله من الصفحة الرئيسية يظهر هنا تلقائياً.</p>
+                    </div>
+                    <a id="supportEmailLink" href="mailto:support@pixelone.com" class="px-5 py-2 border border-brand-red text-brand-red rounded-lg text-sm hover:bg-brand-red hover:text-white transition font-bold text-center">
+                        مراسلة خدمة العملاء عبر البريد
+                    </a>
+                </div>
+
+                <div class="overflow-x-auto rounded-xl border border-white/10">
+                    <table class="w-full min-w-[900px] text-sm">
+                        <thead class="bg-black/50 text-gray-300">
+                            <tr>
+                                <th class="px-4 py-3 text-right">نوع الطلب</th>
+                                <th class="px-4 py-3 text-right">تاريخ الطلب</th>
+                                <th class="px-4 py-3 text-right">تفاصيل الطلب</th>
+                                <th class="px-4 py-3 text-right">الحالة</th>
+                                <th class="px-4 py-3 text-right">البريد</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody" class="divide-y divide-white/10 text-gray-200 bg-black/20">
+                            <tr>
+                                <td colspan="5" class="px-4 py-6 text-center text-gray-500">لا توجد طلبات حالياً.</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
+
         </div>
     </main>
 
-<script>
-    // تهيئة Supabase بنفس بياناتك السابقة
-    const SUPABASE_URL = 'https://grdjidvagrxavuwykqjf.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_09I_ZPReuprW9qZRqlG0nA_vxCBY6WS';
-    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    // 🛡️ دالة حماية المسار (تشتغل فوراً عند تحميل الصفحة)
-    async function protectRoute() {
-        // التحقق من وجود مستخدم مسجل دخول
-        const { data: { user }, error } = await _supabase.auth.getUser();
-
-        if (error || !user) {
-            // إذا لم يوجد مستخدم أو حدث خطأ، يتم تحويله لصفحة الدخول
-            console.log("غير مصرح بالدخول، جاري التحويل...");
-            window.location.href = "index.html";
-        } else {
-            // إذا كان المستخدم موجوداً، نعرض بريده الإلكتروني في اللوحة
-            document.getElementById('userEmail').textContent = user.email;
-            // إظهار محتوى الصفحة (اختياري إذا كنت تخفي المحتوى بالـ CSS)
-            document.body.style.display = "block";
-        }
-    }
-
-    // تشغيل الحماية
-    protectRoute();
-
-    // زر تسجيل الخروج
-    document.getElementById('logoutBtn').addEventListener('click', async () => {
-        const { error } = await _supabase.auth.signOut();
-        if (!error) {
-            window.location.href = "index.html";
-        }
-    });
-</script>
+    <!-- استدعاء ملف الجافاسكريبت الموحد -->
+    <script src="app.js"></script>
 </body>
 </html>

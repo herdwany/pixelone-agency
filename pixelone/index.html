@@ -3,40 +3,390 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PixelOne Agency - Login</title>
+    <meta name="theme-color" content="#030303">
+    <title>Pixel One Visuals - تصميمات احترافية شاملة</title>
+    <meta name="description" content="نقدّم تصميمات احترافية شاملة عبر Canva Pro: شعارات، سوشيال ميديا، بنرات، عروض تقديمية، وفيديوهات قصيرة بسيطة وسريعة.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    
+    <!-- استدعاء Tailwindcss عبر الـ CDN للعمل السريع -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- استدعاء مكتبة قاعدة البيانات Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- ربط ملف التنسيقات الخارجي -->
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center">
+<body class="selection:bg-red-600 selection:text-white">
 
-    <div class="w-full max-w-md p-8 bg-gray-800 rounded-xl shadow-2xl border border-gray-700">
-        <div class="text-center mb-6">
-            <h1 class="text-3xl font-bold text-blue-500">PixelOne V2</h1>
-            <p class="text-gray-400 text-sm mt-2">بوابة الدخول الآمنة</p>
+    <a href="#mainContent" class="skip-link">تخطي إلى المحتوى الرئيسي</a>
+
+    <!-- ==================================================================
+         شريط التنقل العلوي (Navbar)
+         ================================================================== -->
+    <nav class="px-6 py-4 flex justify-between items-center navbar-glass" aria-label="التنقل الرئيسي">
+        <!-- الشعار -->
+        <a href="index.html" class="logo-container">
+            <span class="logo-p text-3xl">P</span>
+            <span class="text-xl font-black tracking-tighter hidden sm:block uppercase font-en text-white">Pixel One</span>
+        </a>
+        
+        <!-- روابط المنتصف (تظهر في الشاشات الكبيرة) -->
+        <div class="hidden md:flex items-center gap-8">
+            <a href="#about" class="text-sm font-bold nav-link">من نحن</a>
+            <a href="#services" class="text-sm font-bold nav-link">الخدمات</a>
+            <a href="#workflow" class="text-sm font-bold nav-link">آلية العمل</a>
+            <a href="#faq" class="text-sm font-bold nav-link">الأسئلة الشائعة</a>
         </div>
 
-        <div id="msgBox" class="hidden mb-4 p-3 rounded text-sm text-center"></div>
-
-        <form id="authForm" class="space-y-4">
-            <input type="email" id="email" placeholder="البريد الإلكتروني" required 
-                class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition">
-            
-            <input type="password" id="password" placeholder="كلمة المرور" required 
-                class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition">
-
-            <button type="submit" id="btnSubmit" 
-                class="w-full py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-bold transition duration-200">
-                تسجيل الدخول
+        <!-- أزرار الإجراء (دخول / ابدأ مشروعك) -->
+        <div class="flex gap-4 items-center">
+            <a id="loginNavLink" href="login.html" class="text-sm font-bold text-gray-300 hover:text-white transition">دخول العملاء</a>
+            <button type="button" onclick="document.getElementById('services').scrollIntoView({behavior: 'smooth'})" class="btn-filled-red px-6 py-2 rounded-md text-sm font-bold hidden sm:block">
+                ابدأ مشروعك
             </button>
-        </form>
+        </div>
+    </nav>
 
-        <p class="mt-6 text-center text-sm text-gray-400">
-            <span id="toggleText">ليس لديك حساب؟</span>
-            <a href="#" id="toggleBtn" class="text-blue-400 hover:text-blue-300 font-semibold">إنشاء حساب</a>
-        </p>
+    <div class="md:hidden px-4 py-3 border-b border-white/5 bg-black/50 backdrop-blur sticky top-[76px] z-40">
+        <div class="flex gap-2 overflow-x-auto no-scrollbar" aria-label="روابط سريعة للجوال">
+            <a href="#about" class="px-4 py-2 rounded-full border border-white/10 text-xs text-gray-300 whitespace-nowrap">من نحن</a>
+            <a href="#services" class="px-4 py-2 rounded-full border border-white/10 text-xs text-gray-300 whitespace-nowrap">الخدمات</a>
+            <a href="#workflow" class="px-4 py-2 rounded-full border border-white/10 text-xs text-gray-300 whitespace-nowrap">العمل</a>
+            <a href="#faq" class="px-4 py-2 rounded-full border border-white/10 text-xs text-gray-300 whitespace-nowrap">FAQ</a>
+        </div>
     </div>
 
+    <!-- ==================================================================
+         واجهة الترحيب (Hero Section)
+         ================================================================== -->
+    <header id="mainContent" class="relative pt-32 pb-20 px-6 overflow-hidden min-h-[90vh] flex flex-col justify-center">
+        <!-- إضاءة الخلفية الحمراء -->
+        <div class="hero-glow"></div>
+        
+        <div class="max-w-5xl mx-auto text-center relative z-10">
+            <!-- شارة صغيرة فوق العنوان -->
+            <div class="inline-block px-4 py-1 rounded-full bg-red-900/30 border border-red-500/30 text-red-400 text-xs font-bold mb-6 animate-fade-up">
+                ✨ تخصصنا: التصميم الاحترافي الشامل + فيديو قصير بسيط
+            </div>
+            
+            <h1 class="hero-title text-5xl md:text-[5.5rem] font-black mb-8 animate-fade-up delay-100 leading-tight">
+                كل ما تحتاجه من <br>
+                <span class="text-gradient-red drop-shadow-[0_0_15px_rgba(255,0,0,0.3)]">تصميمات احترافية</span>
+                <span class="block mt-2 text-white opacity-95">في مكان واحد</span>
+            </h1>
+            
+            <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-12 animate-fade-up delay-200 leading-relaxed">
+                نركز على تنفيذ تصميمات دقيقة وقابلة للنشر فوراً عبر Canva Pro: شعارات، منشورات، إعلانات، عروض تقديمية، ومحتوى بصري متكامل. الفيديو المتاح حالياً: قصير، بسيط، وسريع.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up delay-300">
+                <button type="button" onclick="document.getElementById('services').scrollIntoView({behavior: 'smooth'})" class="btn-filled-red px-10 py-4 rounded-xl font-black text-lg flex items-center justify-center gap-2">
+                    استعرض خدماتنا
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                </button>
+                <a href="#about" class="px-10 py-4 rounded-xl font-black text-lg border border-white/10 hover:bg-white/5 transition flex items-center justify-center text-white">
+                    اكتشف المزيد
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================================================================
+         شريط الثقة المهنية (Expert Positioning)
+         ================================================================== -->
+    <section class="border-y border-white/5 bg-black/50 py-10 relative z-10">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <p class="text-center text-xs font-bold text-gray-500 uppercase tracking-widest mb-6">الخبرة والمنهج قبل عدد العملاء</p>
+            <div class="flex flex-wrap justify-center gap-3 md:gap-4">
+                <span class="px-4 py-2 rounded-full border border-white/10 text-gray-200 text-xs md:text-sm">منهج عمل احترافي واضح</span>
+                <span class="px-4 py-2 rounded-full border border-white/10 text-gray-200 text-xs md:text-sm">معايير جودة بصرية معتمدة</span>
+                <span class="px-4 py-2 rounded-full border border-white/10 text-gray-200 text-xs md:text-sm">تنفيذ دقيق وتسليم منظم</span>
+                <span class="px-4 py-2 rounded-full border border-white/10 text-gray-200 text-xs md:text-sm">جاهزون لبناء أول قصة نجاح</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================================================================
+         قسم من نحن (About Us)
+         ================================================================== -->
+    <section id="about" class="max-w-6xl mx-auto px-6 py-24 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div class="animate-fade-right">
+                <h2 class="text-brand-red font-bold tracking-widest uppercase mb-3 text-sm">عن الوكالة</h2>
+                <h3 class="text-4xl font-black mb-6 text-white">نعمل بعقلية <span class="text-brand-red">Design System</span> من أول يوم.</h3>
+                <p class="text-gray-400 leading-relaxed mb-6">
+                    حتى بدون تراكم مشاريع كثيرة في البداية، نقدم قيمة واضحة: تنظيم بصري محترف، هوية متناسقة، وتسليم عملي يمكن استخدامه مباشرة على السوشيال والإعلانات. نُفضّل الصراحة المهنية: الفيديوهات المعقدة قيد التطوير، لكن التصميم بجميع فروعه هو نقطة قوتنا الآن.
+                </p>
+                <ul class="space-y-4 text-gray-300 font-semibold">
+                    <li class="flex items-center gap-3">
+                        <div class="w-6 h-6 rounded-full bg-red-900/50 text-brand-red flex items-center justify-center">✓</div>
+                        تصميمات واسعة النطاق عبر Canva Pro
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <div class="w-6 h-6 rounded-full bg-red-900/50 text-brand-red flex items-center justify-center">✓</div>
+                        ملفات جاهزة للنشر بمقاسات صحيحة
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <div class="w-6 h-6 rounded-full bg-red-900/50 text-brand-red flex items-center justify-center">✓</div>
+                        وضوح كامل في ما هو متاح الآن وما هو قريباً
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- شبكة الثقة المهنية -->
+            <div class="grid grid-cols-2 gap-6 animate-fade-up delay-200">
+                <div class="water-card p-8 text-center rounded-2xl">
+                    <p class="text-lg font-black text-white mb-2">تخصص تصميمي واسع</p>
+                    <p class="text-sm font-bold text-gray-500">شعار، هوية، سوشيال، إعلانات، عروض</p>
+                </div>
+                <div class="water-card p-8 text-center rounded-2xl mt-8">
+                    <p class="text-lg font-black text-white mb-2">تنفيذ عملي سريع</p>
+                    <p class="text-sm font-bold text-gray-500">أولوية للإنجاز الواضح القابل للنشر</p>
+                </div>
+                <div class="water-card p-8 text-center rounded-2xl -mt-8">
+                    <p class="text-lg font-black text-white mb-2">فيديو قصير واقعي</p>
+                    <p class="text-sm font-bold text-gray-500">مونتاج بسيط وسريع دون تعقيد إنتاجي</p>
+                </div>
+                <div class="water-card p-8 text-center rounded-2xl">
+                    <p class="text-lg font-black text-white mb-2">خدمات متقدمة قريباً</p>
+                    <p class="text-sm font-bold text-gray-500">فيديوهات ثقيلة ومشاهد متعددة لاحقاً</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================================================================
+         قسم الخدمات (Services Grid)
+         ================================================================== -->
+    <section id="services" class="max-w-7xl mx-auto px-6 py-24 relative z-10">
+        <div class="mb-16 text-center animate-fade-up">
+            <h2 class="text-brand-red font-bold tracking-widest uppercase mb-3 text-sm">خريطة الخدمات</h2>
+            <h3 class="text-4xl md:text-5xl font-black text-white">خدماتنا الآن وقريباً</h3>
+            <p class="text-gray-400 mt-4 max-w-3xl mx-auto">رتبنا الخدمات حسب الاكثر طلبا في السوق: تبدأ بالخدمات التصميمية الشائعة والمتاحة الآن، ثم تأتي خدمات قريباً في الأسفل بوضوح كامل.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+            <article class="water-card rounded-2xl p-6 lg:col-span-2">
+                <h4 class="text-white font-black text-xl mb-3">متاح الآن: التصميم الشامل</h4>
+                <p class="text-gray-400 text-sm leading-relaxed mb-5">أي شيء يمكن تنفيذه باحتراف داخل Canva Pro يمكن تقديمه ضمن الخدمة: بناءً على هوية العلامة، هدف المحتوى، والمنصة المستهدفة.</p>
+                <div class="flex flex-wrap gap-2 text-xs">
+                    <span class="px-3 py-1 rounded-full border border-white/10 text-gray-300">Logo Design</span>
+                    <span class="px-3 py-1 rounded-full border border-white/10 text-gray-300">Brand Kit</span>
+                    <span class="px-3 py-1 rounded-full border border-white/10 text-gray-300">Social Posts</span>
+                    <span class="px-3 py-1 rounded-full border border-white/10 text-gray-300">Stories & Covers</span>
+                    <span class="px-3 py-1 rounded-full border border-white/10 text-gray-300">Ad Banners</span>
+                    <span class="px-3 py-1 rounded-full border border-white/10 text-gray-300">Carousels</span>
+                    <span class="px-3 py-1 rounded-full border border-white/10 text-gray-300">Thumbnails</span>
+                    <span class="px-3 py-1 rounded-full border border-white/10 text-gray-300">Pitch Decks</span>
+                    <span class="px-3 py-1 rounded-full border border-white/10 text-gray-300">Print-ready Assets</span>
+                </div>
+            </article>
+            <article class="water-card rounded-2xl p-6 border border-amber-500/30 bg-amber-500/5">
+                <h4 class="text-amber-300 font-black text-xl mb-3">الفيديو: نطاق تنفيذي واقعي</h4>
+                <p class="text-gray-300 text-sm leading-relaxed">ننفذ حالياً فيديوهات قصيرة بسيطة وسريعة (Reels/TikTok/Shorts) بمونتاج خفيف. المشاريع التي تتطلب إنتاجاً ثقيلاً أو تخصيصاً عميقاً ستبقى <span class="text-amber-300 font-bold">قريباً</span> إلى حين توفر بيئة أقوى.</p>
+            </article>
+        </div>
+
+        <!-- سيتم جلب الخدمات من Supabase (عن طريق app.js) وحقنها هنا -->
+        <div id="servicesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Loading Skeletons (يظهرون أثناء تحميل البيانات) -->
+            <div class="h-[400px] bg-white/5 animate-pulse rounded-3xl water-card"></div>
+            <div class="h-[400px] bg-white/5 animate-pulse rounded-3xl water-card"></div>
+            <div class="h-[400px] bg-white/5 animate-pulse rounded-3xl water-card"></div>
+        </div>
+    </section>
+
+    <!-- ==================================================================
+         قسم آلية العمل (How it works)
+         ================================================================== -->
+    <section id="workflow" class="bg-black/40 border-y border-white/5 py-24 relative z-10">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16 animate-fade-up">
+                <h2 class="text-brand-red font-bold tracking-widest uppercase mb-3 text-sm">رحلتك معنا</h2>
+                <h3 class="text-4xl font-black text-white">كيف نشتغل باحتراف ووضوح؟</h3>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
+                <!-- الخطوة 1 -->
+                <div class="relative animate-fade-up delay-100">
+                    <div class="w-20 h-20 mx-auto bg-red-900/20 border border-brand-red/50 rounded-2xl flex items-center justify-center mb-6 transform rotate-3 hover:rotate-0 transition">
+                        <span class="text-3xl font-black text-brand-red number-font">1</span>
+                    </div>
+                    <h4 class="text-xl font-bold mb-3 text-white">اختيار الفرع المناسب</h4>
+                    <p class="text-gray-400 text-sm leading-relaxed">تحدد نوع الخدمة بوضوح: تصميم شامل، أو فيديو قصير بسيط. نثبت نطاق العمل قبل البدء لتفادي أي التباس.</p>
+                </div>
+                <!-- الخطوة 2 -->
+                <div class="relative animate-fade-up delay-200">
+                    <div class="w-20 h-20 mx-auto bg-red-900/20 border border-brand-red/50 rounded-2xl flex items-center justify-center mb-6 transform -rotate-3 hover:rotate-0 transition">
+                        <span class="text-3xl font-black text-brand-red number-font">2</span>
+                    </div>
+                    <h4 class="text-xl font-bold mb-3 text-white">خطة تنفيذ عملية</h4>
+                    <p class="text-gray-400 text-sm leading-relaxed">نحوّل الطلب إلى خطة تنفيذ سريعة: مراجع بصرية، مقاسات دقيقة، وأسلوب تصميم متناسق مع علامتك.</p>
+                </div>
+                <!-- الخطوة 3 -->
+                <div class="relative animate-fade-up delay-300">
+                    <div class="w-20 h-20 mx-auto bg-red-900/20 border border-brand-red/50 rounded-2xl flex items-center justify-center mb-6 transform rotate-3 hover:rotate-0 transition">
+                        <span class="text-3xl font-black text-brand-red number-font">3</span>
+                    </div>
+                    <h4 class="text-xl font-bold mb-3 text-white">تسليم جاهز للنشر</h4>
+                    <p class="text-gray-400 text-sm leading-relaxed">تستلم ملفاتك بصيغة مرتبة وجاهزة للاستخدام الفوري، مع تعديلات ضمن النطاق المتفق عليه.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================================================================
+         دعوة لاتخاذ إجراء (Call To Action)
+         ================================================================== -->
+    <section class="py-24 px-6 relative z-10">
+        <div class="max-w-4xl mx-auto water-card p-12 md:p-16 rounded-[2.5rem] text-center border-brand-red/30 relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-t from-brand-red/10 to-transparent"></div>
+            <div class="relative z-10">
+                <h2 class="text-3xl md:text-5xl font-black mb-6 text-white">جاهز نبني حضورك البصري؟</h2>
+                <p class="text-gray-400 mb-10 text-lg max-w-2xl mx-auto">ابدأ بخدمة تصميم واضحة أو فيديو قصير بسيط، وخذ نتيجة عملية بسرعة مع إطار عمل احترافي من أول تعاون.</p>
+                <button type="button" onclick="document.getElementById('services').scrollIntoView({behavior: 'smooth'})" class="btn-filled-red px-12 py-5 rounded-xl font-black text-lg shadow-[0_0_30px_rgba(229,9,20,0.3)] hover:shadow-[0_0_50px_rgba(229,9,20,0.5)]">
+                    اختر خدمتك الآن
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================================================================
+         قسم الأسئلة الشائعة (FAQ)
+         ================================================================== -->
+    <section id="faq" class="max-w-6xl mx-auto px-6 py-24 relative z-10">
+        <div class="text-center mb-14 animate-fade-up">
+            <h2 class="text-brand-red font-bold tracking-widest uppercase mb-3 text-sm">الأسئلة الشائعة</h2>
+            <h3 class="text-4xl font-black text-white">كل ما تحتاج معرفته قبل البدء</h3>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <article class="water-card rounded-2xl p-7">
+                <h4 class="text-white font-bold mb-3">ما الخدمات المتاحة حالياً بشكل كامل؟</h4>
+                <p class="text-gray-400 text-sm leading-relaxed">كل خدمات التصميم التي يمكن تنفيذها عبر Canva Pro متاحة بالكامل: هوية، سوشيال، إعلانات، عروض، ومواد بصرية جاهزة للنشر.</p>
+            </article>
+            <article class="water-card rounded-2xl p-7">
+                <h4 class="text-white font-bold mb-3">هل تقدمون فيديوهات احترافية ثقيلة؟</h4>
+                <p class="text-gray-400 text-sm leading-relaxed">حالياً نقدم فيديوهات قصيرة بسيطة وسريعة فقط. الفيديوهات المعقدة أو متعددة المشاهد مميزة بوضوح كخدمات قريبة قريباً.</p>
+            </article>
+            <article class="water-card rounded-2xl p-7">
+                <h4 class="text-white font-bold mb-3">كيف نتعامل مع التفاصيل قبل التنفيذ؟</h4>
+                <p class="text-gray-400 text-sm leading-relaxed">نقفل نطاق الخدمة أولاً (متاح الآن أو قريباً)، ثم نثبت المقاسات والهدف والمنصة لضمان تنفيذ عملي بدون وعود غير واقعية.</p>
+            </article>
+            <article class="water-card rounded-2xl p-7">
+                <h4 class="text-white font-bold mb-3">هل العمل مناسب للشركات والأفراد؟</h4>
+                <p class="text-gray-400 text-sm leading-relaxed">نعم، ونكيّف التصميم حسب الهدف: علامة تجارية ناشئة، متجر إلكتروني، صانع محتوى، أو نشاط شخصي يريد مظهرًا احترافيًا ثابتًا.</p>
+            </article>
+        </div>
+    </section>
+
+    <!-- ==================================================================
+         تذييل الصفحة (Footer)
+         ================================================================== -->
+    <footer class="bg-black border-t border-white/10 pt-20 pb-10 px-6 relative z-10">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+            
+            <!-- العمود الأول (الشعار والوصف) -->
+            <div class="col-span-1 md:col-span-2">
+                <a href="#" class="logo-container mb-6 inline-flex">
+                    <span class="logo-p text-2xl">P</span>
+                    <span class="text-lg font-black tracking-tighter uppercase font-en text-white">Pixel One</span>
+                </a>
+                <p class="text-gray-500 text-sm leading-relaxed max-w-sm mb-6">
+                    استوديو تصميم عملي يركز على نتائج واضحة: خدمات تصميم متكاملة عبر Canva Pro وفيديوهات قصيرة بسيطة مناسبة للنشر السريع.
+                </p>
+            </div>
+            
+            <!-- العمود الثاني (روابط سريعة) -->
+            <div>
+                <h4 class="text-white font-bold mb-6 uppercase tracking-widest text-sm">روابط سريعة</h4>
+                <ul class="space-y-3">
+                    <li><a href="#about" class="text-gray-500 hover:text-brand-red transition text-sm">من نحن</a></li>
+                    <li><a href="#services" class="text-gray-500 hover:text-brand-red transition text-sm">خدماتنا</a></li>
+                    <li><a href="#workflow" class="text-gray-500 hover:text-brand-red transition text-sm">كيف نعمل</a></li>
+                    <li><a href="login.html" class="text-gray-500 hover:text-brand-red transition text-sm">دخول العملاء</a></li>
+                </ul>
+            </div>
+            
+            <!-- العمود الثالث (تواصل معنا) -->
+            <div>
+                <h4 class="text-white font-bold mb-6 uppercase tracking-widest text-sm">تواصل معنا</h4>
+                <ul class="space-y-3">
+                    <li class="text-gray-500 text-sm font-en" dir="ltr">+212 600 000 000</li>
+                    <li class="text-gray-500 text-sm font-en" dir="ltr">hello@pixelone.com</li>
+                    <li class="text-gray-500 text-sm">المملكة المغربية</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- حقوق الملكية -->
+        <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p class="font-en text-gray-600 text-xs font-bold">© 2026 PIXEL ONE VISUALS. ALL RIGHTS RESERVED.</p>
+            <div class="flex gap-4">
+                <a href="#" class="text-gray-600 hover:text-white transition">Instagram</a>
+                <a href="#" class="text-gray-600 hover:text-white transition">Behance</a>
+                <a href="#" class="text-gray-600 hover:text-white transition">WhatsApp</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==================================================================
+         نافذة الطلب المنبثقة (Order Modal Overlay)
+         ================================================================== -->
+    <div id="orderModal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="orderModalTitle">
+        <!-- زر الإغلاق -->
+        <button type="button" class="modal-close-btn" onclick="window.closeOrderModal()" aria-label="إغلاق نافذة الطلب">✕</button>
+        
+        <div class="modal-content water-card p-8 md:p-10 rounded-[2rem] relative border border-white/10">
+            
+            <h3 id="orderModalTitle" class="text-3xl font-black mb-2 text-center text-white">طلب خدمة</h3>
+            <p class="text-gray-400 text-center mb-8">أنت تطلب الآن: <span id="selectedServiceText" class="text-brand-red font-black text-lg border-b border-brand-red/30 pb-1">...</span></p>
+
+            <!-- صندوق الرسائل للنجاح أو الخطأ -->
+            <div id="orderMsgBox" class="msg-box hidden" aria-live="polite"></div>
+
+            <form id="orderForm" class="space-y-5">
+                <!-- حقل مخفي لتخزين اسم الخدمة المحددة برمجياً -->
+                <input type="hidden" id="hiddenServiceName" name="serviceName">
+                
+                <div>
+                    <label class="form-label">الاسم الكامل أو اسم الجهة</label>
+                    <input type="text" id="orderName" name="name" required autocomplete="name" placeholder="أدخل اسمك الكريم هنا..." class="input-luxury focus:ring-2 focus:ring-brand-red/50">
+                </div>
+                
+                <div>
+                    <label class="form-label">رقم الهاتف (الواتساب)</label>
+                    <input type="tel" id="orderPhone" name="phone" required autocomplete="tel" placeholder="+212 6XX XXX XXX" class="input-luxury number-font text-right focus:ring-2 focus:ring-brand-red/50" dir="ltr">
+                </div>
+
+                <div>
+                    <label class="form-label">البريد الإلكتروني (اختياري)</label>
+                    <input type="email" id="orderEmail" name="email" autocomplete="email" placeholder="example@mail.com" class="input-luxury font-en text-right focus:ring-2 focus:ring-brand-red/50" dir="ltr">
+                </div>
+                
+                <div>
+                    <label class="form-label">تفاصيل ومواصفات المشروع</label>
+                    <textarea id="orderSpecs" name="specifications" required placeholder="اشرح لنا فكرة مشروعك، الألوان المفضلة، الأهداف، وأي ملاحظات إضافية..." class="input-luxury focus:ring-2 focus:ring-brand-red/50"></textarea>
+                </div>
+
+                <button type="submit" id="btnOrderSubmit" class="btn-filled-red w-full py-5 rounded-xl text-lg mt-6 font-black tracking-wide">
+                    تأكيد وإرسال الطلب الآن
+                </button>
+            </form>
+            
+            <div class="mt-6 flex items-center justify-center gap-2 text-xs text-gray-500 bg-white/5 p-3 rounded-lg">
+                <svg class="w-4 h-4 text-brand-red" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+                سيتم تحويلك إلى الواتساب لإرسال طلبك مباشرة والتواصل معنا.
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================================================================
+         استدعاء ملف الجافاسكريبت الرئيسي
+         ================================================================== -->
     <script src="app.js"></script>
 </body>
 </html>

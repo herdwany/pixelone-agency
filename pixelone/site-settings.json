@@ -1,0 +1,15 @@
+{
+  "brand": {
+    "name": "Pixel One Visuals",
+    "supportEmail": "support@pixelone.com"
+  },
+  "orders": {
+    "storageKey": "pixelone_orders_v1",
+    "defaultStatus": "قيد المراجعة",
+    "showOnlyCurrentUser": true
+  },
+  "contact": {
+    "whatsappNumber": "212661234567",
+    "email": "support@pixelone.com"
+  }
+}
