@@ -51,6 +51,7 @@ const TABLES = {
     discountsGlobal: 'pixel_discounts_global',
     discountsCustomer: 'pixel_discounts_customer',
     adminUsers: 'pixel_admin_users',
+    inviteAudit: 'pixel_invite_audit',
 };
 
 const DEFAULT_DISCOUNT_SETTINGS = {
@@ -440,6 +441,26 @@ function wireEmailLink(linkEl, email, subject) {
 
 function createId(prefix) {
     return `${prefix}-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+}
+
+function getAuthMsgBox() {
+    return document.getElementById('msgBox') || document.getElementById('securityMsgBox');
+}
+
+function showAuthMessage(text, type = 'success') {
+    const msgBox = getAuthMsgBox();
+    if (!msgBox) return;
+
+    msgBox.textContent = text;
+    msgBox.className = `msg-box ${type === 'error' ? 'msg-error' : 'msg-success'} active`;
+}
+
+function getLoginPageUrl() {
+    return `${window.location.origin}${window.location.pathname.includes('/pixelone/') ? '/pixelone/login.html' : '/login.html'}`;
+}
+
+function getDashboardUrl() {
+    return `${window.location.origin}${window.location.pathname.includes('/pixelone/') ? '/pixelone/dashboard.html' : '/dashboard.html'}`;
 }
 
 function getOrdersStorageKey() {
@@ -1129,10 +1150,65 @@ async function handleOrderSubmit(e) {
 async function setupAuthentication() {
     const form = document.getElementById('authForm');
     const toggleBtn = document.getElementById('toggleBtn');
+    const magicBtn = document.getElementById('btnMagicLink');
+    const forgotBtn = document.getElementById('btnForgotPassword');
+    const resendBtn = document.getElementById('btnResendConfirmation');
+    const authQuickActions = document.getElementById('authQuickActions');
+    const resendWrap = document.getElementById('resendWrap');
+    const forgotForm = document.getElementById('forgotPasswordForm');
+    const forgotEmailInput = document.getElementById('forgotEmail');
+    const forgotCancelBtn = document.getElementById('btnForgotCancel');
+    const recoveryForm = document.getElementById('recoveryForm');
     let isLogin = true;
 
+    function openForgotPasswordForm() {
+        if (!forgotForm) return;
+        const primaryEmail = document.getElementById('email')?.value?.trim();
+        if (forgotEmailInput && primaryEmail) {
+            forgotEmailInput.value = primaryEmail;
+        }
+        forgotForm.classList.remove('hidden');
+        form?.classList.add('hidden');
+        authQuickActions?.classList.add('hidden');
+        resendWrap?.classList.add('hidden');
+        toggleBtn?.classList.add('hidden');
+        document.getElementById('toggleText')?.classList.add('hidden');
+        document.getElementById('formTitle').textContent = 'استرجاع كلمة المرور';
+        document.getElementById('formSubTitle').textContent = 'سنرسل رابط إعادة التعيين إلى بريدك الإلكتروني.';
+    }
+
+    function closeForgotPasswordForm() {
+        if (!forgotForm) return;
+        forgotForm.classList.add('hidden');
+        form?.classList.remove('hidden');
+        authQuickActions?.classList.remove('hidden');
+        resendWrap?.classList.remove('hidden');
+        toggleBtn?.classList.remove('hidden');
+        document.getElementById('toggleText')?.classList.remove('hidden');
+        document.getElementById('formTitle').textContent = isLogin ? 'تسجيل الدخول' : 'إنشاء حساب جديد';
+        document.getElementById('formSubTitle').textContent = isLogin
+            ? 'إدارة مشاريعك وطلباتك بكل سهولة'
+            : 'ابدأ رحلتك الإبداعية معنا الآن';
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+    const authType = hashParams.get('type') || urlParams.get('type');
+
+    if (authType === 'recovery' && recoveryForm) {
+        recoveryForm.classList.remove('hidden');
+        form?.classList.add('hidden');
+        forgotForm?.classList.add('hidden');
+        authQuickActions?.classList.add('hidden');
+        resendWrap?.classList.add('hidden');
+        toggleBtn?.classList.add('hidden');
+        document.getElementById('toggleText')?.classList.add('hidden');
+        document.getElementById('formTitle').textContent = 'استعادة الوصول';
+        document.getElementById('formSubTitle').textContent = 'قم بتعيين كلمة مرور جديدة لإكمال الاسترجاع';
+    }
+
     const { data: { user } } = await _supabase.auth.getUser();
-    if (user) {
+    if (user && authType !== 'recovery') {
         window.location.replace(isAdminUser(user) ? 'admin-dashboard.html' : 'dashboard.html');
         return;
     }
@@ -1152,11 +1228,22 @@ async function setupAuthentication() {
         });
     }
 
+    if (forgotBtn) {
+        forgotBtn.addEventListener('click', () => {
+            openForgotPasswordForm();
+        });
+    }
+
+    if (forgotCancelBtn) {
+        forgotCancelBtn.addEventListener('click', () => {
+            closeForgotPasswordForm();
+        });
+    }
+
     if (form) {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btnSubmit');
-            const msgBox = document.getElementById('msgBox');
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
@@ -1170,8 +1257,7 @@ async function setupAuthentication() {
 
                     const { data: { user } } = await _supabase.auth.getUser();
 
-                    msgBox.textContent = '✅ تم الدخول بنجاح! جاري تحويلك...';
-                    msgBox.className = 'msg-box msg-success active';
+                    showAuthMessage('✅ تم الدخول بنجاح! جاري تحويلك...', 'success');
 
                     setTimeout(() => {
                         window.location.href = isAdminUser(user)
@@ -1182,8 +1268,7 @@ async function setupAuthentication() {
                     const { error } = await _supabase.auth.signUp({ email, password });
                     if (error) throw error;
 
-                    msgBox.textContent = '✅ تم إنشاء الحساب بنجاح! يمكنك تسجيل الدخول الآن.';
-                    msgBox.className = 'msg-box msg-success active';
+                    showAuthMessage('✅ تم إنشاء الحساب. تحقق من بريدك لتأكيد الحساب ثم سجل الدخول.', 'success');
 
                     setTimeout(() => {
                         toggleBtn?.click();
@@ -1195,12 +1280,111 @@ async function setupAuthentication() {
                 if (err.message.includes('Invalid login')) errorMsg = 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
                 if (err.message.includes('User already registered')) errorMsg = 'هذا البريد الإلكتروني مسجل مسبقاً.';
 
-                msgBox.textContent = `❌ ${errorMsg}`;
-                msgBox.className = 'msg-box msg-error active';
+                showAuthMessage(`❌ ${errorMsg}`, 'error');
             } finally {
                 btn.disabled = false;
                 btn.textContent = isLogin ? 'دخول المنصة' : 'تسجيل حساب جديد';
             }
+        });
+    }
+
+    if (magicBtn) {
+        magicBtn.addEventListener('click', async () => {
+            const email = document.getElementById('email')?.value?.trim();
+            if (!email) {
+                showAuthMessage('❌ أدخل البريد الإلكتروني أولاً لإرسال Magic Link.', 'error');
+                return;
+            }
+
+            const { error } = await _supabase.auth.signInWithOtp({
+                email,
+                options: {
+                    shouldCreateUser: false,
+                    emailRedirectTo: getDashboardUrl(),
+                },
+            });
+
+            if (error) {
+                showAuthMessage(`❌ ${error.message}`, 'error');
+                return;
+            }
+
+            showAuthMessage('✅ تم إرسال رابط تسجيل الدخول إلى بريدك.', 'success');
+        });
+    }
+
+    if (forgotForm) {
+        forgotForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = forgotEmailInput?.value?.trim();
+            if (!email) {
+                showAuthMessage('❌ أدخل البريد الإلكتروني أولاً لاسترجاع كلمة المرور.', 'error');
+                return;
+            }
+
+            const { error } = await _supabase.auth.resetPasswordForEmail(email, {
+                redirectTo: getLoginPageUrl(),
+            });
+
+            if (error) {
+                showAuthMessage(`❌ ${error.message}`, 'error');
+                return;
+            }
+
+            showAuthMessage('✅ تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك.', 'success');
+            closeForgotPasswordForm();
+        });
+    }
+
+    if (resendBtn) {
+        resendBtn.addEventListener('click', async () => {
+            const email = document.getElementById('email')?.value?.trim();
+            if (!email) {
+                showAuthMessage('❌ أدخل البريد الإلكتروني أولاً لإعادة إرسال رسالة التأكيد.', 'error');
+                return;
+            }
+
+            const { error } = await _supabase.auth.resend({
+                type: 'signup',
+                email,
+                options: {
+                    emailRedirectTo: getDashboardUrl(),
+                },
+            });
+
+            if (error) {
+                showAuthMessage(`❌ ${error.message}`, 'error');
+                return;
+            }
+
+            showAuthMessage('✅ تم إرسال رسالة تأكيد الحساب مرة أخرى.', 'success');
+        });
+    }
+
+    if (recoveryForm) {
+        recoveryForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const pass = document.getElementById('recoveryPassword')?.value || '';
+            const confirm = document.getElementById('recoveryPasswordConfirm')?.value || '';
+            if (pass.length < 8) {
+                showAuthMessage('❌ كلمة المرور الجديدة يجب أن تكون 8 أحرف على الأقل.', 'error');
+                return;
+            }
+            if (pass !== confirm) {
+                showAuthMessage('❌ تأكيد كلمة المرور غير مطابق.', 'error');
+                return;
+            }
+
+            const { error } = await _supabase.auth.updateUser({ password: pass });
+            if (error) {
+                showAuthMessage(`❌ ${error.message}`, 'error');
+                return;
+            }
+
+            showAuthMessage('✅ تم تحديث كلمة المرور بنجاح. يمكنك تسجيل الدخول الآن.', 'success');
+            setTimeout(() => {
+                window.location.replace('login.html');
+            }, 1200);
         });
     }
 }
@@ -1353,6 +1537,209 @@ function renderDashboardOrders(user) {
         const email = link.getAttribute('data-email');
         const subject = link.getAttribute('data-subject') || '';
         wireEmailLink(link, email, subject);
+    });
+}
+
+function setupDashboardSecurity(user) {
+    const changeEmailForm = document.getElementById('changeEmailForm');
+    const changePasswordForm = document.getElementById('changePasswordForm');
+    const btnSendReauthLink = document.getElementById('btnSendReauthLink');
+    const btnSignOutAll = document.getElementById('btnSignOutAll');
+
+    if (changeEmailForm && !changeEmailForm.dataset.bound) {
+        changeEmailForm.dataset.bound = 'true';
+        changeEmailForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const newEmail = document.getElementById('newEmail')?.value?.trim();
+            const currentPassword = document.getElementById('reauthPasswordForEmail')?.value || '';
+
+            if (!newEmail || !currentPassword) {
+                showAuthMessage('❌ أدخل البريد الجديد وكلمة المرور الحالية.', 'error');
+                return;
+            }
+
+            const reauth = await _supabase.auth.signInWithPassword({
+                email: user.email,
+                password: currentPassword,
+            });
+
+            if (reauth.error) {
+                showAuthMessage('❌ فشل التحقق من الهوية. كلمة المرور الحالية غير صحيحة.', 'error');
+                return;
+            }
+
+            const { error } = await _supabase.auth.updateUser({ email: newEmail });
+            if (error) {
+                showAuthMessage(`❌ ${error.message}`, 'error');
+                return;
+            }
+
+            showAuthMessage('✅ تم طلب تغيير البريد. تحقق من البريد الجديد لإتمام العملية.', 'success');
+            changeEmailForm.reset();
+        });
+    }
+
+    if (changePasswordForm && !changePasswordForm.dataset.bound) {
+        changePasswordForm.dataset.bound = 'true';
+        changePasswordForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const currentPassword = document.getElementById('currentPassword')?.value || '';
+            const newPassword = document.getElementById('newPassword')?.value || '';
+            const confirmNewPassword = document.getElementById('confirmNewPassword')?.value || '';
+
+            if (newPassword.length < 8) {
+                showAuthMessage('❌ كلمة المرور الجديدة يجب أن تكون 8 أحرف على الأقل.', 'error');
+                return;
+            }
+
+            if (newPassword !== confirmNewPassword) {
+                showAuthMessage('❌ تأكيد كلمة المرور غير مطابق.', 'error');
+                return;
+            }
+
+            const reauth = await _supabase.auth.signInWithPassword({
+                email: user.email,
+                password: currentPassword,
+            });
+
+            if (reauth.error) {
+                showAuthMessage('❌ فشل التحقق من الهوية. كلمة المرور الحالية غير صحيحة.', 'error');
+                return;
+            }
+
+            const { error } = await _supabase.auth.updateUser({ password: newPassword });
+            if (error) {
+                showAuthMessage(`❌ ${error.message}`, 'error');
+                return;
+            }
+
+            showAuthMessage('✅ تم تغيير كلمة المرور بنجاح. ستصلك رسالة أمان على البريد.', 'success');
+            changePasswordForm.reset();
+        });
+    }
+
+    if (btnSendReauthLink && !btnSendReauthLink.dataset.bound) {
+        btnSendReauthLink.dataset.bound = 'true';
+        btnSendReauthLink.addEventListener('click', async () => {
+            const { error } = await _supabase.auth.reauthenticate();
+            if (error) {
+                showAuthMessage(`❌ ${error.message}`, 'error');
+                return;
+            }
+            showAuthMessage('✅ تم إرسال رابط إعادة التحقق إلى بريدك.', 'success');
+        });
+    }
+
+    if (btnSignOutAll && !btnSignOutAll.dataset.bound) {
+        btnSignOutAll.dataset.bound = 'true';
+        btnSignOutAll.addEventListener('click', async () => {
+            const { error } = await _supabase.auth.signOut({ scope: 'global' });
+            if (error) {
+                showAuthMessage(`❌ ${error.message}`, 'error');
+                return;
+            }
+            showAuthMessage('✅ تم تسجيل الخروج من كل الأجهزة.', 'success');
+            setTimeout(() => window.location.replace('login.html'), 900);
+        });
+    }
+}
+
+function setupAdminInviteUser() {
+    const form = document.getElementById('inviteUserForm');
+    const msgBox = document.getElementById('inviteMsgBox');
+    const submitBtn = document.getElementById('inviteSubmitBtn');
+
+    if (!form || form.dataset.bound) return;
+    form.dataset.bound = 'true';
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById('inviteEmail')?.value?.trim();
+        const role = document.getElementById('inviteRole')?.value === 'admin' ? 'admin' : 'client';
+
+        if (!email) {
+            if (msgBox) {
+                msgBox.textContent = '❌ أدخل البريد الإلكتروني أولاً.';
+                msgBox.className = 'msg-box msg-error active';
+            }
+            return;
+        }
+
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'جاري إرسال الدعوة...';
+        }
+
+        const { data, error } = await _supabase.functions.invoke('invite-user', {
+            body: {
+                email,
+                role,
+                redirectTo: getLoginPageUrl(),
+            },
+        });
+
+        if (error) {
+            if (msgBox) {
+                msgBox.textContent = `❌ ${error.message}`;
+                msgBox.className = 'msg-box msg-error active';
+            }
+        } else if (!data?.success) {
+            if (msgBox) {
+                msgBox.textContent = `❌ ${data?.error || 'فشل إرسال الدعوة.'}`;
+                msgBox.className = 'msg-box msg-error active';
+            }
+        } else {
+            if (msgBox) {
+                msgBox.textContent = `✅ تم إرسال الدعوة إلى ${email} (${role}).`;
+                msgBox.className = 'msg-box msg-success active';
+            }
+            form.reset();
+            const roleSelect = document.getElementById('inviteRole');
+            if (roleSelect) roleSelect.value = 'client';
+            renderInviteAuditLog();
+        }
+
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'إرسال دعوة';
+        }
+    });
+}
+
+async function renderInviteAuditLog() {
+    const tableBody = document.getElementById('inviteAuditTableBody');
+    if (!tableBody) return;
+
+    const { data, error } = await _supabase
+        .from(TABLES.inviteAudit)
+        .select('id, inviter_email, invited_email, invited_role, created_at')
+        .order('created_at', { ascending: false })
+        .limit(30);
+
+    if (error) {
+        tableBody.innerHTML = '<tr><td colspan="5" class="px-4 py-5 text-center text-red-300">تعذر تحميل سجل الدعوات حالياً.</td></tr>';
+        return;
+    }
+
+    if (!Array.isArray(data) || data.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="5" class="px-4 py-5 text-center text-gray-500">لا توجد دعوات مرسلة بعد.</td></tr>';
+        return;
+    }
+
+    tableBody.innerHTML = '';
+    data.forEach((row) => {
+        tableBody.insertAdjacentHTML('beforeend', `
+            <tr>
+                <td class="px-4 py-3 font-en text-gray-400">${escapeHtml(String(row.id || '-'))}</td>
+                <td class="px-4 py-3 font-en">${escapeHtml(row.inviter_email || '-')}</td>
+                <td class="px-4 py-3 font-en">${escapeHtml(row.invited_email || '-')}</td>
+                <td class="px-4 py-3">
+                    <span class="text-xs px-2 py-1 rounded-full border ${row.invited_role === 'admin' ? 'border-blue-400/40 bg-blue-500/10 text-blue-200' : 'border-emerald-400/40 bg-emerald-500/10 text-emerald-200'}">${escapeHtml(row.invited_role || 'client')}</span>
+                </td>
+                <td class="px-4 py-3 text-gray-300 number-font">${escapeHtml(formatArabicDateTime(row.created_at))}</td>
+            </tr>
+        `);
     });
 }
 
@@ -2044,15 +2431,17 @@ function bindAdminForms() {
     }
 }
 
-function initializeAdminDashboard() {
+async function initializeAdminDashboard() {
     renderAdminStats();
     renderAdminOrdersSection();
     renderDisputesSection();
     renderOffersAdminSection();
     renderServicesAdminSection();
     renderDiscountsSection();
+    await renderInviteAuditLog();
     resetOfferForm();
     resetServiceForm();
+    setupAdminInviteUser();
     bindAdminForms();
 }
 
@@ -2106,6 +2495,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (user) {
             await hydrateDataStores();
             renderDashboardOrders(user);
+            setupDashboardSecurity(user);
         }
         setupLogout();
     }
@@ -2114,7 +2504,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const user = await protectAdminDashboardRoute();
         if (user) {
             await hydrateDataStores();
-            initializeAdminDashboard();
+            await initializeAdminDashboard();
         }
         setupLogout();
     }

@@ -47,6 +47,54 @@
                 </button>
             </form>
 
+            <div id="authQuickActions" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                <button type="button" id="btnMagicLink" class="w-full py-3 rounded-lg border border-white/20 text-gray-200 hover:border-brand-red transition text-sm font-bold">
+                    تسجيل عبر Magic Link
+                </button>
+                <button type="button" id="btnForgotPassword" class="w-full py-3 rounded-lg border border-white/20 text-gray-200 hover:border-brand-red transition text-sm font-bold">
+                    نسيت كلمة المرور
+                </button>
+            </div>
+
+            <div id="resendWrap" class="mt-4 text-center">
+                <button type="button" id="btnResendConfirmation" class="text-xs text-gray-400 hover:text-white transition font-bold">
+                    إعادة إرسال رسالة تأكيد البريد
+                </button>
+            </div>
+
+            <form id="forgotPasswordForm" class="space-y-4 mt-6 hidden">
+                <h4 class="text-lg font-black text-white text-center">استرجاع كلمة المرور</h4>
+                <p class="text-xs text-gray-500 text-center">أدخل بريدك الإلكتروني وسنرسل لك رابط إعادة التعيين.</p>
+                <div>
+                    <label class="form-label">البريد الإلكتروني</label>
+                    <input type="email" id="forgotEmail" autocomplete="email" placeholder="client@domain.com" class="input-luxury font-en text-left" dir="ltr" required>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <button type="submit" id="btnForgotSubmit" class="btn-filled-red w-full py-3 rounded-xl font-black">
+                        إرسال رابط الاسترجاع
+                    </button>
+                    <button type="button" id="btnForgotCancel" class="w-full py-3 rounded-xl border border-white/20 text-gray-200 hover:border-brand-red transition font-bold">
+                        إلغاء
+                    </button>
+                </div>
+            </form>
+
+            <form id="recoveryForm" class="space-y-4 mt-6 hidden">
+                <h4 class="text-lg font-black text-white text-center">إعادة تعيين كلمة المرور</h4>
+                <p class="text-xs text-gray-500 text-center">تم التعرف على رابط الاسترجاع. أدخل كلمة مرور جديدة.</p>
+                <div>
+                    <label class="form-label">كلمة المرور الجديدة</label>
+                    <input type="password" id="recoveryPassword" autocomplete="new-password" placeholder="••••••••" class="input-luxury font-en text-left" dir="ltr" minlength="8">
+                </div>
+                <div>
+                    <label class="form-label">تأكيد كلمة المرور</label>
+                    <input type="password" id="recoveryPasswordConfirm" autocomplete="new-password" placeholder="••••••••" class="input-luxury font-en text-left" dir="ltr" minlength="8">
+                </div>
+                <button type="submit" id="btnRecoverySubmit" class="btn-filled-red w-full py-3 rounded-xl font-black">
+                    حفظ كلمة المرور الجديدة
+                </button>
+            </form>
+
             <div class="mt-8 text-center pt-6 border-t border-white/5">
                 <p id="toggleText" class="text-gray-500 text-sm inline">ليس لديك حساب؟</p>
                 <button type="button" id="toggleBtn" class="btn-transparent-link text-sm mx-2">إنشاء حساب جديد</button>

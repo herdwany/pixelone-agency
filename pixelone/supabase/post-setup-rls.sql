@@ -32,6 +32,14 @@ $$;
 
 grant execute on function public.is_admin_email() to anon, authenticated;
 
+create table if not exists public.pixel_invite_audit (
+    id bigint generated always as identity primary key,
+    inviter_email text not null,
+    invited_email text not null,
+    invited_role text not null default 'client' check (invited_role in ('client', 'admin')),
+    created_at timestamptz not null default now()
+);
+
 -- ------------------------------------------------------------
 -- Optional indexes (safe)
 -- ------------------------------------------------------------
@@ -41,6 +49,7 @@ create index if not exists idx_pixel_offers_enabled on public.pixel_offers (enab
 create index if not exists idx_pixel_offers_target_email on public.pixel_offers (lower(target_email));
 create index if not exists idx_pixel_orders_user_email on public.pixel_orders (lower(user_email));
 create index if not exists idx_pixel_discounts_customer_email on public.pixel_discounts_customer (lower(email));
+create index if not exists idx_pixel_invite_audit_created_at on public.pixel_invite_audit (created_at desc);
 
 -- ------------------------------------------------------------
 -- Triggers (safe recreate)
@@ -75,6 +84,7 @@ alter table public.pixel_orders enable row level security;
 alter table public.pixel_disputes enable row level security;
 alter table public.pixel_discounts_global enable row level security;
 alter table public.pixel_discounts_customer enable row level security;
+alter table public.pixel_invite_audit enable row level security;
 
 -- pixel_admin_users
 
@@ -221,6 +231,20 @@ create policy pixel_discounts_customer_write_admin
 on public.pixel_discounts_customer
 for all
 using (public.is_admin_email())
+with check (public.is_admin_email());
+
+-- pixel_invite_audit
+
+drop policy if exists pixel_invite_audit_select_admin on public.pixel_invite_audit;
+create policy pixel_invite_audit_select_admin
+on public.pixel_invite_audit
+for select
+using (public.is_admin_email());
+
+drop policy if exists pixel_invite_audit_insert_admin on public.pixel_invite_audit;
+create policy pixel_invite_audit_insert_admin
+on public.pixel_invite_audit
+for insert
 with check (public.is_admin_email());
 
 -- ------------------------------------------------------------

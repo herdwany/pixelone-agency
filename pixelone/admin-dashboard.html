@@ -36,6 +36,43 @@
                 <p class="text-gray-400">تحكم كامل في الطلبات، النزاعات المالية، العروض، والخصومات.</p>
             </section>
 
+            <section class="bg-[#121212] border border-[#222] rounded-2xl p-6 md:p-8">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-5">
+                    <div>
+                        <h2 class="text-2xl font-black text-white">دعوة مستخدم جديد</h2>
+                        <p class="text-sm text-gray-500">إرسال دعوة آمنة عبر Edge Function بمستوى صلاحية (عميل/مدير).</p>
+                    </div>
+                </div>
+
+                <div id="inviteMsgBox" class="msg-box" aria-live="polite"></div>
+
+                <form id="inviteUserForm" class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                    <input id="inviteEmail" type="email" class="input-luxury font-en text-left md:col-span-2" dir="ltr" placeholder="new.user@domain.com" required>
+                    <select id="inviteRole" class="input-luxury" required>
+                        <option value="client">Client</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                    <button id="inviteSubmitBtn" class="btn-filled-red py-3 rounded-lg font-black md:col-span-3" type="submit">إرسال دعوة</button>
+                </form>
+
+                <div class="mt-6 overflow-x-auto rounded-xl border border-white/10">
+                    <table class="w-full min-w-[980px] text-sm">
+                        <thead class="bg-black/50 text-gray-300">
+                            <tr>
+                                <th class="px-4 py-3 text-right">#</th>
+                                <th class="px-4 py-3 text-right">أرسل الدعوة</th>
+                                <th class="px-4 py-3 text-right">إلى</th>
+                                <th class="px-4 py-3 text-right">الدور</th>
+                                <th class="px-4 py-3 text-right">وقت الإرسال</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inviteAuditTableBody" class="divide-y divide-white/10 text-gray-200 bg-black/20">
+                            <tr><td colspan="5" class="px-4 py-5 text-center text-gray-500">لا توجد دعوات مرسلة بعد.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
             <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <article class="stat-card">
                     <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">إجمالي الطلبات</h3>

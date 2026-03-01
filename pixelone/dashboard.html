@@ -127,6 +127,45 @@
                 </div>
             </div>
 
+            <div class="mt-12 bg-[#121212] border border-[#222] rounded-2xl p-6 md:p-8 animate-fade-up delay-300">
+                <div class="mb-6">
+                    <h3 class="text-2xl font-black text-white">مركز الأمان</h3>
+                    <p class="text-sm text-gray-500">إدارة البريد وكلمة المرور وإجراءات الحماية الحساسة للحساب.</p>
+                </div>
+
+                <div id="securityMsgBox" class="msg-box" aria-live="polite"></div>
+
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                    <form id="changeEmailForm" class="water-card p-5 rounded-xl space-y-4">
+                        <h4 class="text-white font-black">تغيير البريد الإلكتروني</h4>
+                        <input id="newEmail" type="email" class="input-luxury font-en text-left" dir="ltr" placeholder="new@email.com" required>
+                        <input id="reauthPasswordForEmail" type="password" class="input-luxury font-en text-left" dir="ltr" placeholder="كلمة المرور الحالية" required>
+                        <button type="submit" class="btn-filled-red w-full py-3 rounded-lg font-black">حفظ البريد الجديد</button>
+                    </form>
+
+                    <form id="changePasswordForm" class="water-card p-5 rounded-xl space-y-4">
+                        <h4 class="text-white font-black">تغيير كلمة المرور</h4>
+                        <input id="currentPassword" type="password" class="input-luxury font-en text-left" dir="ltr" placeholder="كلمة المرور الحالية" required>
+                        <input id="newPassword" type="password" class="input-luxury font-en text-left" dir="ltr" placeholder="كلمة المرور الجديدة (8 أحرف على الأقل)" minlength="8" required>
+                        <input id="confirmNewPassword" type="password" class="input-luxury font-en text-left" dir="ltr" placeholder="تأكيد كلمة المرور الجديدة" minlength="8" required>
+                        <button type="submit" class="btn-filled-red w-full py-3 rounded-lg font-black">تحديث كلمة المرور</button>
+                    </form>
+                </div>
+
+                <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button id="btnSendReauthLink" type="button" class="w-full py-3 rounded-lg border border-white/20 text-gray-200 hover:border-brand-red transition text-sm font-bold">
+                        إرسال رابط إعادة التحقق
+                    </button>
+                    <button id="btnSignOutAll" type="button" class="w-full py-3 rounded-lg border border-red-500/30 text-red-300 hover:bg-red-600/20 transition text-sm font-bold">
+                        تسجيل الخروج من كل الجلسات
+                    </button>
+                </div>
+
+                <p class="text-xs text-gray-500 mt-4">
+                    تنبيه: رسائل الأمان مثل تغيير كلمة المرور/البريد وتعديلات MFA يتم إرسالها من Supabase Email Templates.
+                </p>
+            </div>
+
         </div>
     </main>
 

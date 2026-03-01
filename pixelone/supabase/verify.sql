@@ -7,6 +7,7 @@ select 'table_exists_pixel_disputes' as check_name, to_regclass('public.pixel_di
 select 'table_exists_pixel_discounts_global' as check_name, to_regclass('public.pixel_discounts_global') is not null as ok;
 select 'table_exists_pixel_discounts_customer' as check_name, to_regclass('public.pixel_discounts_customer') is not null as ok;
 select 'table_exists_pixel_admin_users' as check_name, to_regclass('public.pixel_admin_users') is not null as ok;
+select 'table_exists_pixel_invite_audit' as check_name, to_regclass('public.pixel_invite_audit') is not null as ok;
 
 select 'function_is_admin_email_exists' as check_name,
        exists (
@@ -31,6 +32,10 @@ where schemaname = 'public' and tablename = 'pixel_offers';
 select 'policy_count_pixel_orders' as check_name, count(*) >= 2 as ok
 from pg_policies
 where schemaname = 'public' and tablename = 'pixel_orders';
+
+select 'policy_count_pixel_invite_audit' as check_name, count(*) >= 2 as ok
+from pg_policies
+where schemaname = 'public' and tablename = 'pixel_invite_audit';
 
 select 'admin_seed_present' as check_name,
        exists (select 1 from public.pixel_admin_users where lower(email) = 'superadmin@pixelonevisuals.tech') as ok;
