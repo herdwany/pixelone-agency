@@ -455,12 +455,30 @@ function showAuthMessage(text, type = 'success') {
     msgBox.className = `msg-box ${type === 'error' ? 'msg-error' : 'msg-success'} active`;
 }
 
+function buildAppUrl(pageName, query = {}) {
+    const inPixelonePath = window.location.pathname.includes('/pixelone/');
+    const basePath = inPixelonePath ? '/pixelone/' : '/';
+    const url = new URL(`${window.location.origin}${basePath}${pageName}`);
+
+    Object.entries(query).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && String(value).length > 0) {
+            url.searchParams.set(key, String(value));
+        }
+    });
+
+    return url.toString();
+}
+
 function getLoginPageUrl() {
-    return `${window.location.origin}${window.location.pathname.includes('/pixelone/') ? '/pixelone/login.html' : '/login.html'}`;
+    return buildAppUrl('login.html');
 }
 
 function getDashboardUrl() {
-    return `${window.location.origin}${window.location.pathname.includes('/pixelone/') ? '/pixelone/dashboard.html' : '/dashboard.html'}`;
+    return buildAppUrl('dashboard.html');
+}
+
+function getAuthCallbackUrl(action = '') {
+    return buildAppUrl('auth-callback.html', { action });
 }
 
 function getOrdersStorageKey() {
@@ -1194,6 +1212,17 @@ async function setupAuthentication() {
     const urlParams = new URLSearchParams(window.location.search);
     const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
     const authType = hashParams.get('type') || urlParams.get('type');
+    const notice = urlParams.get('notice');
+
+    if (notice === 'confirmed') {
+        showAuthMessage('✅ تم تأكيد البريد الإلكتروني بنجاح. يمكنك تسجيل الدخول الآن.', 'success');
+    } else if (notice === 'invite_accepted') {
+        showAuthMessage('✅ تم قبول الدعوة بنجاح. أكمل تسجيل الدخول للوصول إلى حسابك.', 'success');
+    } else if (notice === 'magic_link_success') {
+        showAuthMessage('✅ تم التحقق من الرابط. إذا لم يتم تحويلك تلقائياً قم بتسجيل الدخول.', 'success');
+    } else if (notice === 'reauth_success') {
+        showAuthMessage('✅ تمت إعادة التحقق بنجاح.', 'success');
+    }
 
     if (authType === 'recovery' && recoveryForm) {
         recoveryForm.classList.remove('hidden');
@@ -1244,7 +1273,7 @@ async function setupAuthentication() {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btnSubmit');
-            const email = document.getElementById('email').value;
+            const email = normalizeEmail(document.getElementById('email').value);
             const password = document.getElementById('password').value;
 
             btn.disabled = true;
@@ -1265,7 +1294,13 @@ async function setupAuthentication() {
                             : 'dashboard.html';
                     }, 1000);
                 } else {
-                    const { error } = await _supabase.auth.signUp({ email, password });
+                    const { error } = await _supabase.auth.signUp({
+                        email,
+                        password,
+                        options: {
+                            emailRedirectTo: getAuthCallbackUrl('signup'),
+                        },
+                    });
                     if (error) throw error;
 
                     showAuthMessage('✅ تم إنشاء الحساب. تحقق من بريدك لتأكيد الحساب ثم سجل الدخول.', 'success');
@@ -1278,7 +1313,10 @@ async function setupAuthentication() {
             } catch (err) {
                 let errorMsg = err.message;
                 if (err.message.includes('Invalid login')) errorMsg = 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
+                if (err.message.includes('invalid_credentials')) errorMsg = 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
                 if (err.message.includes('User already registered')) errorMsg = 'هذا البريد الإلكتروني مسجل مسبقاً.';
+                if (err.message.includes('Email not confirmed')) errorMsg = 'البريد الإلكتروني غير مؤكد بعد. افحص بريدك ثم اضغط إعادة إرسال التأكيد عند الحاجة.';
+                if (err.message.includes('Invalid Refresh Token')) errorMsg = 'انتهت الجلسة السابقة. أعد تسجيل الدخول.';
 
                 showAuthMessage(`❌ ${errorMsg}`, 'error');
             } finally {
@@ -1300,7 +1338,7 @@ async function setupAuthentication() {
                 email,
                 options: {
                     shouldCreateUser: false,
-                    emailRedirectTo: getDashboardUrl(),
+                    emailRedirectTo: getAuthCallbackUrl('magiclink'),
                 },
             });
 
@@ -1323,7 +1361,7 @@ async function setupAuthentication() {
             }
 
             const { error } = await _supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: getLoginPageUrl(),
+                redirectTo: getAuthCallbackUrl('recovery'),
             });
 
             if (error) {
@@ -1348,7 +1386,7 @@ async function setupAuthentication() {
                 type: 'signup',
                 email,
                 options: {
-                    emailRedirectTo: getDashboardUrl(),
+                    emailRedirectTo: getAuthCallbackUrl('signup'),
                 },
             });
 
@@ -1386,6 +1424,108 @@ async function setupAuthentication() {
                 window.location.replace('login.html');
             }, 1200);
         });
+    }
+}
+
+async function setupAuthCallbackPage() {
+    const titleEl = document.getElementById('authCallbackTitle');
+    const textEl = document.getElementById('authCallbackText');
+    const detailsEl = document.getElementById('authCallbackDetails');
+    const actionBtn = document.getElementById('authCallbackActionBtn');
+
+    function setState(title, text, details, action) {
+        if (titleEl) titleEl.textContent = title;
+        if (textEl) textEl.textContent = text;
+        if (detailsEl) detailsEl.textContent = details || '';
+        if (actionBtn && action && action.href && action.label) {
+            actionBtn.classList.remove('hidden');
+            actionBtn.textContent = action.label;
+            actionBtn.href = action.href;
+        }
+    }
+
+    const url = new URL(window.location.href);
+    const search = url.searchParams;
+    const hash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+    const authType = hash.get('type') || search.get('type') || search.get('action') || '';
+    const queryError = search.get('error_description') || search.get('error') || hash.get('error_description') || hash.get('error');
+
+    if (queryError) {
+        const humanError = decodeURIComponent(queryError).replace(/\+/g, ' ');
+        setState(
+            'تعذر إكمال العملية',
+            'حدث خطأ أثناء التحقق من الرابط.',
+            humanError,
+            { href: getLoginPageUrl(), label: 'العودة لتسجيل الدخول' },
+        );
+        return;
+    }
+
+    try {
+        const authCode = search.get('code');
+        const tokenHash = search.get('token_hash');
+
+        if (authCode) {
+            const { error } = await _supabase.auth.exchangeCodeForSession(authCode);
+            if (error) throw error;
+        } else if (tokenHash && authType) {
+            const { error } = await _supabase.auth.verifyOtp({
+                type: authType,
+                token_hash: tokenHash,
+            });
+            if (error) throw error;
+        }
+
+        const { data: { user } } = await _supabase.auth.getUser();
+        const isRecovery = authType === 'recovery';
+        const isInvite = authType === 'invite';
+        const isSignup = authType === 'signup';
+        const isMagicLink = authType === 'magiclink';
+        const isReauth = authType === 'reauthentication';
+
+        if (isRecovery) {
+            setState(
+                'تم التحقق من رابط الاسترجاع',
+                'سيتم تحويلك إلى صفحة تعيين كلمة المرور الجديدة.',
+                'إذا لم يتم التحويل تلقائياً اضغط الزر أدناه.',
+                { href: `${getLoginPageUrl()}?type=recovery`, label: 'تعيين كلمة مرور جديدة' },
+            );
+            setTimeout(() => window.location.replace(`${getLoginPageUrl()}?type=recovery`), 900);
+            return;
+        }
+
+        if (user) {
+            if (isInvite) {
+                setState('تم قبول الدعوة', 'تم تفعيل الدعوة بنجاح.', 'سيتم تحويلك إلى لوحة التحكم.', null);
+            } else if (isSignup) {
+                setState('تم تأكيد البريد', 'تم تفعيل حسابك بنجاح.', 'سيتم تحويلك إلى لوحة التحكم.', null);
+            } else if (isMagicLink) {
+                setState('تم تسجيل الدخول', 'تم التحقق من Magic Link بنجاح.', 'سيتم تحويلك إلى لوحة التحكم.', null);
+            } else if (isReauth) {
+                setState('تمت إعادة المصادقة', 'تم التحقق الأمني بنجاح.', 'سيتم تحويلك الآن.', null);
+            } else {
+                setState('تمت العملية بنجاح', 'تم التحقق من الرابط بنجاح.', 'سيتم تحويلك الآن.', null);
+            }
+
+            setTimeout(() => {
+                window.location.replace(isAdminUser(user) ? 'admin-dashboard.html' : 'dashboard.html');
+            }, 900);
+            return;
+        }
+
+        setState(
+            'تمت العملية',
+            'تمت معالجة الرابط لكن لا توجد جلسة نشطة حالياً.',
+            'سجّل الدخول للمتابعة.',
+            { href: getLoginPageUrl(), label: 'الذهاب لتسجيل الدخول' },
+        );
+    } catch (err) {
+        setState(
+            'الرابط غير صالح أو منتهي',
+            'تعذر إكمال عملية التحقق.',
+            err?.message || 'يرجى طلب رابط جديد ثم المحاولة مرة أخرى.',
+            { href: getLoginPageUrl(), label: 'العودة لتسجيل الدخول' },
+        );
     }
 }
 
@@ -1675,7 +1815,7 @@ function setupAdminInviteUser() {
             body: {
                 email,
                 role,
-                redirectTo: getLoginPageUrl(),
+                redirectTo: getAuthCallbackUrl('invite'),
             },
         });
 
@@ -2447,10 +2587,27 @@ async function initializeAdminDashboard() {
 
 document.addEventListener('DOMContentLoaded', async () => {
     await loadSiteSettings();
+
+    const hasServicesGrid = Boolean(document.getElementById('servicesGrid'));
+    const hasAuthForm = Boolean(document.getElementById('authForm'));
+    const hasAuthCallbackView = Boolean(document.getElementById('view-auth-callback'));
+    const hasDashboardView = Boolean(document.getElementById('view-dashboard'));
+    const hasAdminDashboardView = Boolean(document.getElementById('view-admin-dashboard'));
+
+    if (hasAuthCallbackView) {
+        await setupAuthCallbackPage();
+        return;
+    }
+
+    if (hasAuthForm) {
+        await setupAuthentication();
+        return;
+    }
+
     await loadAdminEmailsFromDatabase();
     await hydrateDataStores();
 
-    if (document.getElementById('servicesGrid')) {
+    if (hasServicesGrid) {
         await setupHomeSessionUI();
         await hydrateDataStores();
         await loadServices();
@@ -2486,11 +2643,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    if (document.getElementById('authForm')) {
-        await setupAuthentication();
-    }
-
-    if (document.getElementById('view-dashboard')) {
+    if (hasDashboardView) {
         const user = await protectDashboardRoute();
         if (user) {
             await hydrateDataStores();
@@ -2500,7 +2653,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         setupLogout();
     }
 
-    if (document.getElementById('view-admin-dashboard')) {
+    if (hasAdminDashboardView) {
         const user = await protectAdminDashboardRoute();
         if (user) {
             await hydrateDataStores();
