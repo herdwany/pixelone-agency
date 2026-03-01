@@ -481,6 +481,72 @@ function getAuthCallbackUrl(action = '') {
     return buildAppUrl('auth-callback.html', { action });
 }
 
+function stripSensitiveAuthParamsFromUrl() {
+    const url = new URL(window.location.href);
+    const sensitiveParams = [
+        'code',
+        'token_hash',
+        'access_token',
+        'refresh_token',
+        'expires_at',
+        'expires_in',
+        'provider_token',
+        'provider_refresh_token',
+    ];
+
+    sensitiveParams.forEach((key) => url.searchParams.delete(key));
+
+    const cleanQuery = url.searchParams.toString();
+    const next = `${url.pathname}${cleanQuery ? `?${cleanQuery}` : ''}`;
+    window.history.replaceState({}, document.title, next);
+}
+
+async function consumeIncomingAuthLink() {
+    const url = new URL(window.location.href);
+    const search = url.searchParams;
+    const hash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+
+    const authType = hash.get('type') || search.get('type') || search.get('action') || '';
+    const authCode = search.get('code');
+    const tokenHash = search.get('token_hash') || hash.get('token_hash');
+    const accessToken = hash.get('access_token') || search.get('access_token');
+    const refreshToken = hash.get('refresh_token') || search.get('refresh_token');
+
+    const hasAuthPayload = Boolean(authCode || tokenHash || (accessToken && refreshToken));
+    if (!hasAuthPayload) {
+        return { handled: false, authType };
+    }
+
+    if (authCode) {
+        const { error } = await _supabase.auth.exchangeCodeForSession(authCode);
+        if (error) throw error;
+        stripSensitiveAuthParamsFromUrl();
+        return { handled: true, authType };
+    }
+
+    if (tokenHash && authType) {
+        const { error } = await _supabase.auth.verifyOtp({
+            type: authType,
+            token_hash: tokenHash,
+        });
+        if (error) throw error;
+        stripSensitiveAuthParamsFromUrl();
+        return { handled: true, authType };
+    }
+
+    if (accessToken && refreshToken) {
+        const { error } = await _supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+        });
+        if (error) throw error;
+        stripSensitiveAuthParamsFromUrl();
+        return { handled: true, authType };
+    }
+
+    return { handled: false, authType };
+}
+
 function getOrdersStorageKey() {
     return siteSettings.orders?.storageKey || ORDER_STORAGE_FALLBACK_KEY;
 }
@@ -1211,8 +1277,15 @@ async function setupAuthentication() {
 
     const urlParams = new URLSearchParams(window.location.search);
     const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
-    const authType = hashParams.get('type') || urlParams.get('type');
+    let authType = hashParams.get('type') || urlParams.get('type');
     const notice = urlParams.get('notice');
+
+    try {
+        const consumed = await consumeIncomingAuthLink();
+        if (consumed.authType) authType = consumed.authType;
+    } catch (err) {
+        showAuthMessage(`❌ ${err?.message || 'تعذر التحقق من رابط المصادقة.'}`, 'error');
+    }
 
     if (notice === 'confirmed') {
         showAuthMessage('✅ تم تأكيد البريد الإلكتروني بنجاح. يمكنك تسجيل الدخول الآن.', 'success');
@@ -1462,26 +1535,24 @@ async function setupAuthCallbackPage() {
     }
 
     try {
-        const authCode = search.get('code');
-        const tokenHash = search.get('token_hash');
-
-        if (authCode) {
-            const { error } = await _supabase.auth.exchangeCodeForSession(authCode);
-            if (error) throw error;
-        } else if (tokenHash && authType) {
-            const { error } = await _supabase.auth.verifyOtp({
-                type: authType,
-                token_hash: tokenHash,
-            });
-            if (error) throw error;
+        const consumed = await consumeIncomingAuthLink();
+        const effectiveAuthType = consumed.authType || authType;
+        if (!consumed.handled && !effectiveAuthType) {
+            setState(
+                'رابط غير مكتمل',
+                'هذا الرابط لا يحتوي على بيانات مصادقة صالحة.',
+                'اطلب رابط جديد من صفحة تسجيل الدخول.',
+                { href: getLoginPageUrl(), label: 'العودة لتسجيل الدخول' },
+            );
+            return;
         }
 
         const { data: { user } } = await _supabase.auth.getUser();
-        const isRecovery = authType === 'recovery';
-        const isInvite = authType === 'invite';
-        const isSignup = authType === 'signup';
-        const isMagicLink = authType === 'magiclink';
-        const isReauth = authType === 'reauthentication';
+        const isRecovery = effectiveAuthType === 'recovery';
+        const isInvite = effectiveAuthType === 'invite';
+        const isSignup = effectiveAuthType === 'signup';
+        const isMagicLink = effectiveAuthType === 'magiclink';
+        const isReauth = effectiveAuthType === 'reauthentication';
 
         if (isRecovery) {
             setState(
