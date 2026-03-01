@@ -213,8 +213,10 @@ function createPageLoader(initialStatus) {
     overlay.setAttribute('aria-label', 'Loading page content');
     overlay.innerHTML = `
         <div class="pixel-loader-stage">
-            <p class="pixel-loader-kicker">PIXEL ONE VISUALS</p>
-            <h2 class="pixel-loader-wordmark" aria-label="Pixel One">Pixel One</h2>
+            <svg class="pixel-loader-signature" viewBox="0 0 1000 250" role="img" aria-label="Pixel 1">
+                <text x="50%" y="58%" text-anchor="middle">Pixel 1</text>
+            </svg>
+            <span class="pixel-loader-brush" aria-hidden="true"></span>
             <p class="pixel-loader-status" id="pixelLoaderStatus">${escapeHtml(initialStatus || 'Preparing your page...')}</p>
         </div>
     `;
@@ -223,7 +225,20 @@ function createPageLoader(initialStatus) {
     document.body.appendChild(overlay);
 
     const startedAt = Date.now();
-    const minDurationMs = 1450;
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    const effectiveType = String(connection?.effectiveType || '').toLowerCase();
+
+    // Keep a short minimum to show the brush-writing identity, then exit based on real load time.
+    let minDurationMs = 820;
+    if (connection?.saveData) {
+        minDurationMs = 520;
+    } else if (effectiveType.includes('slow-2g') || effectiveType.includes('2g')) {
+        minDurationMs = 1250;
+    } else if (effectiveType.includes('3g')) {
+        minDurationMs = 980;
+    } else if (effectiveType.includes('4g')) {
+        minDurationMs = 700;
+    }
 
     return {
         setStatus(text) {
