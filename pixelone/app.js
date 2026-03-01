@@ -455,6 +455,86 @@ function showAuthMessage(text, type = 'success') {
     msgBox.className = `msg-box ${type === 'error' ? 'msg-error' : 'msg-success'} active`;
 }
 
+const AUTH_RATE_LIMIT_STORAGE_PREFIX = 'pixelone_auth_cooldown_v1';
+const AUTH_RATE_LIMIT_DEFAULT_SECONDS = {
+    signup: 60,
+    magiclink: 60,
+    reset: 60,
+    resend: 60,
+};
+
+function getAuthCooldownKey(action, email = '') {
+    return `${AUTH_RATE_LIMIT_STORAGE_PREFIX}:${action}:${normalizeEmail(email) || 'global'}`;
+}
+
+function setAuthCooldown(action, email = '', seconds = 60) {
+    const key = getAuthCooldownKey(action, email);
+    const until = Date.now() + Math.max(5, Number(seconds) || 60) * 1000;
+    localStorage.setItem(key, String(until));
+}
+
+function getAuthCooldownRemaining(action, email = '') {
+    const key = getAuthCooldownKey(action, email);
+    const raw = localStorage.getItem(key);
+    if (!raw) return 0;
+    const until = Number.parseInt(raw, 10);
+    if (!Number.isFinite(until)) {
+        localStorage.removeItem(key);
+        return 0;
+    }
+    const remainingMs = until - Date.now();
+    if (remainingMs <= 0) {
+        localStorage.removeItem(key);
+        return 0;
+    }
+    return Math.ceil(remainingMs / 1000);
+}
+
+function extractRetryAfterSeconds(error) {
+    const raw = String(error?.message || '').toLowerCase();
+    const match = raw.match(/(\d+)\s*(second|seconds|sec|s|minute|minutes|min|m)/i);
+    if (match) {
+        const value = Number.parseInt(match[1], 10);
+        const unit = match[2].toLowerCase();
+        if (Number.isFinite(value) && value > 0) {
+            return unit.startsWith('m') ? value * 60 : value;
+        }
+    }
+    return null;
+}
+
+function isRateLimitAuthError(error) {
+    const message = String(error?.message || '').toLowerCase();
+    const status = String(error?.status || '').toLowerCase();
+    return (
+        message.includes('rate limit')
+        || message.includes('too many requests')
+        || status === '429'
+    );
+}
+
+function getFriendlyAuthErrorMessage(error, fallback = 'تعذر إكمال العملية.') {
+    const message = String(error?.message || '');
+
+    if (isRateLimitAuthError(error)) {
+        return 'تم تجاوز الحد المسموح مؤقتًا لإرسال الرسائل. انتظر قليلًا ثم أعد المحاولة.';
+    }
+    if (message.includes('Invalid login') || message.includes('invalid_credentials')) {
+        return 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
+    }
+    if (message.includes('User already registered')) {
+        return 'هذا البريد الإلكتروني مسجل مسبقًا.';
+    }
+    if (message.includes('Email not confirmed')) {
+        return 'البريد الإلكتروني غير مؤكد بعد. افحص بريدك أو اضغط إعادة إرسال التأكيد.';
+    }
+    if (message.includes('Invalid Refresh Token')) {
+        return 'انتهت الجلسة السابقة. أعد تسجيل الدخول.';
+    }
+
+    return message || fallback;
+}
+
 function buildAppUrl(pageName, query = {}) {
     const inPixelonePath = window.location.pathname.includes('/pixelone/');
     const basePath = inPixelonePath ? '/pixelone/' : '/';
@@ -1349,6 +1429,14 @@ async function setupAuthentication() {
             const email = normalizeEmail(document.getElementById('email').value);
             const password = document.getElementById('password').value;
 
+            if (!isLogin) {
+                const remaining = getAuthCooldownRemaining('signup', email);
+                if (remaining > 0) {
+                    showAuthMessage(`❌ يرجى الانتظار ${remaining} ثانية قبل محاولة إنشاء الحساب مرة أخرى.`, 'error');
+                    return;
+                }
+            }
+
             btn.disabled = true;
             btn.textContent = 'جاري المعالجة...';
 
@@ -1376,6 +1464,8 @@ async function setupAuthentication() {
                     });
                     if (error) throw error;
 
+                    setAuthCooldown('signup', email, AUTH_RATE_LIMIT_DEFAULT_SECONDS.signup);
+
                     showAuthMessage('✅ تم إنشاء الحساب. تحقق من بريدك لتأكيد الحساب ثم سجل الدخول.', 'success');
 
                     setTimeout(() => {
@@ -1384,14 +1474,11 @@ async function setupAuthentication() {
                     }, 2000);
                 }
             } catch (err) {
-                let errorMsg = err.message;
-                if (err.message.includes('Invalid login')) errorMsg = 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
-                if (err.message.includes('invalid_credentials')) errorMsg = 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
-                if (err.message.includes('User already registered')) errorMsg = 'هذا البريد الإلكتروني مسجل مسبقاً.';
-                if (err.message.includes('Email not confirmed')) errorMsg = 'البريد الإلكتروني غير مؤكد بعد. افحص بريدك ثم اضغط إعادة إرسال التأكيد عند الحاجة.';
-                if (err.message.includes('Invalid Refresh Token')) errorMsg = 'انتهت الجلسة السابقة. أعد تسجيل الدخول.';
+                if (!isLogin && isRateLimitAuthError(err)) {
+                    setAuthCooldown('signup', email, extractRetryAfterSeconds(err) || AUTH_RATE_LIMIT_DEFAULT_SECONDS.signup);
+                }
 
-                showAuthMessage(`❌ ${errorMsg}`, 'error');
+                showAuthMessage(`❌ ${getFriendlyAuthErrorMessage(err, 'تعذر إكمال تسجيل الدخول.')}`, 'error');
             } finally {
                 btn.disabled = false;
                 btn.textContent = isLogin ? 'دخول المنصة' : 'تسجيل حساب جديد';
@@ -1401,9 +1488,15 @@ async function setupAuthentication() {
 
     if (magicBtn) {
         magicBtn.addEventListener('click', async () => {
-            const email = document.getElementById('email')?.value?.trim();
+            const email = normalizeEmail(document.getElementById('email')?.value?.trim());
             if (!email) {
                 showAuthMessage('❌ أدخل البريد الإلكتروني أولاً لإرسال Magic Link.', 'error');
+                return;
+            }
+
+            const remaining = getAuthCooldownRemaining('magiclink', email);
+            if (remaining > 0) {
+                showAuthMessage(`❌ يرجى الانتظار ${remaining} ثانية قبل إعادة إرسال Magic Link.`, 'error');
                 return;
             }
 
@@ -1416,10 +1509,14 @@ async function setupAuthentication() {
             });
 
             if (error) {
-                showAuthMessage(`❌ ${error.message}`, 'error');
+                if (isRateLimitAuthError(error)) {
+                    setAuthCooldown('magiclink', email, extractRetryAfterSeconds(error) || AUTH_RATE_LIMIT_DEFAULT_SECONDS.magiclink);
+                }
+                showAuthMessage(`❌ ${getFriendlyAuthErrorMessage(error, 'تعذر إرسال Magic Link.')}`, 'error');
                 return;
             }
 
+            setAuthCooldown('magiclink', email, AUTH_RATE_LIMIT_DEFAULT_SECONDS.magiclink);
             showAuthMessage('✅ تم إرسال رابط تسجيل الدخول إلى بريدك.', 'success');
         });
     }
@@ -1427,9 +1524,15 @@ async function setupAuthentication() {
     if (forgotForm) {
         forgotForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = forgotEmailInput?.value?.trim();
+            const email = normalizeEmail(forgotEmailInput?.value?.trim());
             if (!email) {
                 showAuthMessage('❌ أدخل البريد الإلكتروني أولاً لاسترجاع كلمة المرور.', 'error');
+                return;
+            }
+
+            const remaining = getAuthCooldownRemaining('reset', email);
+            if (remaining > 0) {
+                showAuthMessage(`❌ يرجى الانتظار ${remaining} ثانية قبل إعادة إرسال رابط الاسترجاع.`, 'error');
                 return;
             }
 
@@ -1438,10 +1541,14 @@ async function setupAuthentication() {
             });
 
             if (error) {
-                showAuthMessage(`❌ ${error.message}`, 'error');
+                if (isRateLimitAuthError(error)) {
+                    setAuthCooldown('reset', email, extractRetryAfterSeconds(error) || AUTH_RATE_LIMIT_DEFAULT_SECONDS.reset);
+                }
+                showAuthMessage(`❌ ${getFriendlyAuthErrorMessage(error, 'تعذر إرسال رابط الاسترجاع.')}`, 'error');
                 return;
             }
 
+            setAuthCooldown('reset', email, AUTH_RATE_LIMIT_DEFAULT_SECONDS.reset);
             showAuthMessage('✅ تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك.', 'success');
             closeForgotPasswordForm();
         });
@@ -1449,9 +1556,15 @@ async function setupAuthentication() {
 
     if (resendBtn) {
         resendBtn.addEventListener('click', async () => {
-            const email = document.getElementById('email')?.value?.trim();
+            const email = normalizeEmail(document.getElementById('email')?.value?.trim());
             if (!email) {
                 showAuthMessage('❌ أدخل البريد الإلكتروني أولاً لإعادة إرسال رسالة التأكيد.', 'error');
+                return;
+            }
+
+            const remaining = getAuthCooldownRemaining('resend', email);
+            if (remaining > 0) {
+                showAuthMessage(`❌ يرجى الانتظار ${remaining} ثانية قبل إعادة إرسال رسالة التأكيد.`, 'error');
                 return;
             }
 
@@ -1464,10 +1577,14 @@ async function setupAuthentication() {
             });
 
             if (error) {
-                showAuthMessage(`❌ ${error.message}`, 'error');
+                if (isRateLimitAuthError(error)) {
+                    setAuthCooldown('resend', email, extractRetryAfterSeconds(error) || AUTH_RATE_LIMIT_DEFAULT_SECONDS.resend);
+                }
+                showAuthMessage(`❌ ${getFriendlyAuthErrorMessage(error, 'تعذر إعادة إرسال رسالة التأكيد.')}`, 'error');
                 return;
             }
 
+            setAuthCooldown('resend', email, AUTH_RATE_LIMIT_DEFAULT_SECONDS.resend);
             showAuthMessage('✅ تم إرسال رسالة تأكيد الحساب مرة أخرى.', 'success');
         });
     }
