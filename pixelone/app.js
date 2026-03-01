@@ -515,9 +515,16 @@ function isRateLimitAuthError(error) {
 
 function getFriendlyAuthErrorMessage(error, fallback = 'تعذر إكمال العملية.') {
     const message = String(error?.message || '');
+    const normalized = message.toLowerCase();
 
     if (isRateLimitAuthError(error)) {
         return 'تم تجاوز الحد المسموح مؤقتًا لإرسال الرسائل. انتظر قليلًا ثم أعد المحاولة.';
+    }
+    if (normalized.includes('error sending confirmation email')) {
+        return 'تعذر إرسال رسالة تأكيد البريد من الخادم حالياً. يرجى المحاولة بعد قليل أو التواصل مع الدعم لأن إعدادات البريد تحتاج مراجعة.';
+    }
+    if (normalized.includes('smtp')) {
+        return 'خدمة البريد غير متاحة حالياً (SMTP). حاول لاحقًا أو تواصل مع الدعم التقني.';
     }
     if (message.includes('Invalid login') || message.includes('invalid_credentials')) {
         return 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
