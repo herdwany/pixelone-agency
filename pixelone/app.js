@@ -213,10 +213,10 @@ function createPageLoader(initialStatus) {
     overlay.setAttribute('aria-label', 'Loading page content');
     overlay.innerHTML = `
         <div class="pixel-loader-stage">
-            <svg class="pixel-loader-signature" viewBox="0 0 1000 250" role="img" aria-label="Pixel 1">
-                <text x="50%" y="58%" text-anchor="middle">Pixel 1</text>
-            </svg>
-            <span class="pixel-loader-brush" aria-hidden="true"></span>
+            <div class="pixel-loader-logo-wrap" aria-hidden="true">
+                <img class="pixel-loader-logo" src="icone/favicon.svg" alt="Pixel One Logo" width="168" height="168" loading="eager" decoding="async">
+                <span class="pixel-loader-shimmer"></span>
+            </div>
             <p class="pixel-loader-status" id="pixelLoaderStatus">${escapeHtml(initialStatus || 'Preparing your page...')}</p>
         </div>
     `;
