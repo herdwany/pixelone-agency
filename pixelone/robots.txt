@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://pixelonevisuals.tech/sitemap.xml
+Sitemap: https://www.pixelonevisuals.tech/sitemap.xml

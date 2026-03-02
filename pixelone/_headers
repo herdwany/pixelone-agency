@@ -1,0 +1,13 @@
+/*
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), microphone=(), payment=(), usb=()
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com data:; connect-src 'self' https://*.supabase.co https://www.pixelonevisuals.tech; frame-ancestors 'self'; base-uri 'self'; form-action 'self';
+
+/robots.txt
+  Cache-Control: public, max-age=300
+
+/sitemap.xml
+  Cache-Control: public, max-age=300

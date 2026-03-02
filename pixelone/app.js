@@ -2,8 +2,9 @@
 // PIXEL ONE VISUALS - MASTER JAVASCRIPT APP FILE
 // ==========================================================================
 
-const SUPABASE_URL = 'https://grdjidvagrxavuwykqjf.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_09I_ZPReuprW9qZRqlG0nA_vxCBY6WS';
+const runtimeSupabaseConfig = window.__PIXELONE_SUPABASE__ || {};
+const SUPABASE_URL = runtimeSupabaseConfig.url || 'https://grdjidvagrxavuwykqjf.supabase.co';
+const SUPABASE_KEY = runtimeSupabaseConfig.publishableKey || 'sb_publishable_09I_ZPReuprW9qZRqlG0nA_vxCBY6WS';
 const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const ORDER_STORAGE_FALLBACK_KEY = 'pixelone_orders_v1';
@@ -155,9 +156,33 @@ function cloneData(value) {
     return JSON.parse(JSON.stringify(value));
 }
 
+function safeStorageGet(key) {
+    try {
+        return localStorage.getItem(key);
+    } catch {
+        return null;
+    }
+}
+
+function safeStorageSet(key, value) {
+    try {
+        localStorage.setItem(key, value);
+    } catch {
+        // If storage is blocked (private mode/policy), keep app functional in memory.
+    }
+}
+
+function safeStorageRemove(key) {
+    try {
+        localStorage.removeItem(key);
+    } catch {
+        // Ignore storage permission errors.
+    }
+}
+
 function readLocalJson(key, fallbackValue) {
     try {
-        const raw = localStorage.getItem(key);
+        const raw = safeStorageGet(key);
         if (!raw) return cloneData(fallbackValue);
         const parsed = JSON.parse(raw);
         return parsed ?? cloneData(fallbackValue);
@@ -167,7 +192,7 @@ function readLocalJson(key, fallbackValue) {
 }
 
 function writeLocalJson(key, value) {
-    localStorage.setItem(key, JSON.stringify(value));
+    safeStorageSet(key, JSON.stringify(value));
 }
 
 function serviceToRow(service) {
@@ -419,6 +444,12 @@ function showAuthMessage(text, type = 'success') {
     msgBox.className = `msg-box ${type === 'error' ? 'msg-error' : 'msg-success'} active`;
 }
 
+function showInlineMessage(msgBox, text, type = 'success') {
+    if (!msgBox) return;
+    msgBox.textContent = text;
+    msgBox.className = `msg-box ${type === 'error' ? 'msg-error' : 'msg-success'} active`;
+}
+
 const AUTH_RATE_LIMIT_STORAGE_PREFIX = 'pixelone_auth_cooldown_v1';
 const AUTH_RATE_LIMIT_DEFAULT_SECONDS = {
     signup: 60,
@@ -434,21 +465,21 @@ function getAuthCooldownKey(action, email = '') {
 function setAuthCooldown(action, email = '', seconds = 60) {
     const key = getAuthCooldownKey(action, email);
     const until = Date.now() + Math.max(5, Number(seconds) || 60) * 1000;
-    localStorage.setItem(key, String(until));
+    safeStorageSet(key, String(until));
 }
 
 function getAuthCooldownRemaining(action, email = '') {
     const key = getAuthCooldownKey(action, email);
-    const raw = localStorage.getItem(key);
+    const raw = safeStorageGet(key);
     if (!raw) return 0;
     const until = Number.parseInt(raw, 10);
     if (!Number.isFinite(until)) {
-        localStorage.removeItem(key);
+        safeStorageRemove(key);
         return 0;
     }
     const remainingMs = until - Date.now();
     if (remainingMs <= 0) {
-        localStorage.removeItem(key);
+        safeStorageRemove(key);
         return 0;
     }
     return Math.ceil(remainingMs / 1000);
@@ -2516,6 +2547,8 @@ function renderDiscountsSection() {
 }
 
 function bindAdminForms() {
+    const adminMsgBox = document.getElementById('inviteMsgBox');
+
     const disputeForm = document.getElementById('disputeForm');
     if (disputeForm && !disputeForm.dataset.bound) {
         disputeForm.dataset.bound = 'true';
@@ -2567,7 +2600,7 @@ function bindAdminForms() {
             const enabled = document.getElementById('offerEnabled').checked;
 
             if (target === 'customer' && !targetEmail) {
-                alert('أدخل البريد الإلكتروني للعميل المستهدف.');
+                showInlineMessage(adminMsgBox, '❌ أدخل البريد الإلكتروني للعميل المستهدف.', 'error');
                 return;
             }
 
@@ -2634,7 +2667,7 @@ function bindAdminForms() {
                 const enabled = document.getElementById('serviceEnabled').checked;
 
                 if (!title || !price || !description || !category || !Number.isFinite(popularity) || popularity <= 0) {
-                    alert('يرجى تعبئة جميع حقول الخدمة بشكل صحيح.');
+                    showInlineMessage(adminMsgBox, '❌ يرجى تعبئة جميع حقول الخدمة بشكل صحيح.', 'error');
                     return;
                 }
 

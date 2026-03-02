@@ -8,13 +8,24 @@ type InvitePayload = {
   redirectTo?: string;
 };
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-};
+const allowedOrigins = (Deno.env.get('ALLOWED_ORIGINS') || 'https://www.pixelonevisuals.tech,https://pixelonevisuals.tech')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
-function json(status: number, body: Record<string, unknown>) {
+function getCorsHeaders(origin: string | null) {
+  const fallbackOrigin = allowedOrigins[0] || 'https://www.pixelonevisuals.tech';
+  const allowOrigin = origin && allowedOrigins.includes(origin) ? origin : fallbackOrigin;
+
+  return {
+    'Access-Control-Allow-Origin': allowOrigin,
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    Vary: 'Origin',
+  };
+}
+
+function json(status: number, body: Record<string, unknown>, corsHeaders: Record<string, string>) {
   return new Response(JSON.stringify(body), {
     status,
     headers: {
@@ -25,12 +36,15 @@ function json(status: number, body: Record<string, unknown>) {
 }
 
 serve(async (req: Request) => {
+  const origin = req.headers.get('origin');
+  const corsHeaders = getCorsHeaders(origin);
+
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
 
   if (req.method !== 'POST') {
-    return json(405, { error: 'Method not allowed' });
+    return json(405, { error: 'Method not allowed' }, corsHeaders);
   }
 
   const supabaseUrl = Deno.env.get('SUPABASE_URL');
@@ -38,13 +52,13 @@ serve(async (req: Request) => {
   const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
   if (!supabaseUrl || !anonKey || !serviceRoleKey) {
-    return json(500, { error: 'Server env is not configured' });
+    return json(500, { error: 'Server env is not configured' }, corsHeaders);
   }
 
   const authHeader = req.headers.get('Authorization') || '';
   const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : '';
   if (!token) {
-    return json(401, { error: 'Missing bearer token' });
+    return json(401, { error: 'Missing bearer token' }, corsHeaders);
   }
 
   const userScopedClient = createClient(supabaseUrl, anonKey, {
@@ -53,7 +67,7 @@ serve(async (req: Request) => {
 
   const { data: userData, error: userError } = await userScopedClient.auth.getUser();
   if (userError || !userData.user?.email) {
-    return json(401, { error: 'Invalid session token' });
+    return json(401, { error: 'Invalid session token' }, corsHeaders);
   }
 
   const adminClient = createClient(supabaseUrl, serviceRoleKey, {
@@ -68,14 +82,14 @@ serve(async (req: Request) => {
     .maybeSingle();
 
   if (adminCheckError || !adminRow) {
-    return json(403, { error: 'Only admins can invite users' });
+    return json(403, { error: 'Only admins can invite users' }, corsHeaders);
   }
 
   let payload: InvitePayload;
   try {
     payload = await req.json();
   } catch {
-    return json(400, { error: 'Invalid JSON body' });
+    return json(400, { error: 'Invalid JSON body' }, corsHeaders);
   }
 
   const email = String(payload.email || '').trim().toLowerCase();
@@ -83,7 +97,7 @@ serve(async (req: Request) => {
   const redirectTo = String(payload.redirectTo || '').trim();
 
   if (!email || !email.includes('@')) {
-    return json(400, { error: 'Valid email is required' });
+    return json(400, { error: 'Valid email is required' }, corsHeaders);
   }
 
   const inviteResult = await adminClient.auth.admin.inviteUserByEmail(email, {
@@ -92,7 +106,7 @@ serve(async (req: Request) => {
   });
 
   if (inviteResult.error) {
-    return json(400, { error: inviteResult.error.message });
+    return json(400, { error: inviteResult.error.message }, corsHeaders);
   }
 
   if (role === 'admin') {
@@ -104,7 +118,7 @@ serve(async (req: Request) => {
       return json(500, {
         error: 'Invite sent but failed to register admin role',
         details: upsertAdminError.message,
-      });
+      }, corsHeaders);
     }
   }
 
@@ -120,7 +134,7 @@ serve(async (req: Request) => {
     return json(500, {
       error: 'Invite sent but failed to write invite audit log',
       details: auditError.message,
-    });
+    }, corsHeaders);
   }
 
   return json(200, {
@@ -128,5 +142,5 @@ serve(async (req: Request) => {
     message: 'Invitation sent successfully',
     invitedEmail: email,
     role,
-  });
+  }, corsHeaders);
 });
