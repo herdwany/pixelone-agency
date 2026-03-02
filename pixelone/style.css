@@ -811,14 +811,21 @@ textarea.input-luxury {
     100% { transform: translateX(100%) rotate(45deg); }
 }
 
-.animate-fade-up {
-    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    opacity: 0;
+.animate-fade-up,
+.animate-fade-right {
+    opacity: 1;
 }
 
-.animate-fade-right {
-    animation: fadeInRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    opacity: 0;
+@media (prefers-reduced-motion: no-preference) {
+    .animate-fade-up {
+        animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        opacity: 0;
+    }
+
+    .animate-fade-right {
+        animation: fadeInRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        opacity: 0;
+    }
 }
 
 /* تأخير الأنيميشن للتتابع */
@@ -840,6 +847,12 @@ textarea.input-luxury {
 @media (max-width: 768px) {
     html {
         font-size: 14px;
+    }
+
+    .navbar-glass {
+        position: relative;
+        top: auto;
+        padding: 0.75rem 1rem !important;
     }
     
     .hero-title {
@@ -895,6 +908,12 @@ textarea.input-luxury {
     *, *::before, *::after {
         animation: none !important;
         transition: none !important;
+    }
+
+    .animate-fade-up,
+    .animate-fade-right {
+        opacity: 1 !important;
+        transform: none !important;
     }
 }
 
