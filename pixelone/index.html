@@ -100,14 +100,14 @@
     <!-- ربط ملف التنسيقات الخارجي -->
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="selection:bg-red-600 selection:text-white">
+<body class="selection:bg-red-600 selection:text-white site-shell">
 
     <a href="#mainContent" class="skip-link">تخطي إلى المحتوى الرئيسي</a>
 
     <!-- ==================================================================
          شريط التنقل العلوي (Navbar)
          ================================================================== -->
-    <nav class="px-6 py-4 flex justify-between items-center navbar-glass" aria-label="التنقل الرئيسي">
+    <nav class="navbar-glass site-nav" aria-label="التنقل الرئيسي">
         <!-- الشعار -->
         <a href="index.html" class="logo-container">
             <span class="logo-p text-3xl">P</span>
@@ -115,7 +115,7 @@
         </a>
         
         <!-- روابط المنتصف (تظهر في الشاشات الكبيرة) -->
-        <div class="hidden md:flex items-center gap-8">
+        <div class="site-nav-links hidden md:flex items-center gap-8">
             <a href="about.html" class="text-sm font-bold nav-link">من نحن</a>
             <a href="services.html" class="text-sm font-bold nav-link">خدماتنا</a>
             <a href="how-we-work.html" class="text-sm font-bold nav-link">كيف نعمل</a>
@@ -123,22 +123,29 @@
         </div>
 
         <!-- أزرار الإجراء (دخول / ابدأ مشروعك) -->
-        <div class="flex gap-4 items-center">
+        <div class="site-nav-cta hidden md:flex gap-4 items-center">
             <a id="loginNavLink" href="client-login.html" class="text-sm font-bold text-gray-300 hover:text-white transition">دخول العملاء</a>
             <button type="button" onclick="document.getElementById('services').scrollIntoView({behavior: 'smooth'})" class="btn-filled-red px-6 py-2 rounded-md text-sm font-bold hidden sm:block">
                 ابدأ مشروعك
             </button>
         </div>
-    </nav>
 
-    <div class="md:hidden px-4 py-3 border-b border-white/5 bg-black/50 backdrop-blur relative z-40">
-        <div class="flex gap-2 overflow-x-auto no-scrollbar" aria-label="روابط سريعة للجوال">
-            <a href="about.html" class="px-4 py-2 rounded-full border border-white/10 text-xs text-gray-300 whitespace-nowrap">من نحن</a>
-            <a href="services.html" class="px-4 py-2 rounded-full border border-white/10 text-xs text-gray-300 whitespace-nowrap">خدماتنا</a>
-            <a href="how-we-work.html" class="px-4 py-2 rounded-full border border-white/10 text-xs text-gray-300 whitespace-nowrap">كيف نعمل</a>
-            <a href="#faq" class="px-4 py-2 rounded-full border border-white/10 text-xs text-gray-300 whitespace-nowrap">FAQ</a>
-        </div>
-    </div>
+        <details class="mobile-nav-menu md:hidden">
+            <summary class="mobile-nav-toggle" aria-label="فتح القائمة">
+                <span></span>
+                <span></span>
+                <span></span>
+            </summary>
+            <div class="mobile-nav-panel">
+                <a href="about.html" class="mobile-nav-link">من نحن</a>
+                <a href="services.html" class="mobile-nav-link">خدماتنا</a>
+                <a href="how-we-work.html" class="mobile-nav-link">كيف نعمل</a>
+                <a href="#faq" class="mobile-nav-link">الأسئلة الشائعة</a>
+                <a href="client-login.html" class="mobile-nav-link mobile-nav-link-accent">دخول العملاء</a>
+                <a href="services.html" class="btn-filled-red mobile-nav-btn">ابدأ مشروعك</a>
+            </div>
+        </details>
+    </nav>
 
     <!-- ==================================================================
          واجهة الترحيب (Hero Section)

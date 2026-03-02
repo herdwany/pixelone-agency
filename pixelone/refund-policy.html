@@ -23,24 +23,40 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="selection:bg-red-600 selection:text-white">
+<body class="selection:bg-red-600 selection:text-white site-shell">
     <a href="#mainContent" class="skip-link">تخطي إلى المحتوى الرئيسي</a>
 
-    <nav class="px-6 py-4 flex justify-between items-center navbar-glass" aria-label="التنقل الرئيسي">
+    <nav class="navbar-glass site-nav" aria-label="التنقل الرئيسي">
         <a href="index.html" class="logo-container">
             <span class="logo-p text-3xl">P</span>
             <span class="text-xl font-black tracking-tighter hidden sm:block uppercase font-en text-white">Pixel One</span>
         </a>
-        <div class="hidden md:flex items-center gap-8">
+        <div class="site-nav-links hidden md:flex items-center gap-8">
             <a href="about.html" class="text-sm font-bold nav-link">من نحن</a>
             <a href="services.html" class="text-sm font-bold nav-link">خدماتنا</a>
             <a href="how-we-work.html" class="text-sm font-bold nav-link">كيف نعمل</a>
             <a href="privacy-policy.html" class="text-sm font-bold nav-link">الخصوصية</a>
         </div>
-        <div class="flex gap-4 items-center">
+        <div class="site-nav-cta hidden md:flex gap-4 items-center">
             <a href="client-login.html" class="text-sm font-bold text-gray-300 hover:text-white transition">دخول العملاء</a>
             <a href="refund-policy.html" class="btn-filled-red px-6 py-2 rounded-md text-sm font-bold hidden sm:block">الاسترجاع</a>
         </div>
+
+        <details class="mobile-nav-menu md:hidden">
+            <summary class="mobile-nav-toggle" aria-label="فتح القائمة">
+                <span></span>
+                <span></span>
+                <span></span>
+            </summary>
+            <div class="mobile-nav-panel">
+                <a href="about.html" class="mobile-nav-link">من نحن</a>
+                <a href="services.html" class="mobile-nav-link">خدماتنا</a>
+                <a href="how-we-work.html" class="mobile-nav-link">كيف نعمل</a>
+                <a href="privacy-policy.html" class="mobile-nav-link">الخصوصية</a>
+                <a href="client-login.html" class="mobile-nav-link mobile-nav-link-accent">دخول العملاء</a>
+                <a href="refund-policy.html" class="btn-filled-red mobile-nav-btn">الاسترجاع</a>
+            </div>
+        </details>
     </nav>
 
     <main id="mainContent" class="max-w-5xl mx-auto px-6 py-20 relative z-10">
