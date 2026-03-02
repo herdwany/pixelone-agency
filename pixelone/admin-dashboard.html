@@ -253,10 +253,67 @@
                     </div>
                 </div>
             </section>
+
+            <section class="bg-[#121212] border border-[#222] rounded-2xl p-6 md:p-8">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-5">
+                    <div>
+                        <h2 class="text-2xl font-black text-white">إدارة الترجمات (AR / EN / FR)</h2>
+                        <p class="text-sm text-gray-500">تعديل نصوص أي صفحة ولغة، ثم حفظها مباشرة في قاعدة البيانات.</p>
+                    </div>
+                </div>
+
+                <div id="i18nMsgBox" class="msg-box" aria-live="polite"></div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-5">
+                    <div class="lg:col-span-2">
+                        <label class="block text-xs text-gray-400 mb-2">الصفحة</label>
+                        <select id="i18nPageSelect" class="input-luxury"></select>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-2">اللغة</label>
+                        <select id="i18nLangSelect" class="input-luxury">
+                            <option value="ar">AR - Arabic</option>
+                            <option value="en">EN - English</option>
+                            <option value="fr">FR - French</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-2">Slug يدوي (اختياري)</label>
+                        <input id="i18nPageSlugInput" class="input-luxury font-en" dir="ltr" placeholder="example: faq">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-2">Title</label>
+                        <input id="i18nTitle" class="input-luxury font-en" dir="ltr" placeholder="Page title">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-2">Meta Description</label>
+                        <input id="i18nMetaDescription" class="input-luxury" placeholder="Meta description">
+                    </div>
+                    <div class="lg:col-span-2">
+                        <label class="block text-xs text-gray-400 mb-2">Texts (one line per entry)</label>
+                        <textarea id="i18nTexts" class="input-luxury min-h-[240px] font-en" dir="ltr" placeholder="Line 1\nLine 2\nLine 3"></textarea>
+                    </div>
+                    <div class="lg:col-span-2">
+                        <label class="block text-xs text-gray-400 mb-2">Attributes JSON (optional)</label>
+                        <textarea id="i18nAttributes" class="input-luxury min-h-[140px] font-en" dir="ltr" placeholder='[{"selector":"meta[property=""og:title""]","attribute":"content","value":"..."}]'></textarea>
+                    </div>
+                </div>
+
+                <div class="mt-5 flex flex-wrap gap-3">
+                    <button id="i18nLoadBtn" class="px-5 py-3 rounded-lg border border-white/20 text-gray-100 hover:bg-white/10 text-sm font-bold" type="button">تحميل الترجمة</button>
+                    <button id="i18nSaveBtn" class="btn-filled-red py-3 px-6 rounded-lg font-black" type="button">حفظ الترجمة</button>
+                    <button id="i18nResetBtn" class="px-5 py-3 rounded-lg border border-white/20 text-gray-300 hover:bg-white/10 text-sm font-bold" type="button">تفريغ الحقول</button>
+                </div>
+            </section>
         </div>
     </main>
 
+    <script src="page-text-loader.js" defer></script>
     <script src="app.js"></script>
     <script src="visual-system.js" defer></script>
 </body>
 </html>
+

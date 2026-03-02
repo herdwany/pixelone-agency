@@ -447,6 +447,56 @@ textarea:focus-visible {
     align-items: center;
 }
 
+.lang-switcher {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.28rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.lang-switch-btn {
+    border: 1px solid transparent;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.78);
+    font-family: var(--font-en);
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    padding: 0.35rem 0.55rem;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.lang-switch-btn:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.lang-switch-btn.is-active {
+    color: #fff;
+    border-color: rgba(229, 9, 20, 0.45);
+    background: rgba(229, 9, 20, 0.2);
+    box-shadow: 0 0 0 1px rgba(229, 9, 20, 0.25) inset;
+}
+
+.lang-switcher.mobile {
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 0.4rem;
+}
+
+.lang-switcher.footer {
+    margin-top: 1.25rem;
+    margin-inline: auto;
+    width: fit-content;
+    border-color: rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.03);
+}
+
 .mobile-nav-menu {
     position: relative;
 }
@@ -1036,6 +1086,15 @@ textarea.input-luxury {
     .site-nav-links,
     .site-nav-cta {
         display: none !important;
+    }
+
+    .lang-switcher {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .lang-switcher.footer {
+        max-width: 240px;
     }
 
     .site-shell main {

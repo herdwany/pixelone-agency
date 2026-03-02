@@ -6,6 +6,210 @@ const runtimeSupabaseConfig = window.__PIXELONE_SUPABASE__ || {};
 const SUPABASE_URL = runtimeSupabaseConfig.url || 'https://grdjidvagrxavuwykqjf.supabase.co';
 const SUPABASE_KEY = runtimeSupabaseConfig.publishableKey || 'sb_publishable_09I_ZPReuprW9qZRqlG0nA_vxCBY6WS';
 const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+window._supabase = _supabase;
+
+const I18N_LANGS = ['ar', 'en', 'fr'];
+const I18N_DEFAULT_LANG = 'ar';
+const I18N_STORAGE_KEY = 'pixelone_lang_v1';
+const I18N_MANAGED_PAGES = [
+    'index',
+    'about',
+    'services',
+    'how-we-work',
+    'client-login',
+    'login',
+    'dashboard',
+    'admin-dashboard',
+    'auth-callback',
+    'privacy-policy',
+    'refund-policy',
+    'terms-of-service',
+];
+
+const UI_TEXT = {
+    ar: {
+        navDashboard: 'لوحة التحكم',
+        navClientLogin: 'دخول العملاء',
+        offerEmpty: 'لا توجد عروض نشطة حالياً.',
+        offerTitleFallback: 'عرض خاص',
+        offerBadgeFallback: 'SPECIAL',
+        serviceSoon: 'قريباً',
+        serviceAvailable: 'متاح الآن',
+        serviceOrderNow: 'اطلب الخدمة الآن',
+        serviceComingSoonBtn: 'قريباً جداً',
+        customServiceName: 'طلب خدمة مخصص',
+        discountLabel: 'خصم',
+        orderProcessing: 'جاري الإرسال وتجهيز الطلب...',
+        orderSubmitDefault: 'تأكيد وإرسال الطلب الآن',
+        orderSubmitDone: 'تم الإرسال',
+        orderEmailRequired: '❌ أدخل بريدك الإلكتروني حتى تتمكن من تتبع الطلب لاحقاً.',
+        orderWhatsAppNotSet: '❌ رقم الواتساب غير مضبوط بعد. حدّث contact.whatsappNumber داخل site-settings.json أولاً.',
+        orderSuccessPrefix: '✅ تم تأكيد الطلب بنجاح! سيتم تحويلك للواتساب.',
+        orderTrackingNotice: 'رمز تتبع طلبك:',
+        orderAuthNotice: 'للمتابعة التفصيلية، الشكايات، والعروض المخصصة: سجّل الدخول بنفس البريد المستخدم في الطلب.',
+        waTitle: '*طلب خدمة جديد - Pixel One*',
+        waOrderId: '*رقم الطلب:*',
+        waOrderDate: '*تاريخ الطلب:*',
+        waService: '*الخدمة المطلوبة:*',
+        waFinalPrice: '*السعر بعد الخصم:*',
+        waDiscountCode: '*كود الخصم:*',
+        waCustomerName: '*اسم العميل:*',
+        waPhone: '*رقم الهاتف:*',
+        waEmail: '*البريد الإلكتروني:*',
+        waSpecs: '*مواصفات وتفاصيل الطلب:*',
+        dashboardClientMode: 'وضع العميل: يمكنك متابعة حالة الطلبات الخاصة بك.',
+        dashboardNoOrders: 'لا توجد طلبات حالياً.',
+        dashboardLastUpdate: 'آخر تحديث:',
+        dashboardSupport: 'مراسلة الدعم',
+        dashboardOrderDate: 'تاريخ الطلب:',
+        trackTitle: 'مركز تتبع الطلب',
+        trackHint: 'يمكنك إدخال رمز/رقم الطلب للبحث، أو تركه فارغاً لعرض كل طلباتك.',
+        trackInputPlaceholder: 'مثال: PO-8K4M2Q',
+        trackButton: 'تتبع',
+        trackClear: 'عرض الكل',
+    },
+    en: {
+        navDashboard: 'Dashboard',
+        navClientLogin: 'Client Login',
+        offerEmpty: 'No active offers right now.',
+        offerTitleFallback: 'Special Offer',
+        offerBadgeFallback: 'SPECIAL',
+        serviceSoon: 'Coming Soon',
+        serviceAvailable: 'Available Now',
+        serviceOrderNow: 'Order This Service',
+        serviceComingSoonBtn: 'Coming Soon',
+        customServiceName: 'Custom Service Request',
+        discountLabel: 'Discount',
+        orderProcessing: 'Submitting your order...',
+        orderSubmitDefault: 'Confirm and Submit Order',
+        orderSubmitDone: 'Submitted',
+        orderEmailRequired: '❌ Please enter your email so you can track this order later.',
+        orderWhatsAppNotSet: '❌ WhatsApp number is not configured yet. Update contact.whatsappNumber in site-settings.json first.',
+        orderSuccessPrefix: '✅ Your order has been submitted successfully. Redirecting to WhatsApp.',
+        orderTrackingNotice: 'Your tracking code:',
+        orderAuthNotice: 'To track details, create disputes, and receive personalized offers, sign in with the same email used in this order.',
+        waTitle: '*New Service Order - Pixel One*',
+        waOrderId: '*Order ID:*',
+        waOrderDate: '*Order Date:*',
+        waService: '*Requested Service:*',
+        waFinalPrice: '*Final Price:*',
+        waDiscountCode: '*Discount Code:*',
+        waCustomerName: '*Client Name:*',
+        waPhone: '*Phone:*',
+        waEmail: '*Email:*',
+        waSpecs: '*Project Details:*',
+        dashboardClientMode: 'Client mode: you can track your own orders.',
+        dashboardNoOrders: 'No orders available yet.',
+        dashboardLastUpdate: 'Last update:',
+        dashboardSupport: 'Contact support',
+        dashboardOrderDate: 'Order date:',
+        trackTitle: 'Order Tracking Center',
+        trackHint: 'Enter your order ID/tracking code, or leave it empty to view all your orders.',
+        trackInputPlaceholder: 'Example: PO-8K4M2Q',
+        trackButton: 'Track',
+        trackClear: 'Show all',
+    },
+    fr: {
+        navDashboard: 'Tableau de bord',
+        navClientLogin: 'Espace Client',
+        offerEmpty: 'Aucune offre active pour le moment.',
+        offerTitleFallback: 'Offre Speciale',
+        offerBadgeFallback: 'SPECIAL',
+        serviceSoon: 'Bientot',
+        serviceAvailable: 'Disponible',
+        serviceOrderNow: 'Commander ce service',
+        serviceComingSoonBtn: 'Bientot disponible',
+        customServiceName: 'Demande de Service Personnalisee',
+        discountLabel: 'Remise',
+        orderProcessing: 'Envoi de votre demande...',
+        orderSubmitDefault: 'Confirmer et envoyer',
+        orderSubmitDone: 'Envoye',
+        orderEmailRequired: '❌ Veuillez entrer votre e-mail pour pouvoir suivre votre demande plus tard.',
+        orderWhatsAppNotSet: '❌ Le numero WhatsApp n\'est pas configure. Mettez a jour contact.whatsappNumber dans site-settings.json.',
+        orderSuccessPrefix: '✅ Votre demande a ete envoyee avec succes. Redirection vers WhatsApp.',
+        orderTrackingNotice: 'Votre code de suivi :',
+        orderAuthNotice: 'Pour suivre les details, ouvrir une reclamation et recevoir des offres personnalisees, connectez-vous avec le meme e-mail que celui de la demande.',
+        waTitle: '*Nouvelle Demande de Service - Pixel One*',
+        waOrderId: '*ID de demande :*',
+        waOrderDate: '*Date :*',
+        waService: '*Service demande :*',
+        waFinalPrice: '*Prix final :*',
+        waDiscountCode: '*Code promo :*',
+        waCustomerName: '*Nom du client :*',
+        waPhone: '*Telephone :*',
+        waEmail: '*E-mail :*',
+        waSpecs: '*Details du projet :*',
+        dashboardClientMode: 'Mode client : vous pouvez suivre vos propres commandes.',
+        dashboardNoOrders: 'Aucune commande pour le moment.',
+        dashboardLastUpdate: 'Derniere mise a jour :',
+        dashboardSupport: 'Contacter le support',
+        dashboardOrderDate: 'Date de commande :',
+        trackTitle: 'Centre de suivi des commandes',
+        trackHint: 'Entrez votre ID/code de suivi, ou laissez vide pour afficher toutes vos commandes.',
+        trackInputPlaceholder: 'Exemple : PO-8K4M2Q',
+        trackButton: 'Suivre',
+        trackClear: 'Tout afficher',
+    },
+};
+
+const SERVICE_I18N = {
+    'svc-banner-design': {
+        en: {
+            title: 'Banner Design',
+            description: 'Custom banner creatives optimized for paid campaigns and stronger click-through rates.',
+            category: 'Ad Design',
+            serviceType: 'One-Time Service',
+        },
+        fr: {
+            title: 'Banner Design',
+            description: 'Design de banniere sur mesure, optimise pour les campagnes sponsorisees.',
+            category: 'Design Publicitaire',
+            serviceType: 'Service Ponctuel',
+        },
+    },
+    'svc-reels-tiktok': {
+        en: {
+            title: 'Short-Form Video Editing (Reels / TikToks)',
+            description: 'Fast dynamic edits aligned with trends and engaging captions.',
+            category: 'Video Editing',
+            serviceType: 'One-Time Service',
+        },
+        fr: {
+            title: 'Montage Video Court (Reels / TikToks)',
+            description: 'Montage dynamique et rapide, aligne sur les tendances.',
+            category: 'Montage Video',
+            serviceType: 'Service Ponctuel',
+        },
+    },
+    'svc-brand-identity-basic': {
+        en: {
+            title: 'Basic Brand Identity',
+            description: 'Professional logo, brand color setup, plus profile and cover assets.',
+            category: 'Brand Identity',
+            serviceType: 'One-Time Service',
+        },
+        fr: {
+            title: 'Identite Visuelle Essentielle',
+            description: 'Logo professionnel, palette de marque, et visuels profil/couverture.',
+            category: 'Identite Visuelle',
+            serviceType: 'Service Ponctuel',
+        },
+    },
+    'svc-social-management': {
+        en: {
+            title: 'Social Media Management',
+            description: 'Monthly package with 12 designs, copywriting, and visual account coordination.',
+            category: 'Content Management',
+            serviceType: 'Monthly Subscription',
+        },
+        fr: {
+            title: 'Gestion des Reseaux Sociaux',
+            description: 'Pack mensuel: 12 designs, redaction des posts, et harmonisation visuelle.',
+            category: 'Gestion de Contenu',
+            serviceType: 'Abonnement Mensuel',
+        },
+    },
+};
 
 const ORDER_STORAGE_FALLBACK_KEY = 'pixelone_orders_v1';
 const OFFERS_STORAGE_KEY = 'pixelone_offers_v1';
@@ -96,6 +300,14 @@ const DEFAULT_MANAGED_SERVICES = [
     },
 ];
 
+const ORDER_STATUS_OPTIONS = [
+    'تم استلام الطلب',
+    'مقبول',
+    'يحتاج تعديلات',
+    'قيد التنفيذ',
+    'مكتمل',
+];
+
 const TABLES = {
     services: 'pixel_services',
     offers: 'pixel_offers',
@@ -105,6 +317,7 @@ const TABLES = {
     discountsCustomer: 'pixel_discounts_customer',
     adminUsers: 'pixel_admin_users',
     inviteAudit: 'pixel_invite_audit',
+    i18nPages: 'pixel_i18n_pages',
 };
 
 let siteSettings = { ...DEFAULT_SITE_SETTINGS };
@@ -275,6 +488,7 @@ function orderToRow(order) {
 function orderFromRow(row) {
     return {
         id: row.id,
+        trackingCode: row.tracking_code || row.id,
         serviceName: row.service_name,
         name: row.customer_name,
         phone: row.customer_phone,
@@ -354,6 +568,50 @@ function normalizeEmail(email) {
     return String(email || '').trim().toLowerCase();
 }
 
+function normalizeLang(lang) {
+    const value = String(lang || '').trim().toLowerCase();
+    return I18N_LANGS.includes(value) ? value : I18N_DEFAULT_LANG;
+}
+
+function getCurrentLanguage() {
+    const htmlLang = document?.documentElement?.getAttribute('lang') || '';
+    return normalizeLang(safeStorageGet(I18N_STORAGE_KEY) || htmlLang || I18N_DEFAULT_LANG);
+}
+
+function t(key) {
+    const lang = getCurrentLanguage();
+    return UI_TEXT[lang]?.[key] || UI_TEXT.ar?.[key] || key;
+}
+
+function normalizePageSlug(slug) {
+    return String(slug || '')
+        .trim()
+        .toLowerCase()
+        .replace(/\.html$/i, '')
+        .replace(/[^a-z0-9\-]/g, '');
+}
+
+function normalizeI18nPayload(payload) {
+    return {
+        title: String(payload?.title || ''),
+        metaDescription: String(payload?.metaDescription || ''),
+        texts: Array.isArray(payload?.texts) ? payload.texts.map((line) => String(line || '')) : [],
+        attributes: Array.isArray(payload?.attributes) ? payload.attributes : [],
+    };
+}
+
+function mergeI18nPayload(base, override) {
+    const safeBase = normalizeI18nPayload(base);
+    const safeOverride = normalizeI18nPayload(override);
+
+    return {
+        title: safeOverride.title || safeBase.title,
+        metaDescription: safeOverride.metaDescription || safeBase.metaDescription,
+        texts: safeOverride.texts.length > 0 ? safeOverride.texts : safeBase.texts,
+        attributes: safeOverride.attributes.length > 0 ? safeOverride.attributes : safeBase.attributes,
+    };
+}
+
 function parsePrice(value) {
     const numeric = Number.parseFloat(String(value || '').replace(/[^0-9.]/g, ''));
     return Number.isFinite(numeric) ? numeric : null;
@@ -371,9 +629,11 @@ function formatMoneyMAD(value) {
     }
 }
 
-function formatArabicDateTime(isoString) {
+function formatLocalizedDateTime(isoString) {
     try {
-        return new Date(isoString).toLocaleString('ar-MA', {
+        const lang = getCurrentLanguage();
+        const locale = lang === 'fr' ? 'fr-FR' : (lang === 'en' ? 'en-US' : 'ar-MA');
+        return new Date(isoString).toLocaleString(locale, {
             year: 'numeric',
             month: 'short',
             day: '2-digit',
@@ -383,6 +643,54 @@ function formatArabicDateTime(isoString) {
     } catch {
         return isoString;
     }
+}
+
+function formatArabicDateTime(isoString) {
+    return formatLocalizedDateTime(isoString);
+}
+
+function normalizeStatusKey(status) {
+    const value = String(status || '').trim().toLowerCase();
+    if (!value) return 'received';
+
+    if (['received', 'تم استلام الطلب'].includes(value)) return 'received';
+    if (['accepted', 'مقبول'].includes(value)) return 'accepted';
+    if (['needs_changes', 'needs changes', 'يحتاج تعديلات'].includes(value)) return 'needs_changes';
+    if (['in_progress', 'in progress', 'قيد التنفيذ'].includes(value)) return 'in_progress';
+    if (['completed', 'مكتمل'].includes(value)) return 'completed';
+
+    return 'received';
+}
+
+function getLocalizedOrderStatus(status) {
+    const key = normalizeStatusKey(status);
+    const lang = getCurrentLanguage();
+
+    const labels = {
+        ar: {
+            received: 'تم استلام الطلب',
+            accepted: 'مقبول',
+            needs_changes: 'يحتاج تعديلات',
+            in_progress: 'قيد التنفيذ',
+            completed: 'مكتمل',
+        },
+        en: {
+            received: 'Order Received',
+            accepted: 'Accepted',
+            needs_changes: 'Needs Changes',
+            in_progress: 'In Progress',
+            completed: 'Completed',
+        },
+        fr: {
+            received: 'Commande Recue',
+            accepted: 'Acceptee',
+            needs_changes: 'Modifications Requises',
+            in_progress: 'En Cours',
+            completed: 'Terminee',
+        },
+    };
+
+    return labels[lang]?.[key] || labels.ar[key];
 }
 
 function formatDateInput(isoString) {
@@ -395,11 +703,33 @@ function formatDateInput(isoString) {
 }
 
 function getStatusMeta(status) {
-    if (status === 'مقبول') return { className: 'border-emerald-400/40 bg-emerald-500/10 text-emerald-200' };
-    if (status === 'يحتاج تعديلات') return { className: 'border-orange-400/40 bg-orange-500/10 text-orange-200' };
-    if (status === 'قيد التنفيذ') return { className: 'border-blue-400/40 bg-blue-500/10 text-blue-200' };
-    if (status === 'مكتمل') return { className: 'border-violet-400/40 bg-violet-500/10 text-violet-200' };
+    const statusKey = normalizeStatusKey(status);
+    if (statusKey === 'accepted') return { className: 'border-emerald-400/40 bg-emerald-500/10 text-emerald-200' };
+    if (statusKey === 'needs_changes') return { className: 'border-orange-400/40 bg-orange-500/10 text-orange-200' };
+    if (statusKey === 'in_progress') return { className: 'border-blue-400/40 bg-blue-500/10 text-blue-200' };
+    if (statusKey === 'completed') return { className: 'border-violet-400/40 bg-violet-500/10 text-violet-200' };
     return { className: 'border-amber-400/40 bg-amber-500/10 text-amber-200' };
+}
+
+function generateTrackingCode() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let seed = '';
+    for (let i = 0; i < 6; i += 1) {
+        seed += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return `PO-${seed}`;
+}
+
+function localizeCustomServiceName(rawName) {
+    const value = String(rawName || '').trim();
+    if (!value) return t('customServiceName');
+
+    const known = ['طلب خدمة مخصص', 'custom service request', 'demande de service personnalisee'];
+    if (known.includes(value.toLowerCase())) {
+        return t('customServiceName');
+    }
+
+    return value;
 }
 
 function buildMailtoLink(email, subject) {
@@ -1040,16 +1370,42 @@ async function setupHomeSessionUI() {
     currentSessionUser = user || null;
 
     if (currentSessionUser) {
-        navLink.textContent = 'لوحة التحكم';
+        navLink.textContent = t('navDashboard');
         navLink.href = isAdminUser(currentSessionUser) ? 'admin-dashboard.html' : 'dashboard.html';
         navLink.classList.remove('text-gray-300');
         navLink.classList.add('text-emerald-300');
     } else {
-        navLink.textContent = 'دخول العملاء';
+        navLink.textContent = t('navClientLogin');
         navLink.href = 'client-login.html';
         navLink.classList.remove('text-emerald-300');
         navLink.classList.add('text-gray-300');
     }
+}
+
+function resolveLocalizedInlineText(value) {
+    if (typeof value !== 'string') return String(value || '');
+    const raw = value.trim();
+    if (!raw) return '';
+
+    const lang = getCurrentLanguage();
+
+    if (raw.startsWith('{') && raw.endsWith('}')) {
+        try {
+            const parsed = JSON.parse(raw);
+            return String(parsed?.[lang] || parsed?.ar || parsed?.en || parsed?.fr || raw);
+        } catch {
+            // Fall through to separator parsing.
+        }
+    }
+
+    if (raw.includes('||')) {
+        const parts = raw.split('||').map((part) => part.trim());
+        const indexByLang = { ar: 0, en: 1, fr: 2 };
+        const idx = indexByLang[lang] ?? 0;
+        return parts[idx] || parts[0] || '';
+    }
+
+    return raw;
 }
 
 function renderOffersForHome() {
@@ -1072,14 +1428,14 @@ function renderOffersForHome() {
     container.innerHTML = '';
 
     if (visibleOffers.length === 0) {
-        container.innerHTML = '<div class="water-card rounded-2xl p-6 text-center text-gray-500">لا توجد عروض نشطة حالياً.</div>';
+        container.innerHTML = `<div class="water-card rounded-2xl p-6 text-center text-gray-500">${escapeHtml(t('offerEmpty'))}</div>`;
         return;
     }
 
     visibleOffers.forEach((offer) => {
-        const safeTitle = escapeHtml(offer.title || 'عرض خاص');
-        const safeDescription = escapeHtml(offer.description || '');
-        const safeBadge = escapeHtml(offer.badge || 'SPECIAL');
+        const safeTitle = escapeHtml(resolveLocalizedInlineText(offer.title) || t('offerTitleFallback'));
+        const safeDescription = escapeHtml(resolveLocalizedInlineText(offer.description) || '');
+        const safeBadge = escapeHtml(resolveLocalizedInlineText(offer.badge) || t('offerBadgeFallback'));
         container.insertAdjacentHTML('beforeend', `
             <article class="water-card rounded-2xl p-6 border border-emerald-500/25 bg-emerald-500/5">
                 <div class="flex justify-between items-start gap-3 mb-3">
@@ -1090,6 +1446,23 @@ function renderOffersForHome() {
             </article>
         `);
     });
+}
+
+function getLocalizedServiceContent(service) {
+    const lang = getCurrentLanguage();
+    const mapped = SERVICE_I18N[service.id]?.[lang] || null;
+
+    const localizedTitle = service.titles?.[lang] || mapped?.title || service.titles?.ar || 'Service';
+    const localizedDescription = service.descriptions?.[lang] || mapped?.description || service.descriptions?.ar || '';
+    const localizedCategory = service.categories?.[lang] || mapped?.category || service.category || '';
+    const localizedType = service.serviceTypeByLang?.[lang] || mapped?.serviceType || service.serviceType || '';
+
+    return {
+        title: localizedTitle,
+        description: localizedDescription,
+        category: localizedCategory,
+        serviceType: localizedType,
+    };
 }
 
 function renderServices(grid, services, discountContext) {
@@ -1107,15 +1480,17 @@ function renderServices(grid, services, discountContext) {
 
     const orderedServices = [...availableServices, ...comingSoonServices];
     const bestRule = getBestDiscountRule(discountContext);
+    const currentLang = getCurrentLanguage();
 
     orderedServices.forEach((service, index) => {
         const isSoon = service.is_coming_soon;
         const delayClass = `delay-${(index % 3 + 1) * 100}`;
-        const serviceName = service.titles?.ar || 'خدمة غير مسماة';
+        const localized = getLocalizedServiceContent(service);
+        const serviceName = localized.title || 'Service';
         const servicePrice = service.price || '0';
-        const serviceDesc = service.descriptions?.ar || 'وصف الخدمة غير متوفر حالياً.';
-        const category = service.category || 'خدمة بصرية';
-        const serviceType = service.serviceType || 'خدمة لمرة واحدة';
+        const serviceDesc = localized.description || '';
+        const category = localized.category || '';
+        const serviceType = localized.serviceType || '';
 
         const safeCategory = escapeHtml(category);
         const safePrice = escapeHtml(servicePrice);
@@ -1123,7 +1498,7 @@ function renderServices(grid, services, discountContext) {
         const safeDesc = escapeHtml(serviceDesc);
         const safeType = escapeHtml(serviceType);
         const safeServiceNameAttr = escapeHtml(serviceName);
-        const statusLabel = isSoon ? 'قريباً' : 'متاح الآن';
+        const statusLabel = isSoon ? t('serviceSoon') : t('serviceAvailable');
         const statusClass = isSoon
             ? 'bg-white/5 border-white/10 text-gray-400'
             : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300';
@@ -1145,7 +1520,7 @@ function renderServices(grid, services, discountContext) {
             : `<span class="text-2xl font-black number-font">${safePrice} <span class="text-xs font-normal text-gray-500 uppercase font-en">MAD</span></span>`;
 
         const discountBadgeHtml = hasDiscount
-            ? `<span class="text-[10px] px-2 py-1 rounded-full border border-emerald-400/40 bg-emerald-500/10 text-emerald-200">خصم ${bestRule.type === 'percent' ? `${escapeHtml(String(bestRule.value))}%` : `${escapeHtml(String(bestRule.value))} MAD`}</span>`
+            ? `<span class="text-[10px] px-2 py-1 rounded-full border border-emerald-400/40 bg-emerald-500/10 text-emerald-200">${escapeHtml(t('discountLabel'))} ${bestRule.type === 'percent' ? `${escapeHtml(String(bestRule.value))}%` : `${escapeHtml(String(bestRule.value))} MAD`}</span>`
             : '';
 
         const cardHTML = `
@@ -1169,8 +1544,9 @@ function renderServices(grid, services, discountContext) {
                     data-service-name="${safeServiceNameAttr}"
                     data-final-price="${hasDiscount ? escapeHtml(String(discountResult.finalPrice.toFixed(2))) : safePrice}"
                     data-discount-code="${hasDiscount ? escapeHtml(bestRule.code || '') : ''}"
+                    data-service-lang="${escapeHtml(currentLang)}"
                     class="w-full py-4 rounded-lg font-black transition text-sm ${isSoon ? 'btn-disabled' : 'btn-filled-red'}">
-                    ${isSoon ? 'قريباً جداً' : 'اطلب الخدمة الآن'}
+                    ${isSoon ? escapeHtml(t('serviceComingSoonBtn')) : escapeHtml(t('serviceOrderNow'))}
                 </button>
             </div>
         `;
@@ -1201,8 +1577,9 @@ window.openOrderModal = function(serviceName, meta = {}) {
     orderForm.reset();
     orderMsgBox.classList.remove('active');
 
-    selectedServiceText.textContent = serviceName;
-    hiddenServiceName.value = serviceName;
+    const localizedServiceName = localizeCustomServiceName(serviceName);
+    selectedServiceText.textContent = localizedServiceName;
+    hiddenServiceName.value = localizedServiceName;
 
     const hiddenPrice = document.getElementById('hiddenFinalPrice');
     const hiddenDiscountCode = document.getElementById('hiddenDiscountCode');
@@ -1213,6 +1590,9 @@ window.openOrderModal = function(serviceName, meta = {}) {
     if (emailInput && currentSessionUser?.email) {
         emailInput.value = currentSessionUser.email;
     }
+
+    const submitBtn = document.getElementById('btnOrderSubmit');
+    if (submitBtn) submitBtn.textContent = t('orderSubmitDefault');
 
     modal.setAttribute('aria-hidden', 'false');
     modal.classList.add('active');
@@ -1248,7 +1628,7 @@ async function handleOrderSubmit(e) {
     if (!btn || !msgBox || !hiddenServiceName || !nameInput || !phoneInput || !emailInput || !specsInput) return;
 
     btn.disabled = true;
-    btn.textContent = 'جاري الإرسال وتجهيز الطلب...';
+    btn.textContent = t('orderProcessing');
 
     const serviceName = hiddenServiceName.value;
     const finalPrice = hiddenPrice?.value || '';
@@ -1262,10 +1642,10 @@ async function handleOrderSubmit(e) {
     const supportEmail = siteSettings.brand?.supportEmail || DEFAULT_SITE_SETTINGS.brand.supportEmail;
 
     if (myWhatsappNumber === '212600000000') {
-        msgBox.textContent = '❌ رقم الواتساب غير مضبوط بعد. حدّث contact.whatsappNumber داخل site-settings.json أولاً.';
+        msgBox.textContent = t('orderWhatsAppNotSet');
         msgBox.className = 'msg-box msg-error active';
         btn.disabled = false;
-        btn.textContent = 'تأكيد وإرسال الطلب';
+        btn.textContent = t('orderSubmitDefault');
         return;
     }
 
@@ -1273,17 +1653,27 @@ async function handleOrderSubmit(e) {
     currentSessionUser = user || currentSessionUser;
     const effectiveEmail = email || currentSessionUser?.email || '';
 
-    const orderId = `PO-${Date.now()}`;
+    if (!normalizeEmail(effectiveEmail)) {
+        msgBox.textContent = t('orderEmailRequired');
+        msgBox.className = 'msg-box msg-error active';
+        btn.disabled = false;
+        btn.textContent = t('orderSubmitDefault');
+        return;
+    }
+
+    const orderId = generateTrackingCode();
     const orderDateIso = new Date().toISOString();
+    const orderStatus = siteSettings.orders?.defaultStatus || DEFAULT_SITE_SETTINGS.orders.defaultStatus;
 
     addOrderRecord({
         id: orderId,
+        trackingCode: orderId,
         serviceName,
         name,
         phone,
         email: effectiveEmail,
         specs,
-        status: siteSettings.orders?.defaultStatus || DEFAULT_SITE_SETTINGS.orders.defaultStatus,
+        status: orderStatus,
         supportEmail,
         createdAt: orderDateIso,
         lastUpdateAt: orderDateIso,
@@ -1293,33 +1683,33 @@ async function handleOrderSubmit(e) {
         discountCode,
     });
 
-    const discountLine = discountCode ? `*كود الخصم:* ${discountCode}\n` : '';
-    const priceLine = finalPrice ? `*السعر بعد الخصم:* ${finalPrice} MAD\n` : '';
+    const discountLine = discountCode ? `${t('waDiscountCode')} ${discountCode}\n` : '';
+    const priceLine = finalPrice ? `${t('waFinalPrice')} ${finalPrice} MAD\n` : '';
 
-    const message = `*طلب خدمة جديد - Pixel One* 🔴\n\n`
-        + `*رقم الطلب:* ${orderId}\n`
-        + `*تاريخ الطلب:* ${formatArabicDateTime(orderDateIso)}\n`
-        + `*الخدمة المطلوبة:* ${serviceName}\n`
+    const message = `${t('waTitle')} 🔴\n\n`
+        + `${t('waOrderId')} ${orderId}\n`
+        + `${t('waOrderDate')} ${formatLocalizedDateTime(orderDateIso)}\n`
+        + `${t('waService')} ${serviceName}\n`
         + `${priceLine}`
         + `${discountLine}`
-        + `*اسم العميل:* ${name}\n`
-        + `*رقم الهاتف:* ${phone}\n`
-        + `*البريد الإلكتروني:* ${effectiveEmail || '-'}\n\n`
-        + `*مواصفات وتفاصيل الطلب:*\n${specs}\n\n`
+        + `${t('waCustomerName')} ${name}\n`
+        + `${t('waPhone')} ${phone}\n`
+        + `${t('waEmail')} ${effectiveEmail || '-'}\n\n`
+        + `${t('waSpecs')}\n${specs}\n\n`
         + `--- مرسل من موقع Pixel One ---`;
 
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${myWhatsappNumber}?text=${encodedMessage}`;
     window.open(whatsappUrl, '_blank');
 
-    msgBox.textContent = '✅ تم تأكيد الطلب بنجاح! سيتم تحويلك للواتساب، وسنتواصل معك قريباً.';
+    msgBox.textContent = `${t('orderSuccessPrefix')} ${t('orderTrackingNotice')} ${orderId}. ${t('orderAuthNotice')}`;
     msgBox.className = 'msg-box msg-success active';
-    btn.textContent = 'تم الإرسال';
+    btn.textContent = t('orderSubmitDone');
 
     setTimeout(() => {
         closeOrderModal();
         btn.disabled = false;
-        btn.textContent = 'تأكيد وإرسال الطلب الآن';
+        btn.textContent = t('orderSubmitDefault');
     }, 3000);
 }
 
@@ -1784,6 +2174,74 @@ function setupLogout() {
     }
 }
 
+function ensureDashboardTrackingControls(onFilter) {
+    const ordersSection = document.getElementById('ordersTableBody')?.closest('.bg-[#121212]');
+    if (!ordersSection) return null;
+
+    let box = document.getElementById('dashboardTrackingBox');
+    if (!box) {
+        box = document.createElement('div');
+        box.id = 'dashboardTrackingBox';
+        box.className = 'mb-5 rounded-xl border border-white/10 bg-black/25 p-4';
+        box.innerHTML = `
+            <div class="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+                <div>
+                    <h4 id="dashboardTrackingTitle" class="text-sm font-black text-white"></h4>
+                    <p id="dashboardTrackingHint" class="text-xs text-gray-500 mt-1"></p>
+                </div>
+                <div class="flex w-full md:w-auto gap-2">
+                    <input id="dashboardOrderTrackInput" type="text" class="input-luxury font-en !py-2 !px-3 text-sm" dir="ltr" />
+                    <button id="dashboardOrderTrackBtn" type="button" class="px-4 py-2 rounded-lg border border-brand-red/40 text-brand-red hover:bg-brand-red hover:text-white text-sm font-bold transition"></button>
+                    <button id="dashboardOrderTrackClearBtn" type="button" class="px-4 py-2 rounded-lg border border-white/20 text-gray-200 hover:bg-white/10 text-sm font-bold transition"></button>
+                </div>
+            </div>
+        `;
+
+        const sectionHeader = ordersSection.querySelector('.mb-5');
+        if (sectionHeader) {
+            sectionHeader.insertAdjacentElement('afterend', box);
+        } else {
+            ordersSection.prepend(box);
+        }
+    }
+
+    const title = document.getElementById('dashboardTrackingTitle');
+    const hint = document.getElementById('dashboardTrackingHint');
+    const input = document.getElementById('dashboardOrderTrackInput');
+    const trackBtn = document.getElementById('dashboardOrderTrackBtn');
+    const clearBtn = document.getElementById('dashboardOrderTrackClearBtn');
+
+    if (title) title.textContent = t('trackTitle');
+    if (hint) hint.textContent = t('trackHint');
+    if (input) input.placeholder = t('trackInputPlaceholder');
+    if (trackBtn) trackBtn.textContent = t('trackButton');
+    if (clearBtn) clearBtn.textContent = t('trackClear');
+
+    if (trackBtn && !trackBtn.dataset.bound) {
+        trackBtn.dataset.bound = 'true';
+        trackBtn.addEventListener('click', () => onFilter((input?.value || '').trim()));
+    }
+
+    if (input && !input.dataset.bound) {
+        input.dataset.bound = 'true';
+        input.addEventListener('keydown', (event) => {
+            if (event.key !== 'Enter') return;
+            event.preventDefault();
+            onFilter((input.value || '').trim());
+        });
+    }
+
+    if (clearBtn && !clearBtn.dataset.bound) {
+        clearBtn.dataset.bound = 'true';
+        clearBtn.addEventListener('click', () => {
+            if (input) input.value = '';
+            onFilter('');
+        });
+    }
+
+    return input;
+}
+
 function renderDashboardOrders(user) {
     const tableBody = document.getElementById('ordersTableBody');
     const mobileList = document.getElementById('ordersMobileList');
@@ -1800,10 +2258,33 @@ function renderDashboardOrders(user) {
     wireEmailLink(supportEmailLink, supportEmail, 'استفسار عام - خدمة العملاء');
 
     const allOrders = getStoredOrders();
-    const filteredOrders = allOrders.filter((order) => normalizeEmail(order.userEmail) === normalizeEmail(user?.email));
+    const userEmail = normalizeEmail(user?.email);
+    const userOrders = allOrders.filter((order) => {
+        const linkedEmail = normalizeEmail(order.userEmail || order.email);
+        return linkedEmail && linkedEmail === userEmail;
+    });
+
+    const trackingInput = ensureDashboardTrackingControls((term) => {
+        const nextUrl = new URL(window.location.href);
+        if (term) {
+            nextUrl.searchParams.set('track', term);
+        } else {
+            nextUrl.searchParams.delete('track');
+        }
+        history.replaceState({}, '', nextUrl.toString());
+        renderDashboardOrders(user);
+    });
+
+    const trackParam = new URL(window.location.href).searchParams.get('track') || '';
+    if (trackingInput) trackingInput.value = trackParam;
+
+    const trackTerm = String(trackParam || '').trim().toLowerCase();
+    const filteredOrders = !trackTerm
+        ? userOrders
+        : userOrders.filter((order) => String(order.id || '').toLowerCase().includes(trackTerm) || String(order.trackingCode || '').toLowerCase().includes(trackTerm));
 
     if (dashboardRoleHint) {
-        dashboardRoleHint.textContent = 'وضع العميل: يمكنك متابعة حالة الطلبات الخاصة بك.';
+        dashboardRoleHint.textContent = t('dashboardClientMode');
     }
 
     const pendingOrders = filteredOrders.filter((order) => (order.status || '').includes('قيد')).length;
@@ -1815,9 +2296,9 @@ function renderDashboardOrders(user) {
     if (statCustomers) statCustomers.textContent = String(uniqueCustomers.size || 1);
 
     if (filteredOrders.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="5" class="px-4 py-6 text-center text-gray-500">لا توجد طلبات حالياً.</td></tr>';
+        tableBody.innerHTML = `<tr><td colspan="5" class="px-4 py-6 text-center text-gray-500">${escapeHtml(t('dashboardNoOrders'))}</td></tr>`;
         if (mobileList) {
-            mobileList.innerHTML = '<article class="border border-white/10 rounded-xl p-4 bg-black/30 text-gray-400 text-sm text-center">لا توجد طلبات حالياً.</article>';
+            mobileList.innerHTML = `<article class="border border-white/10 rounded-xl p-4 bg-black/30 text-gray-400 text-sm text-center">${escapeHtml(t('dashboardNoOrders'))}</article>`;
         }
         return;
     }
@@ -1828,29 +2309,33 @@ function renderDashboardOrders(user) {
     filteredOrders.forEach((order) => {
         const supportSubject = `استفسار حول الطلب ${order.id || ''}`;
         const safeService = escapeHtml(order.serviceName || 'طلب غير محدد');
-        const safeDate = escapeHtml(formatArabicDateTime(order.createdAt || new Date().toISOString()));
+        const safeDate = escapeHtml(formatLocalizedDateTime(order.createdAt || new Date().toISOString()));
         const safeSpecs = escapeHtml(order.specs || '-');
         const currentStatus = order.status || DEFAULT_SITE_SETTINGS.orders.defaultStatus;
-        const safeStatus = escapeHtml(currentStatus);
+        const safeStatus = escapeHtml(getLocalizedOrderStatus(currentStatus));
         const safeEmail = escapeHtml(order.email || order.userEmail || '-');
-        const safeLastUpdate = escapeHtml(formatArabicDateTime(order.lastUpdateAt || order.createdAt || new Date().toISOString()));
+        const safeLastUpdate = escapeHtml(formatLocalizedDateTime(order.lastUpdateAt || order.createdAt || new Date().toISOString()));
         const statusMeta = getStatusMeta(currentStatus);
+        const safeTrack = escapeHtml(order.trackingCode || order.id || '-');
 
         tableBody.insertAdjacentHTML('beforeend', `
             <tr>
-                <td class="px-4 py-3 font-bold text-white">${safeService}</td>
+                <td class="px-4 py-3 font-bold text-white">
+                    <div>${safeService}</div>
+                    <div class="text-[11px] text-gray-500 font-en mt-1">${safeTrack}</div>
+                </td>
                 <td class="px-4 py-3 text-gray-300 number-font">${safeDate}</td>
                 <td class="px-4 py-3 text-gray-300 max-w-[360px]"><div class="max-h-16 overflow-y-auto break-words">${safeSpecs}</div></td>
                 <td class="px-4 py-3">
                     <div class="flex flex-col gap-2">
                         <span class="text-xs px-2 py-1 rounded-full border ${statusMeta.className} w-fit">${safeStatus}</span>
-                        <span class="text-[11px] text-gray-500">آخر تحديث: ${safeLastUpdate}</span>
+                        <span class="text-[11px] text-gray-500">${escapeHtml(t('dashboardLastUpdate'))} ${safeLastUpdate}</span>
                     </div>
                 </td>
                 <td class="px-4 py-3">
                     <div class="flex flex-col gap-1">
                         <span class="text-xs text-gray-400 font-en">${safeEmail}</span>
-                        <a href="#" class="order-support-link text-xs text-brand-red hover:text-red-300" data-email="${escapeHtml(supportEmail)}" data-subject="${escapeHtml(supportSubject)}">مراسلة الدعم</a>
+                        <a href="#" class="order-support-link text-xs text-brand-red hover:text-red-300" data-email="${escapeHtml(supportEmail)}" data-subject="${escapeHtml(supportSubject)}">${escapeHtml(t('dashboardSupport'))}</a>
                     </div>
                 </td>
             </tr>
@@ -1863,10 +2348,11 @@ function renderDashboardOrders(user) {
                         <h4 class="text-white font-bold text-sm">${safeService}</h4>
                         <span class="text-[11px] px-2 py-1 rounded-full border ${statusMeta.className}">${safeStatus}</span>
                     </div>
-                    <p class="text-xs text-gray-400 mb-2">تاريخ الطلب: <span class="font-en">${safeDate}</span></p>
+                    <p class="text-xs text-gray-500 mb-2 font-en">${safeTrack}</p>
+                    <p class="text-xs text-gray-400 mb-2">${escapeHtml(t('dashboardOrderDate'))} <span class="font-en">${safeDate}</span></p>
                     <p class="text-xs text-gray-300 leading-relaxed mb-3 break-words">${safeSpecs}</p>
-                    <a href="#" class="order-support-link text-xs text-brand-red hover:text-red-300" data-email="${escapeHtml(supportEmail)}" data-subject="${escapeHtml(supportSubject)}">مراسلة الدعم (${safeEmail})</a>
-                    <p class="text-[11px] text-gray-500 mt-2">آخر تحديث: ${safeLastUpdate}</p>
+                    <a href="#" class="order-support-link text-xs text-brand-red hover:text-red-300" data-email="${escapeHtml(supportEmail)}" data-subject="${escapeHtml(supportSubject)}">${escapeHtml(t('dashboardSupport'))} (${safeEmail})</a>
+                    <p class="text-[11px] text-gray-500 mt-2">${escapeHtml(t('dashboardLastUpdate'))} ${safeLastUpdate}</p>
                 </article>
             `);
         }
@@ -2546,6 +3032,225 @@ function renderDiscountsSection() {
     });
 }
 
+async function loadI18nFilePayload(page, lang) {
+    const safePage = normalizePageSlug(page);
+    const safeLang = normalizeLang(lang);
+    if (!safePage) return null;
+
+    const byLangUrl = `content/${safePage}.${safeLang}.json`;
+    try {
+        const byLangResponse = await fetch(byLangUrl, { cache: 'no-store' });
+        if (byLangResponse.ok) {
+            const json = await byLangResponse.json();
+            return normalizeI18nPayload(json);
+        }
+    } catch {
+        // Ignore missing static file and continue to fallback.
+    }
+
+    const legacyUrl = `content/${safePage}.json`;
+    try {
+        const legacyResponse = await fetch(legacyUrl, { cache: 'no-store' });
+        if (!legacyResponse.ok) return null;
+        const json = await legacyResponse.json();
+        return normalizeI18nPayload(json);
+    } catch {
+        return null;
+    }
+}
+
+async function loadI18nOverridePayload(page, lang) {
+    const safePage = normalizePageSlug(page);
+    const safeLang = normalizeLang(lang);
+    if (!safePage) return null;
+
+    try {
+        const { data, error } = await _supabase
+            .from(TABLES.i18nPages)
+            .select('title,meta_description,texts,attributes')
+            .eq('page', safePage)
+            .eq('lang', safeLang)
+            .maybeSingle();
+
+        if (error || !data) return null;
+        return normalizeI18nPayload({
+            title: data.title,
+            metaDescription: data.meta_description,
+            texts: data.texts,
+            attributes: data.attributes,
+        });
+    } catch {
+        return null;
+    }
+}
+
+function buildI18nAdminPayloadFromForm() {
+    const title = document.getElementById('i18nTitle')?.value || '';
+    const metaDescription = document.getElementById('i18nMetaDescription')?.value || '';
+    const textsRaw = document.getElementById('i18nTexts')?.value || '';
+    const attributesRaw = document.getElementById('i18nAttributes')?.value || '';
+
+    const texts = textsRaw
+        .split(/\r?\n/g)
+        .map((line) => line.trim())
+        .filter((line) => line.length > 0);
+
+    let attributes = [];
+    if (attributesRaw.trim()) {
+        const parsed = JSON.parse(attributesRaw);
+        if (Array.isArray(parsed)) {
+            attributes = parsed;
+        } else {
+            throw new Error('Attributes must be a JSON array.');
+        }
+    }
+
+    return normalizeI18nPayload({ title, metaDescription, texts, attributes });
+}
+
+function getI18nAdminTarget() {
+    const selectValue = document.getElementById('i18nPageSelect')?.value || '';
+    const manualSlug = document.getElementById('i18nPageSlugInput')?.value || '';
+    const langValue = document.getElementById('i18nLangSelect')?.value || I18N_DEFAULT_LANG;
+
+    const page = normalizePageSlug(manualSlug || selectValue);
+    const lang = normalizeLang(langValue);
+
+    return { page, lang };
+}
+
+function renderI18nFormPayload(payload) {
+    const safePayload = normalizeI18nPayload(payload);
+
+    const titleEl = document.getElementById('i18nTitle');
+    const metaEl = document.getElementById('i18nMetaDescription');
+    const textsEl = document.getElementById('i18nTexts');
+    const attributesEl = document.getElementById('i18nAttributes');
+
+    if (titleEl) titleEl.value = safePayload.title;
+    if (metaEl) metaEl.value = safePayload.metaDescription;
+    if (textsEl) textsEl.value = safePayload.texts.join('\n');
+    if (attributesEl) {
+        attributesEl.value = safePayload.attributes.length > 0
+            ? JSON.stringify(safePayload.attributes, null, 2)
+            : '';
+    }
+}
+
+async function loadI18nIntoAdminForm() {
+    const msgBox = document.getElementById('i18nMsgBox');
+    const { page, lang } = getI18nAdminTarget();
+    if (!page) {
+        showInlineMessage(msgBox, '❌ اختر الصفحة أو أدخل slug صحيح.', 'error');
+        return;
+    }
+
+    const [basePayload, overridePayload] = await Promise.all([
+        loadI18nFilePayload(page, lang),
+        loadI18nOverridePayload(page, lang),
+    ]);
+
+    const finalPayload = mergeI18nPayload(basePayload, overridePayload);
+    renderI18nFormPayload(finalPayload);
+
+    showInlineMessage(msgBox, `✅ تم تحميل بيانات ${page} (${lang.toUpperCase()}).`, 'success');
+}
+
+async function saveI18nFromAdminForm() {
+    const msgBox = document.getElementById('i18nMsgBox');
+    const saveBtn = document.getElementById('i18nSaveBtn');
+    const { page, lang } = getI18nAdminTarget();
+
+    if (!page) {
+        showInlineMessage(msgBox, '❌ اختر الصفحة أو أدخل slug صحيح.', 'error');
+        return;
+    }
+
+    let payload;
+    try {
+        payload = buildI18nAdminPayloadFromForm();
+    } catch (error) {
+        showInlineMessage(msgBox, `❌ ${error.message}`, 'error');
+        return;
+    }
+
+    if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Saving...';
+    }
+
+    try {
+        const { error } = await _supabase
+            .from(TABLES.i18nPages)
+            .upsert({
+                page,
+                lang,
+                title: payload.title,
+                meta_description: payload.metaDescription,
+                texts: payload.texts,
+                attributes: payload.attributes,
+                updated_by: currentSessionUser?.email || null,
+            }, { onConflict: 'page,lang' });
+
+        if (error) {
+            showInlineMessage(msgBox, `❌ ${error.message}`, 'error');
+            return;
+        }
+
+        showInlineMessage(msgBox, `✅ تم حفظ الترجمة: ${page} (${lang.toUpperCase()}).`, 'success');
+    } finally {
+        if (saveBtn) {
+            saveBtn.disabled = false;
+            saveBtn.textContent = 'حفظ الترجمة';
+        }
+    }
+}
+
+function resetI18nAdminForm() {
+    renderI18nFormPayload({ title: '', metaDescription: '', texts: [], attributes: [] });
+}
+
+function setupAdminI18nManager() {
+    const pageSelect = document.getElementById('i18nPageSelect');
+    const langSelect = document.getElementById('i18nLangSelect');
+    const loadBtn = document.getElementById('i18nLoadBtn');
+    const saveBtn = document.getElementById('i18nSaveBtn');
+    const resetBtn = document.getElementById('i18nResetBtn');
+
+    if (!pageSelect || !langSelect || !loadBtn || !saveBtn || !resetBtn) return;
+    if (pageSelect.dataset.bound) return;
+    pageSelect.dataset.bound = 'true';
+
+    pageSelect.innerHTML = I18N_MANAGED_PAGES
+        .map((page) => `<option value="${escapeHtml(page)}">${escapeHtml(page)}</option>`)
+        .join('');
+
+    const attachReload = (el) => {
+        if (!el || el.dataset.i18nBound) return;
+        el.dataset.i18nBound = 'true';
+        el.addEventListener('change', () => {
+            loadI18nIntoAdminForm();
+        });
+    };
+
+    attachReload(pageSelect);
+    attachReload(langSelect);
+
+    loadBtn.addEventListener('click', () => {
+        loadI18nIntoAdminForm();
+    });
+
+    saveBtn.addEventListener('click', () => {
+        saveI18nFromAdminForm();
+    });
+
+    resetBtn.addEventListener('click', () => {
+        resetI18nAdminForm();
+    });
+
+    loadI18nIntoAdminForm();
+}
+
 function bindAdminForms() {
     const adminMsgBox = document.getElementById('inviteMsgBox');
 
@@ -2785,6 +3490,7 @@ async function initializeAdminDashboard() {
     resetServiceForm();
     setupAdminInviteUser();
     bindAdminForms();
+    setupAdminI18nManager();
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
