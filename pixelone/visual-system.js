@@ -162,6 +162,115 @@
         });
     }
 
+    function normalizePathname(pathname) {
+        var p = String(pathname || '/').toLowerCase();
+        if (p === '/index.html') return '/';
+        if (p.endsWith('/index.html')) return p.slice(0, -10) || '/';
+        if (p.length > 1 && p.endsWith('/')) return p.slice(0, -1);
+        return p || '/';
+    }
+
+    function initActiveNavState() {
+        var navs = Array.from(document.querySelectorAll('nav[aria-label="التنقل الرئيسي"]'));
+        if (navs.length === 0) return;
+
+        var currentUrl = new URL(window.location.href);
+        var currentPath = normalizePathname(currentUrl.pathname);
+
+        navs.forEach(function (nav) {
+            var links = Array.from(nav.querySelectorAll('a[href]')).filter(function (link) {
+                if (link.classList.contains('logo-container')) return false;
+                if (link.getAttribute('href') === '#') return false;
+                return true;
+            });
+
+            if (links.length === 0) return;
+
+            var plainLinks = [];
+            var hashLinkMap = {};
+            var hashTargets = [];
+
+            links.forEach(function (link) {
+                link.classList.remove('is-active-link');
+
+                var rawHref = link.getAttribute('href');
+                if (!rawHref) return;
+
+                var resolved;
+                try {
+                    resolved = new URL(rawHref, currentUrl.href);
+                } catch (_err) {
+                    return;
+                }
+
+                var linkPath = normalizePathname(resolved.pathname);
+                var linkHash = resolved.hash || '';
+
+                if (linkHash && linkPath === currentPath) {
+                    var id = linkHash.slice(1);
+                    var target = document.getElementById(id);
+                    if (target) {
+                        hashLinkMap[id] = hashLinkMap[id] || [];
+                        hashLinkMap[id].push(link);
+                        hashTargets.push(target);
+                    }
+                    return;
+                }
+
+                if (resolved.origin === currentUrl.origin && linkPath === currentPath) {
+                    plainLinks.push(link);
+                }
+            });
+
+            function setActive(activeLinks) {
+                links.forEach(function (link) {
+                    link.classList.remove('is-active-link');
+                });
+                activeLinks.forEach(function (link) {
+                    link.classList.add('is-active-link');
+                });
+            }
+
+            if (Object.keys(hashLinkMap).length > 0) {
+                var activeSectionId = null;
+                var observer = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (!entry.isIntersecting) return;
+                        var id = entry.target.id;
+                        if (!id) return;
+                        activeSectionId = id;
+                    });
+
+                    if (activeSectionId && hashLinkMap[activeSectionId]) {
+                        setActive(hashLinkMap[activeSectionId]);
+                    }
+                }, {
+                    root: null,
+                    rootMargin: '-30% 0px -55% 0px',
+                    threshold: [0.15, 0.35, 0.6],
+                });
+
+                hashTargets.forEach(function (target) { observer.observe(target); });
+
+                var initialHash = (window.location.hash || '').replace(/^#/, '');
+                if (initialHash && hashLinkMap[initialHash]) {
+                    setActive(hashLinkMap[initialHash]);
+                } else {
+                    var firstTarget = hashTargets[0];
+                    if (firstTarget && hashLinkMap[firstTarget.id]) {
+                        setActive(hashLinkMap[firstTarget.id]);
+                    }
+                }
+
+                return;
+            }
+
+            if (plainLinks.length > 0) {
+                setActive([plainLinks[0]]);
+            }
+        });
+    }
+
     function runLoaderWithGsap(gsap) {
         var loader = buildLoaderDom();
         var panel = loader.querySelector('.vs-loader-panel');
@@ -245,10 +354,12 @@
             gsap.registerPlugin(ScrollTrigger);
             runLoaderWithGsap(gsap);
             initPageTransitions(gsap);
+            initActiveNavState();
             initRevealAnimations(gsap, ScrollTrigger);
             initTypographyMotion(gsap);
         } catch (_err) {
             runLoaderFallback();
+            initActiveNavState();
         }
     }
 
