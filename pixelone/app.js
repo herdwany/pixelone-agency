@@ -1651,6 +1651,45 @@ window.closeOrderModal = function() {
     }
 };
 
+function setupHomeCspSafeBindings() {
+    if (document.body?.dataset.cspSafeBindingsReady === 'true') return;
+    if (document.body) document.body.dataset.cspSafeBindingsReady = 'true';
+
+    document.addEventListener('click', (e) => {
+        const actionEl = e.target.closest('[data-action]');
+        if (!actionEl) return;
+
+        const action = actionEl.dataset.action;
+
+        if (action === 'close-mobile-menu') {
+            actionEl.closest('details')?.removeAttribute('open');
+            return;
+        }
+
+        if (action === 'mobile-open-order-modal') {
+            actionEl.closest('details')?.removeAttribute('open');
+            openOrderModal(actionEl.dataset.serviceName || 'طلب خدمة مخصص');
+            return;
+        }
+
+        if (action === 'open-order-modal') {
+            openOrderModal(actionEl.dataset.serviceName || 'طلب خدمة مخصص');
+            return;
+        }
+
+        if (action === 'scroll-to') {
+            const targetId = actionEl.dataset.targetId || '';
+            const section = targetId ? document.getElementById(targetId) : null;
+            if (section) section.scrollIntoView({ behavior: 'smooth' });
+            return;
+        }
+
+        if (action === 'close-order-modal') {
+            closeOrderModal();
+        }
+    });
+}
+
 async function handleOrderSubmit(e) {
     e.preventDefault();
 
@@ -3570,6 +3609,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (hasServicesGrid) {
             setPageLoaderStatus('Rendering services and dynamic pricing...');
+            setupHomeCspSafeBindings();
             await hydrateDataStores();
             await loadServices();
             renderOffersForHome();

@@ -18,59 +18,7 @@
     <meta property="og:description" content="من الشعارات الفخمة إلى فيديوهات Reels السريعة، كل ما تحتاجه علامتك لتبدو كشركة كبرى في مكان واحد.">
     <meta property="og:url" content="https://www.pixelonevisuals.tech/index.html">
     <link rel="canonical" href="https://www.pixelonevisuals.tech/index.html">
-        <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            "@id": "https://www.pixelonevisuals.tech/#organization",
-            "name": "Pixel One Visuals",
-            "url": "https://www.pixelonevisuals.tech/",
-            "email": "contact@pixelonevisuals.tech",
-            "telephone": "+212600000000",
-            "description": "وكالة تصميم رقمي تقدم خدمات الهوية البصرية، تصميم السوشيال ميديا، الإعلانات، والعروض التقديمية.",
-            "address": {
-                "@type": "PostalAddress",
-                "addressCountry": "MA"
-            }
-        }
-        </script>
-        <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            "@id": "https://www.pixelonevisuals.tech/#website",
-            "url": "https://www.pixelonevisuals.tech/",
-            "name": "Pixel One Visuals",
-            "inLanguage": "ar",
-            "publisher": {
-                "@id": "https://www.pixelonevisuals.tech/#organization"
-            }
-        }
-        </script>
-        <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "FAQPage",
-            "mainEntity": [
-                {
-                    "@type": "Question",
-                    "name": "هل تقدمون خدمات تمويل الإعلانات (Sponsoring) أو زيادة المتابعين؟",
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": "لا. نحن وكالة متخصصة في صناعة المحتوى وتصميم الهوية البصرية. نحن نجهز لك الحساب الفاخر والتصاميم التي تقنع العميل بالشراء، وأنت من يطلق إعلاناته."
-                    }
-                },
-                {
-                    "@type": "Question",
-                    "name": "كيف أستلم الفيديوهات والتصاميم؟",
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": "يتم تسليم جميع الملفات بجودة عالية عبر Google Drive أو روابط مباشرة للحفاظ على الدقة التامة قبل النشر."
-                    }
-                }
-            ]
-        }
-        </script>
+    <script type="application/ld+json" src="content/index.schema.jsonld"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -106,7 +54,7 @@
 
             <div class="site-nav-cta hidden md:flex items-center gap-3">
                 <a id="loginNavLink" data-role="client-auth-link" href="client-login.html" class="rounded-lg border border-gray-600 bg-transparent px-4 py-2 text-sm font-bold text-gray-200 transition hover:border-gray-400 hover:text-white">دخول العملاء VIP</a>
-                <button type="button" onclick="openOrderModal('طلب خدمة مخصص')" class="rounded-lg border border-[#E50914] bg-[#E50914] px-5 py-2 text-sm font-black text-white shadow-[0_0_18px_rgba(229,9,20,0.35)] transition hover:shadow-[0_0_26px_rgba(229,9,20,0.55)]">
+                <button type="button" data-action="open-order-modal" data-service-name="طلب خدمة مخصص" class="rounded-lg border border-[#E50914] bg-[#E50914] px-5 py-2 text-sm font-black text-white shadow-[0_0_18px_rgba(229,9,20,0.35)] transition hover:shadow-[0_0_26px_rgba(229,9,20,0.55)]">
                     اطلب الآن
                 </button>
             </div>
@@ -120,10 +68,10 @@
                 </summary>
 
                 <div class="absolute left-0 top-[calc(100%+0.55rem)] grid w-[85vw] max-w-[320px] gap-2 rounded-xl border border-white/10 bg-[#090909]/95 p-3 shadow-2xl">
-                    <a href="#services" onclick="this.closest('details')?.removeAttribute('open')" class="rounded-lg px-3 py-2 text-sm font-bold text-gray-200 transition hover:bg-white/5">خدماتنا</a>
-                    <a href="#about" onclick="this.closest('details')?.removeAttribute('open')" class="rounded-lg px-3 py-2 text-sm font-bold text-gray-200 transition hover:bg-white/5">من نحن</a>
-                    <a id="loginNavLinkMobile" data-role="client-auth-link" href="client-login.html" onclick="this.closest('details')?.removeAttribute('open')" class="rounded-lg border border-gray-600 px-3 py-2 text-center text-sm font-bold text-gray-100 transition hover:border-gray-400">دخول العملاء VIP</a>
-                    <button type="button" onclick="this.closest('details')?.removeAttribute('open'); openOrderModal('طلب خدمة مخصص')" class="rounded-lg border border-[#E50914] bg-[#E50914] px-3 py-2 text-sm font-black text-white shadow-[0_0_14px_rgba(229,9,20,0.34)]">
+                    <a href="#services" data-action="close-mobile-menu" class="rounded-lg px-3 py-2 text-sm font-bold text-gray-200 transition hover:bg-white/5">خدماتنا</a>
+                    <a href="#about" data-action="close-mobile-menu" class="rounded-lg px-3 py-2 text-sm font-bold text-gray-200 transition hover:bg-white/5">من نحن</a>
+                    <a id="loginNavLinkMobile" data-role="client-auth-link" href="client-login.html" data-action="close-mobile-menu" class="rounded-lg border border-gray-600 px-3 py-2 text-center text-sm font-bold text-gray-100 transition hover:border-gray-400">دخول العملاء VIP</a>
+                    <button type="button" data-action="mobile-open-order-modal" data-service-name="طلب خدمة مخصص" class="rounded-lg border border-[#E50914] bg-[#E50914] px-3 py-2 text-sm font-black text-white shadow-[0_0_14px_rgba(229,9,20,0.34)]">
                         تواصل معنا
                     </button>
                 </div>
@@ -154,7 +102,7 @@
                 </p>
 
                 <div class="hero-v2-actions animate-fade-up delay-300">
-                    <button type="button" onclick="document.getElementById('services').scrollIntoView({behavior: 'smooth'})" class="btn-filled-red px-10 py-4 rounded-xl font-black text-lg flex items-center justify-center gap-2">
+                    <button type="button" data-action="scroll-to" data-target-id="services" class="btn-filled-red px-10 py-4 rounded-xl font-black text-lg flex items-center justify-center gap-2">
                         استعرض خدماتنا
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
                     </button>
@@ -343,7 +291,7 @@
             <div class="relative z-10">
                 <h2 class="text-3xl md:text-5xl font-black mb-6 text-white">جاهز تبني صورة علامة تجارية فاخرة؟</h2>
                 <p class="text-gray-400 mb-10 text-lg max-w-2xl mx-auto">اختر الخدمة المناسبة، وسنحوّل فكرتك إلى محتوى بصري يرفع قيمة حضورك ويجذب عملاءك من أول نظرة.</p>
-                <button type="button" onclick="document.getElementById('services').scrollIntoView({behavior: 'smooth'})" class="btn-filled-red px-12 py-5 rounded-xl font-black text-lg shadow-[0_0_30px_rgba(229,9,20,0.3)] hover:shadow-[0_0_50px_rgba(229,9,20,0.5)]">
+                <button type="button" data-action="scroll-to" data-target-id="services" class="btn-filled-red px-12 py-5 rounded-xl font-black text-lg shadow-[0_0_30px_rgba(229,9,20,0.3)] hover:shadow-[0_0_50px_rgba(229,9,20,0.5)]">
                     اختر خدمتك الآن
                 </button>
             </div>
@@ -429,7 +377,7 @@
          ================================================================== -->
     <div id="orderModal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="orderModalTitle">
         <!-- زر الإغلاق -->
-        <button type="button" class="modal-close-btn" onclick="window.closeOrderModal()" aria-label="إغلاق نافذة الطلب">✕</button>
+        <button type="button" class="modal-close-btn" data-action="close-order-modal" aria-label="إغلاق نافذة الطلب">✕</button>
         
         <div class="modal-content water-card p-8 md:p-10 rounded-[2rem] relative border border-white/10">
             
