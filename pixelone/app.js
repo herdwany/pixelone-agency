@@ -1388,22 +1388,34 @@ const FALLBACK_SERVICES = DEFAULT_MANAGED_SERVICES.map((service, index) => ({
 }));
 
 async function setupHomeSessionUI() {
-    const navLink = document.getElementById('loginNavLink');
-    if (!navLink) return;
+    const desktopNavLink = document.getElementById('loginNavLink')
+        || document.querySelector('.site-nav-cta a[data-role="client-auth-link"]')
+        || document.querySelector('.site-nav-cta a[href="client-login.html"], .site-nav-cta a[href="login.html"]');
+
+    const mobileNavLink = document.getElementById('loginNavLinkMobile')
+        || document.querySelector('.mobile-nav-panel a[data-role="client-auth-link"]')
+        || document.querySelector('.mobile-nav-panel a[href="client-login.html"], .mobile-nav-panel a[href="login.html"]');
+
+    const navLinks = [desktopNavLink, mobileNavLink].filter(Boolean);
+    if (navLinks.length === 0) return;
 
     const { data: { user } } = await _supabase.auth.getUser();
     currentSessionUser = user || null;
 
     if (currentSessionUser) {
-        navLink.textContent = t('navDashboard');
-        navLink.href = isAdminUser(currentSessionUser) ? 'admin-dashboard.html' : 'dashboard.html';
-        navLink.classList.remove('text-gray-300');
-        navLink.classList.add('text-emerald-300');
+        navLinks.forEach((navLink) => {
+            navLink.textContent = t('navDashboard');
+            navLink.href = isAdminUser(currentSessionUser) ? 'admin-dashboard.html' : 'dashboard.html';
+            navLink.classList.remove('text-gray-300');
+            navLink.classList.add('text-emerald-300');
+        });
     } else {
-        navLink.textContent = t('navClientLogin');
-        navLink.href = 'client-login.html';
-        navLink.classList.remove('text-emerald-300');
-        navLink.classList.add('text-gray-300');
+        navLinks.forEach((navLink) => {
+            navLink.textContent = t('navClientLogin');
+            navLink.href = 'client-login.html';
+            navLink.classList.remove('text-emerald-300');
+            navLink.classList.add('text-gray-300');
+        });
     }
 }
 
