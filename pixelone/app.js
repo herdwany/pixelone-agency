@@ -907,7 +907,7 @@ function buildAppUrl(pageName, query = {}) {
 }
 
 function getLoginPageUrl() {
-    return buildAppUrl('login.html');
+    return buildAppUrl('client-login.html');
 }
 
 function getDashboardUrl() {
@@ -1390,11 +1390,11 @@ const FALLBACK_SERVICES = DEFAULT_MANAGED_SERVICES.map((service, index) => ({
 async function setupHomeSessionUI() {
     const desktopNavLink = document.getElementById('loginNavLink')
         || document.querySelector('.site-nav-cta a[data-role="client-auth-link"]')
-        || document.querySelector('.site-nav-cta a[href="client-login.html"], .site-nav-cta a[href="login.html"]');
+        || document.querySelector('.site-nav-cta a[href="client-login.html"]');
 
     const mobileNavLink = document.getElementById('loginNavLinkMobile')
         || document.querySelector('.mobile-nav-panel a[data-role="client-auth-link"]')
-        || document.querySelector('.mobile-nav-panel a[href="client-login.html"], .mobile-nav-panel a[href="login.html"]');
+        || document.querySelector('.mobile-nav-panel a[href="client-login.html"]');
 
     const navLinks = [desktopNavLink, mobileNavLink].filter(Boolean);
     if (navLinks.length === 0) return;
@@ -2052,7 +2052,7 @@ async function setupAuthentication() {
 
             showAuthMessage('✅ تم تحديث كلمة المرور بنجاح. يمكنك تسجيل الدخول الآن.', 'success');
             setTimeout(() => {
-                window.location.replace('login.html');
+                window.location.replace('client-login.html');
             }, 1200);
         });
     }
@@ -2162,7 +2162,7 @@ async function protectDashboardRoute() {
     const { data: { user }, error } = await _supabase.auth.getUser();
 
     if (error || !user) {
-        window.location.replace('login.html');
+        window.location.replace('client-login.html');
         return null;
     }
 
@@ -2185,7 +2185,7 @@ async function protectAdminDashboardRoute() {
     const { data: { user }, error } = await _supabase.auth.getUser();
 
     if (error || !user) {
-        window.location.replace('login.html');
+        window.location.replace('client-login.html');
         return null;
     }
 
@@ -2504,7 +2504,7 @@ function setupDashboardSecurity(user) {
                 return;
             }
             showAuthMessage('✅ تم تسجيل الخروج من كل الأجهزة.', 'success');
-            setTimeout(() => window.location.replace('login.html'), 900);
+            setTimeout(() => window.location.replace('client-login.html'), 900);
         });
     }
 }
@@ -3541,7 +3541,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const hasServicesGrid = Boolean(document.getElementById('servicesGrid'));
         const hasSessionNavLinks = Boolean(document.querySelector(
-            '.site-nav-cta a[data-role="client-auth-link"], .site-nav-cta a[href="client-login.html"], .site-nav-cta a[href="login.html"], .mobile-nav-panel a[data-role="client-auth-link"], .mobile-nav-panel a[href="client-login.html"], .mobile-nav-panel a[href="login.html"]'
+            '.site-nav-cta a[data-role="client-auth-link"], .site-nav-cta a[href="client-login.html"], .mobile-nav-panel a[data-role="client-auth-link"], .mobile-nav-panel a[href="client-login.html"]'
         ));
         const hasAuthForm = Boolean(document.getElementById('authForm'));
         const hasAuthCallbackView = Boolean(document.getElementById('view-auth-callback'));
