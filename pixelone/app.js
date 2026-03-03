@@ -1407,6 +1407,7 @@ async function setupHomeSessionUI() {
             navLink.textContent = t('navDashboard');
             navLink.href = isAdminUser(currentSessionUser) ? 'admin-dashboard.html' : 'dashboard.html';
             navLink.classList.remove('text-gray-300');
+            navLink.classList.remove('text-gray-200');
             navLink.classList.add('text-emerald-300');
         });
     } else {
@@ -1414,6 +1415,7 @@ async function setupHomeSessionUI() {
             navLink.textContent = t('navClientLogin');
             navLink.href = 'client-login.html';
             navLink.classList.remove('text-emerald-300');
+            navLink.classList.remove('text-gray-200');
             navLink.classList.add('text-gray-300');
         });
     }
@@ -3538,6 +3540,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         await loadSiteSettings();
 
         const hasServicesGrid = Boolean(document.getElementById('servicesGrid'));
+        const hasSessionNavLinks = Boolean(document.querySelector(
+            '.site-nav-cta a[data-role="client-auth-link"], .site-nav-cta a[href="client-login.html"], .site-nav-cta a[href="login.html"], .mobile-nav-panel a[data-role="client-auth-link"], .mobile-nav-panel a[href="client-login.html"], .mobile-nav-panel a[href="login.html"]'
+        ));
         const hasAuthForm = Boolean(document.getElementById('authForm'));
         const hasAuthCallbackView = Boolean(document.getElementById('view-auth-callback'));
         const hasDashboardView = Boolean(document.getElementById('view-dashboard'));
@@ -3559,9 +3564,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         await loadAdminEmailsFromDatabase();
         await hydrateDataStores();
 
+        if (hasSessionNavLinks) {
+            await setupHomeSessionUI();
+        }
+
         if (hasServicesGrid) {
             setPageLoaderStatus('Rendering services and dynamic pricing...');
-            await setupHomeSessionUI();
             await hydrateDataStores();
             await loadServices();
             renderOffersForHome();
