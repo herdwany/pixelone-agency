@@ -415,13 +415,11 @@
             runLoaderWithGsap(gsap);
             initPageTransitions(gsap);
             initActiveNavState();
-            initCopySanitizer();
             initRevealAnimations(gsap, ScrollTrigger);
             initTypographyMotion(gsap);
         } catch (_err) {
             runLoaderFallback();
             initActiveNavState();
-            initCopySanitizer();
         }
     }
 

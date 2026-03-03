@@ -103,10 +103,16 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 800;
     letter-spacing: 0;
     line-height: 1.28;
+    word-break: normal;
+    overflow-wrap: break-word;
 }
 
 p, li, a, button, input, textarea {
     font-family: var(--font-ar);
+}
+
+p {
+    line-height: 1.85;
 }
 
 /* ==========================================================================
@@ -165,10 +171,6 @@ p, li, a, button, input, textarea {
     justify-content: center;
     min-height: 100vh;
     padding: 2rem 1rem;
-}
-
-.hidden {
-    display: none !important;
 }
 
 .no-scrollbar {
