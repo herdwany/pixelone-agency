@@ -162,6 +162,66 @@
         });
     }
 
+    function stripPunctuation(value) {
+        var text = String(value || '');
+        if (!text) return text;
+
+        return text
+            .replace(/[\.,،؛:!?؟…"'«»\(\)\[\]{}]+/g, ' ')
+            .replace(/\s{2,}/g, ' ')
+            .trim();
+    }
+
+    function shouldSkipSanitize(el, rawText) {
+        if (!el) return true;
+        if (!rawText) return true;
+
+        // Keep contact and URL-like content intact.
+        if (/@|https?:\/\/|www\./i.test(rawText)) return true;
+
+        if (el.closest('a[dir="ltr"], .font-en, [dir="ltr"], .number-font')) return true;
+        return false;
+    }
+
+    function sanitizeArabicCopy() {
+        var targets = document.querySelectorAll('h1, h2, h3, h4, h5, h6, p');
+        targets.forEach(function (el) {
+            var raw = (el.textContent || '').trim();
+            if (shouldSkipSanitize(el, raw)) return;
+
+            var cleaned = stripPunctuation(raw);
+            if (cleaned && cleaned !== raw) {
+                el.textContent = cleaned;
+            }
+        });
+    }
+
+    function initCopySanitizer() {
+        var rafId = null;
+
+        function queueSanitize() {
+            if (rafId) return;
+            rafId = window.requestAnimationFrame(function () {
+                rafId = null;
+                sanitizeArabicCopy();
+            });
+        }
+
+        sanitizeArabicCopy();
+        window.setTimeout(sanitizeArabicCopy, 600);
+        window.setTimeout(sanitizeArabicCopy, 1400);
+
+        var observer = new MutationObserver(function () {
+            queueSanitize();
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            characterData: true,
+        });
+    }
+
     function normalizePathname(pathname) {
         var p = String(pathname || '/').toLowerCase();
         if (p === '/index.html') return '/';
@@ -355,11 +415,13 @@
             runLoaderWithGsap(gsap);
             initPageTransitions(gsap);
             initActiveNavState();
+            initCopySanitizer();
             initRevealAnimations(gsap, ScrollTrigger);
             initTypographyMotion(gsap);
         } catch (_err) {
             runLoaderFallback();
             initActiveNavState();
+            initCopySanitizer();
         }
     }
 

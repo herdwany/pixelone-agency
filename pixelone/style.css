@@ -26,7 +26,7 @@
 /* ==========================================================================
    1. المتغيرات والخطوط
    ========================================================================== */
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Caveat:wght@700&family=Inter:wght@300;400;600;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Changa:wght@500;700;800&family=Caveat:wght@700&display=swap');
 
 :root {
     /* الألوان الأساسية */
@@ -52,8 +52,8 @@
     --glass-shadow-red: 0 8px 32px 0 rgba(229, 9, 20, 0.15);
     
     /* الخطوط */
-    --font-ar: 'Cairo', sans-serif;
-    --font-en: 'Inter', sans-serif;
+    --font-ar: 'Tajawal', sans-serif;
+    --font-en: 'Changa', sans-serif;
     --font-loader: 'Caveat', cursive;
     
     /* الترانزيشن والأنيميشن */
@@ -96,6 +96,17 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-en);
+    font-weight: 800;
+    letter-spacing: 0;
+    line-height: 1.28;
+}
+
+p, li, a, button, input, textarea {
+    font-family: var(--font-ar);
 }
 
 /* ==========================================================================
@@ -448,7 +459,7 @@ textarea:focus-visible {
 }
 
 .lang-switcher {
-    display: inline-flex;
+    display: none !important;
     align-items: center;
     gap: 0.35rem;
     padding: 0.28rem;
@@ -746,9 +757,9 @@ textarea:focus-visible {
    ========================================================================== */
 .btn-filled-red {
     position: relative;
-    background: var(--brand-red);
+    background: linear-gradient(135deg, #f71822 0%, #c10812 55%, #7f0208 100%);
     color: #FFF;
-    border: 1px solid var(--brand-red);
+    border: 1px solid rgba(255, 80, 90, 0.7);
     overflow: hidden;
     z-index: 1;
     transition: var(--transition-smooth);
@@ -756,6 +767,10 @@ textarea:focus-visible {
     cursor: pointer;
     display: inline-block;
     text-decoration: none;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    border-radius: 0.9rem;
+    box-shadow: 0 10px 30px rgba(229, 9, 20, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .btn-filled-red::before {
@@ -771,7 +786,7 @@ textarea:focus-visible {
 
 .btn-filled-red:hover {
     transform: translateY(-3px);
-    box-shadow: 0 10px 25px var(--brand-red-glow);
+    box-shadow: 0 14px 34px rgba(229, 9, 20, 0.5);
     color: #FFF;
 }
 
@@ -782,6 +797,35 @@ textarea:focus-visible {
 
 .btn-filled-red:active {
     transform: translateY(1px);
+}
+
+/* تمييز الأزرار حسب منطقة الصفحة */
+.site-nav-cta .btn-filled-red {
+    background: linear-gradient(140deg, #ff313d 0%, #d20a15 60%, #87030a 100%);
+    border-radius: 0.7rem;
+    font-weight: 900;
+    padding-inline: 1.4rem;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06) inset, 0 8px 20px rgba(229, 9, 20, 0.32);
+}
+
+.mobile-nav-panel .btn-filled-red,
+.mobile-nav-btn {
+    background: linear-gradient(160deg, #ff2c37 0%, #b50811 62%, #5d0105 100%);
+    border-radius: 0.82rem;
+    font-size: 0.95rem;
+}
+
+main section .btn-filled-red,
+main > header .btn-filled-red {
+    background: linear-gradient(125deg, #ff2e38 0%, #ca0711 52%, #770208 100%);
+    border-color: rgba(255, 103, 112, 0.7);
+    border-radius: 1rem;
+    font-size: clamp(0.95rem, 2vw, 1.08rem);
+}
+
+footer .btn-filled-red {
+    background: linear-gradient(125deg, #ef1b2a 0%, #9e040d 70%);
+    border-radius: 0.75rem;
 }
 
 .btn-disabled {
