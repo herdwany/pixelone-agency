@@ -181,6 +181,20 @@ const SERVICE_I18N = {
             serviceType: 'Service Ponctuel',
         },
     },
+    'svc-digital-qr-menu': {
+        en: {
+            title: 'Digital QR Menu Design',
+            description: 'Premium digital menu experience for restaurants and cafes, optimized for mobile scan.',
+            category: 'Hospitality Branding',
+            serviceType: 'One-Time Service',
+        },
+        fr: {
+            title: 'Design Menu QR Digital',
+            description: 'Menu digital premium pour restaurants et cafes, optimisé pour mobile.',
+            category: 'Branding Restauration',
+            serviceType: 'Service Ponctuel',
+        },
+    },
     'svc-brand-identity-basic': {
         en: {
             title: 'Basic Brand Identity',
@@ -197,14 +211,14 @@ const SERVICE_I18N = {
     },
     'svc-social-management': {
         en: {
-            title: 'Social Media Management',
-            description: 'Monthly package with 12 designs, copywriting, and visual account coordination.',
+            title: 'Monthly Content Production Package',
+            description: 'Monthly plan with 12 premium designs plus copywriting to keep your account active and attractive.',
             category: 'Content Management',
             serviceType: 'Monthly Subscription',
         },
         fr: {
-            title: 'Gestion des Reseaux Sociaux',
-            description: 'Pack mensuel: 12 designs, redaction des posts, et harmonisation visuelle.',
+            title: 'Pack Mensuel de Creation de Contenu',
+            description: '12 designs premium par mois avec redaction pour garder votre compte actif et attractif.',
             category: 'Gestion de Contenu',
             serviceType: 'Abonnement Mensuel',
         },
@@ -277,6 +291,17 @@ const DEFAULT_MANAGED_SERVICES = [
         enabled: true,
     },
     {
+        id: 'svc-digital-qr-menu',
+        titles: { ar: 'تصميم المنيو الرقمي QR (Digital QR Menu)' },
+        price: '300',
+        descriptions: { ar: 'منيو رقمي فاخر للمطاعم والمقاهي يفتح بمسحة هاتف ويعكس رقي المكان.' },
+        category: 'تصميم ضيافة',
+        serviceType: 'خدمة لمرة واحدة',
+        is_coming_soon: false,
+        popularity: 3,
+        enabled: true,
+    },
+    {
         id: 'svc-brand-identity-basic',
         titles: { ar: 'الهوية البصرية الأساسية (Basic Brand Identity)' },
         price: '400',
@@ -284,18 +309,18 @@ const DEFAULT_MANAGED_SERVICES = [
         category: 'هوية بصرية',
         serviceType: 'خدمة لمرة واحدة',
         is_coming_soon: false,
-        popularity: 3,
+        popularity: 4,
         enabled: true,
     },
     {
         id: 'svc-social-management',
         titles: { ar: 'إدارة السوشيال ميديا (Social Media Management)' },
         price: '900',
-        descriptions: { ar: 'باقة شهرية تشمل 12 تصميماً + كتابة نصوص النشر + تنسيق الحساب.' },
+        descriptions: { ar: 'راحة بال تامة: 12 تصميماً فخماً شهرياً + كتابة النصوص لإبقاء حسابك نشطاً وجذاباً.' },
         category: 'إدارة محتوى',
         serviceType: 'اشتراك شهري',
         is_coming_soon: false,
-        popularity: 4,
+        popularity: 5,
         enabled: true,
     },
 ];
