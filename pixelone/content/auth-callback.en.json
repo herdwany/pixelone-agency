@@ -1,17 +1,15 @@
 {
-    "page":  "auth-callback",
-    "lang":  "en",
-    "title":  "التحقق من الرابط - Pixel One",
-    "metaDescription":  "صفحة وسيطة للتحقق من روابط المصادقة واستكمال تسجيل الدخول أو الاسترجاع في Pixel One Visuals.",
-    "texts":  [
-                  "P",
-                  "Pixel One",
-                  "جاري التحقق من الرابط...",
-                  "يرجى الانتظار بينما نتحقق من حالة الرابط ونجهز الصفحة المناسبة لك.",
-                  "متابعة",
-                  "← العودة لصفحة تسجيل الدخول"
-              ],
-    "attributes":  [
-
-                   ]
+    "page": "auth-callback",
+    "lang": "en",
+    "title": "Link Verification - Pixel One",
+    "metaDescription": "Intermediate page to verify authentication links and complete login or recovery for Pixel One Visuals.",
+    "texts": [
+        "P",
+        "Pixel One",
+        "Verifying link...",
+        "Please wait while we check the link status and prepare the right page for you.",
+        "Continue",
+        "<- Back to login page"
+    ],
+    "attributes": []
 }
