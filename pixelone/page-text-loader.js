@@ -238,6 +238,10 @@
             var len = Math.min(nodes.length, finalPayload.texts.length);
             for (var i = 0; i < len; i += 1) {
                 replaceTrimmedText(nodes[i], String(finalPayload.texts[i] || ''));
+                // Mark parent element so visual-system sanitizer skips i18n-managed nodes.
+                if (nodes[i].parentElement) {
+                    nodes[i].parentElement.dataset.textLoaded = '1';
+                }
             }
 
             createLanguageSwitcher(lang);

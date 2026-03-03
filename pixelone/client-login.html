@@ -20,7 +20,9 @@
     <link rel="canonical" href="https://www.pixelonevisuals.tech/client-login.html">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="selection:bg-red-600 selection:text-white site-shell">
@@ -39,7 +41,7 @@
         </div>
         <div class="site-nav-cta hidden md:flex gap-4 items-center">
             <a href="client-login.html" class="text-sm font-bold text-emerald-300">دخول العملاء</a>
-            <a href="client-login.html" class="btn-filled-red px-6 py-2 rounded-md text-sm font-bold hidden sm:block">تسجيل الدخول</a>
+            <a href="login.html" class="btn-filled-red px-6 py-2 rounded-md text-sm font-bold hidden sm:block">تسجيل الدخول</a>
         </div>
 
         <details class="mobile-nav-menu md:hidden">
@@ -54,7 +56,7 @@
                 <a href="how-we-work.html" class="mobile-nav-link">كيف نعمل</a>
                 <a href="privacy-policy.html" class="mobile-nav-link">الخصوصية</a>
                 <a href="client-login.html" class="mobile-nav-link mobile-nav-link-accent">دخول العملاء</a>
-                <a href="client-login.html" class="btn-filled-red mobile-nav-btn">تسجيل الدخول</a>
+                <a href="login.html" class="btn-filled-red mobile-nav-btn">تسجيل الدخول</a>
             </div>
         </details>
     </nav>
@@ -81,7 +83,7 @@
         <section class="water-card p-8 md:p-10 rounded-3xl text-center">
             <h2 class="text-white text-2xl font-black mb-3">جاهز للدخول؟</h2>
             <p class="text-gray-400 mb-6">اضغط الزر التالي للانتقال مباشرة إلى صفحة تسجيل الدخول الرسمية.</p>
-            <a href="client-login.html" class="btn-filled-red px-10 py-4 rounded-xl font-black text-lg inline-block">الانتقال إلى تسجيل الدخول</a>
+            <a href="login.html" class="btn-filled-red px-10 py-4 rounded-xl font-black text-lg inline-block">الانتقال إلى تسجيل الدخول</a>
         </section>
     </main>
 
@@ -95,6 +97,7 @@
             </div>
         </div>
     </footer>
+    <script src="app.js" defer></script>
     <script src="page-text-loader.js" defer></script>
     <script src="visual-system.js" defer></script>
 </body>

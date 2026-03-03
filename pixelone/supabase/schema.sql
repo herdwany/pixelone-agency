@@ -356,15 +356,11 @@ on conflict (id) do nothing;
 
 insert into public.pixel_services (id, title_ar, description_ar, price, category, is_coming_soon, popularity, enabled)
 values
-    ('svc-social-fixed', 'Social Media Static Designs', 'Professional ad posts for Instagram/Facebook/LinkedIn.', '60', 'social', false, 1, true),
-    ('svc-logo', 'Professional Logo Design', 'Clear logo usable across platforms with transparent export.', '150', 'branding', false, 2, true),
-    ('svc-banners', 'Digital Banners & Ads', 'Campaign-ready banners in publish-ready sizes.', '80', 'ads', false, 3, true),
-    ('svc-pitch', 'Pitch Deck Design', 'Business/investor slides with strong visual hierarchy.', '200', 'business', false, 4, true),
-    ('svc-reels', 'Short Video (Reels/TikTok)', 'Fast lightweight edit for short-form daily content.', '120', 'video', false, 5, true),
-    ('svc-design-pro', 'Professional Design Service', 'Advanced design package for identity and content.', '500', 'design', false, 6, true),
-    ('svc-video-short', 'Short Videos (< 1 min)', 'High-quality short video editing for social platforms.', '300', 'video', false, 7, true),
-    ('svc-video-advanced', 'Advanced Promo Video (Soon)', 'Complex production-grade video service coming soon.', 'Soon', 'video-advanced', true, 8, true),
-    ('svc-web-landing', 'Web & Landing Page Design (Soon)', 'Soon: high-converting landing pages and websites.', '1500', 'web', true, 9, true)
+    ('svc-banner-design', 'تصميم بانر إعلاني (Banner Design)', 'تصميم مخصص وجاهز للإعلانات الممولة (يجذب النقرات).', '100', 'تصميم إعلاني', false, 1, true),
+    ('svc-reels-tiktok', 'مونتاج الفيديوهات القصيرة (Reels / TikToks)', 'مونتاج ديناميكي سريع مواكب للتريند مع نصوص جذابة (Captions).', '150', 'مونتاج فيديو', false, 2, true),
+    ('svc-digital-qr-menu', 'تصميم المنيو الرقمي QR (Digital QR Menu)', 'منيو رقمي فاخر للمطاعم والمقاهي يفتح بمسحة هاتف ويعكس رقي المكان.', '300', 'تصميم ضيافة', false, 3, true),
+    ('svc-brand-identity-basic', 'الهوية البصرية الأساسية (Basic Brand Identity)', 'تصميم شعار احترافي + تحديد ألوان العلامة + صور البروفايل والغلاف.', '400', 'هوية بصرية', false, 4, true),
+    ('svc-social-management', 'إدارة السوشيال ميديا (Social Media Management)', 'راحة بال تامة: 12 تصميماً فخماً شهرياً + كتابة النصوص لإبقاء حسابك نشطاً وجذاباً.', '900', 'إدارة محتوى', false, 5, true)
 on conflict (id) do update set
     title_ar = excluded.title_ar,
     description_ar = excluded.description_ar,

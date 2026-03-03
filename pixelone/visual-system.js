@@ -180,6 +180,11 @@
         if (/@|https?:\/\/|www\./i.test(rawText)) return true;
 
         if (el.closest('a[dir="ltr"], .font-en, [dir="ltr"], .number-font')) return true;
+
+        // Skip elements managed by i18n text loader to avoid stripping punctuation from translated text.
+        if (el.hasAttribute('data-i18n') || el.closest('[data-i18n]')) return true;
+        if (el.dataset && el.dataset.textLoaded) return true;
+
         return false;
     }
 

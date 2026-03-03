@@ -248,7 +248,7 @@ const DEFAULT_SITE_SETTINGS = {
         adminDomains: ['pixelonevisuals.tech'],
     },
     contact: {
-        whatsappNumber: '212600000000',
+        whatsappNumber: '212661234567',
         country: 'MA',
         email: 'contact@pixelonevisuals.tech',
     },
@@ -999,11 +999,14 @@ function getLocalOffers() {
 }
 
 function getLocalServices() {
-    // Enforce exactly the curated four services regardless of legacy stored data.
+    const stored = readLocalJson(SERVICES_STORAGE_KEY, []);
+    if (Array.isArray(stored) && stored.length > 0) return stored;
     return DEFAULT_MANAGED_SERVICES.map((service, index) => normalizeManagedService(service, index));
 }
 
 function enforceExclusiveServiceCatalog() {
+    // Only apply defaults when runtimeStore has no services (Supabase returned empty).
+    if (runtimeStore.services && runtimeStore.services.length > 0) return;
     runtimeStore.services = DEFAULT_MANAGED_SERVICES.map((service, index) => normalizeManagedService(service, index));
     writeLocalJson(SERVICES_STORAGE_KEY, runtimeStore.services);
 }
