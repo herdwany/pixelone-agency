@@ -1808,6 +1808,7 @@ async function handleOrderSubmit(e) {
 
     if (!btn || !msgBox || !hiddenServiceName || !nameInput || !phoneInput || !emailInput || !specsInput) return;
 
+    // 1. تأمين واجهة المستخدم (CRO & UX)
     btn.disabled = true;
     btn.textContent = t('orderProcessing');
 
@@ -1846,6 +1847,7 @@ async function handleOrderSubmit(e) {
     const orderDateIso = new Date().toISOString();
     const orderStatus = siteSettings.orders?.defaultStatus || DEFAULT_SITE_SETTINGS.orders.defaultStatus;
 
+    // 2. حفظ الطلب في قاعدة البيانات (Supabase)
     addOrderRecord({
         id: orderId,
         trackingCode: orderId,
@@ -1864,6 +1866,33 @@ async function handleOrderSubmit(e) {
         discountCode,
     });
 
+    // 3. 🚀 إرسال البيانات إلى نظام الأتمتة (Viasocket) في الخلفية
+    try {
+        const webhookUrl = 'https://flow.sokt.io/func/scriekZWLgOh';
+        await fetch(webhookUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                orderId,
+                serviceName,
+                customerName: name,
+                customerPhone: phone,
+                customerEmail: effectiveEmail,
+                specs,
+                finalPrice,
+                discountCode,
+                orderDate: orderDateIso,
+            }),
+        });
+        console.log('✅ تم إرسال البيانات إلى Viasocket بنجاح');
+    } catch (error) {
+        console.error('❌ خطأ في الاتصال بـ Viasocket:', error);
+        // ملاحظة معمارية: نحن لا نوقف عملية العميل إذا فشل الـ Webhook
+    }
+
+    // 4. تجهيز رسالة الواتساب وتوجيه العميل
     const discountLine = discountCode ? `${t('waDiscountCode')} ${discountCode}\n` : '';
     const priceLine = finalPrice ? `${t('waFinalPrice')} ${finalPrice} MAD\n` : '';
 
@@ -1881,8 +1910,11 @@ async function handleOrderSubmit(e) {
 
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${myWhatsappNumber}?text=${encodedMessage}`;
+    
+    // فتح واتساب للعميل
     window.open(whatsappUrl, '_blank');
 
+    // 5. إظهار رسالة النجاح وتفريغ الاستمارة
     msgBox.textContent = `${t('orderSuccessPrefix')} ${t('orderTrackingNotice')} ${orderId}. ${t('orderAuthNotice')}`;
     msgBox.className = 'msg-box msg-success active';
     btn.textContent = t('orderSubmitDone');
