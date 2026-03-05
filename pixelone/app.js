@@ -2382,7 +2382,7 @@ function setupLogout() {
             logoutBtn.textContent = 'جاري الخروج...';
             logoutBtn.disabled = true;
             await _supabase.auth.signOut();
-            window.location.replace('index.html');
+            window.location.replace('../index.html');
         });
     }
 }
