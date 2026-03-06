@@ -301,7 +301,7 @@ const DEFAULT_SITE_SETTINGS = {
             'support@pixelonevisuals.tech',
             'contact@pixelonevisuals.tech',
         ],
-        adminDomains: ['pixelonevisuals.tech'],
+        adminDomains: [],
     },
     contact: {
         whatsappNumber: '212661234567',
@@ -1404,14 +1404,7 @@ function isAdminUser(user) {
         ? siteSettings.orders.adminEmails.map(normalizeEmail)
         : [];
 
-    const adminDomains = Array.isArray(siteSettings.orders?.adminDomains)
-        ? siteSettings.orders.adminDomains.map((d) => String(d || '').trim().toLowerCase())
-        : [];
-
     if (adminEmails.includes(email)) return true;
-
-    const domain = email.split('@')[1] || '';
-    if (domain && adminDomains.includes(domain)) return true;
 
     return false;
 }
@@ -2484,7 +2477,7 @@ function renderDashboardOrders(user) {
     if (statActiveProjects) statActiveProjects.textContent = String(filteredOrders.length);
     if (statPendingOrders) statPendingOrders.textContent = String(pendingOrders);
     if (statTotalOrders) statTotalOrders.textContent = String(filteredOrders.length);
-    if (statCustomers) statCustomers.textContent = String(uniqueCustomers.size || 1);
+    if (statCustomers) statCustomers.textContent = String(uniqueCustomers.size);
 
     if (filteredOrders.length === 0) {
         tableBody.innerHTML = `<tr><td colspan="5" class="px-4 py-6 text-center text-gray-500">${escapeHtml(t('dashboardNoOrders'))}</td></tr>`;
