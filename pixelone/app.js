@@ -310,7 +310,7 @@ const SERVICE_DETAIL_ROUTES = {
 
 const SERVICE_DETAIL_CONTENT = {
     'svc-social-media-designs': {
-        image: 'https://source.unsplash.com/1600x900/?social-media,design',
+        image: 'https://www.pixelonevisuals.tech/og/social-media-designs-1200x630.svg',
         imageAlt: 'تصاميم سوشيال ميديا احترافية على شاشة حاسوب',
         deliverables: [
             'تصميم منشورات ثابتة متوافقة مع Instagram وFacebook وLinkedIn.',
@@ -334,7 +334,7 @@ const SERVICE_DETAIL_CONTENT = {
         revisions: 'جولتا تعديل ضمن نفس الفكرة.',
     },
     'svc-logo-design': {
-        image: 'https://source.unsplash.com/1600x900/?logo,branding,design',
+        image: 'https://www.pixelonevisuals.tech/og/logo-design-1200x630.svg',
         imageAlt: 'عملية تصميم شعار احترافي',
         deliverables: [
             'شعار أساسي واضح وقابل للاستخدام في جميع المنصات.',
@@ -358,7 +358,7 @@ const SERVICE_DETAIL_CONTENT = {
         revisions: 'جولتا تعديل على النسخة المختارة.',
     },
     'svc-digital-banners': {
-        image: 'https://source.unsplash.com/1600x900/?digital,advertising,banner',
+        image: 'https://www.pixelonevisuals.tech/og/digital-banners-1200x630.svg',
         imageAlt: 'بانرات وإعلانات رقمية لمواقع التواصل',
         deliverables: [
             'بانرات إعلانية بمقاسات معتمدة للمنصات المطلوبة.',
@@ -382,7 +382,7 @@ const SERVICE_DETAIL_CONTENT = {
         revisions: 'جولتا تعديل ضمن نفس الحملة.',
     },
     'svc-pitch-deck': {
-        image: 'https://source.unsplash.com/1600x900/?pitch,deck,presentation',
+        image: 'https://www.pixelonevisuals.tech/og/pitch-deck-1200x630.svg',
         imageAlt: 'تصميم عرض تقديمي احترافي للأعمال',
         deliverables: [
             'تصميم عرض تقديمي بهيكل بصري احترافي.',
@@ -406,7 +406,7 @@ const SERVICE_DETAIL_CONTENT = {
         revisions: 'جولتا تعديل على النسخة الأولية.',
     },
     'svc-short-video': {
-        image: 'https://source.unsplash.com/1600x900/?reels,video,editing',
+        image: 'https://www.pixelonevisuals.tech/og/short-video-1200x630.svg',
         imageAlt: 'مونتاج فيديو قصير لمنصات التواصل',
         deliverables: [
             'مونتاج فيديو قصير مناسب لـ Reels/TikTok/Shorts.',
@@ -430,7 +430,7 @@ const SERVICE_DETAIL_CONTENT = {
         revisions: 'جولتا تعديل داخل نفس المدة المتفق عليها.',
     },
     'svc-professional-design': {
-        image: 'https://source.unsplash.com/1600x900/?brand,identity,design',
+        image: 'https://www.pixelonevisuals.tech/og/professional-design-1200x630.svg',
         imageAlt: 'باقة تصميم احترافية متكاملة للعلامة التجارية',
         deliverables: [
             'خطة تصميم متكاملة حسب احتياج المشروع.',
@@ -454,7 +454,7 @@ const SERVICE_DETAIL_CONTENT = {
         revisions: 'مراجعات مرحلية متفق عليها مسبقاً.',
     },
     'svc-short-videos-premium': {
-        image: 'https://source.unsplash.com/1600x900/?video,production,studio',
+        image: 'https://www.pixelonevisuals.tech/og/short-videos-premium-1200x630.svg',
         imageAlt: 'فيديوهات قصيرة بجودة أعلى لمنصات التواصل',
         deliverables: [
             'مونتاج فيديو قصير بجودة أعلى من الباقة الأساسية.',
@@ -478,7 +478,7 @@ const SERVICE_DETAIL_CONTENT = {
         revisions: 'جولتا تعديل على النسخة الأولية.',
     },
     'svc-advanced-promo-video': {
-        image: 'https://source.unsplash.com/1600x900/?cinematic,video,production',
+        image: 'https://www.pixelonevisuals.tech/og/advanced-promo-video-1200x630.svg',
         imageAlt: 'فيديو ترويجي متقدم بجودة إنتاجية عالية',
         deliverables: [
             'خدمة قادمة لإنتاج فيديو ترويجي متقدم.',
@@ -502,7 +502,7 @@ const SERVICE_DETAIL_CONTENT = {
         revisions: 'قريباً — حسب باقة التنفيذ النهائية.',
     },
     'svc-web-landing-page': {
-        image: 'https://source.unsplash.com/1600x900/?landing-page,web-design',
+        image: 'https://www.pixelonevisuals.tech/og/web-landing-page-1200x630.svg',
         imageAlt: 'تصميم مواقع وصفحات هبوط احترافية',
         deliverables: [
             'خدمة قادمة لتصميم صفحات هبوط ومواقع تعريفية.',
@@ -526,7 +526,7 @@ const SERVICE_DETAIL_CONTENT = {
         revisions: 'قريباً — حسب نوع المشروع.',
     },
     'svc-brand-identity': {
-        image: 'https://source.unsplash.com/1600x900/?brand,identity,guidelines',
+        image: 'https://www.pixelonevisuals.tech/og/brand-identity-1200x630.svg',
         imageAlt: 'بناء هوية بصرية للعلامة التجارية',
         deliverables: [
             'خدمة قادمة لإعداد هوية بصرية أساسية متناسقة.',
@@ -1798,6 +1798,9 @@ function updateServiceShareMeta(service, localized, details) {
     setMetaTag('meta[property="og:url"]', 'content', publicUrl);
     setMetaTag('meta[property="og:image"]', 'content', image);
     setMetaTag('meta[property="og:image:secure_url"]', 'content', image);
+    setMetaTag('meta[property="og:image:type"]', 'content', 'image/svg+xml');
+    setMetaTag('meta[property="og:image:width"]', 'content', '1200');
+    setMetaTag('meta[property="og:image:height"]', 'content', '630');
     setMetaTag('meta[property="og:image:alt"]', 'content', imageAlt);
     setMetaTag('meta[name="twitter:title"]', 'content', title);
     setMetaTag('meta[name="twitter:description"]', 'content', description);
@@ -1809,7 +1812,7 @@ function getServiceDetailContent(serviceId) {
     const content = SERVICE_DETAIL_CONTENT[resolvedId];
     if (content) return content;
     return {
-        image: 'https://source.unsplash.com/1600x900/?digital,design',
+        image: 'https://www.pixelonevisuals.tech/og/professional-design-1200x630.svg',
         imageAlt: 'خدمة تصميم احترافية',
         deliverables: ['تنفيذ احترافي حسب نطاق الطلب المتفق عليه.', 'تسليم منظم وجاهز للاستخدام.'],
         requirements: ['فكرة المشروع والهدف الأساسي.', 'المحتوى والمواد المتاحة لديك.'],
