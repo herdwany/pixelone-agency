@@ -2433,7 +2433,7 @@ function renderDashboardOrders(user) {
     const statActiveProjects = document.getElementById('statActiveProjects');
     const statPendingOrders = document.getElementById('statPendingOrders');
     const statTotalOrders = document.getElementById('statTotalOrders');
-    const statCustomers = document.getElementById('statCustomers');
+    const statCompletedOrders = document.getElementById('statCompletedOrders');
     const dashboardRoleHint = document.getElementById('dashboardRoleHint');
 
     if (!tableBody) return;
@@ -2472,12 +2472,15 @@ function renderDashboardOrders(user) {
     }
 
     const pendingOrders = filteredOrders.filter((order) => (order.status || '').includes('قيد')).length;
-    const uniqueCustomers = new Set(filteredOrders.map((order) => order.email || order.userEmail).filter(Boolean));
+    const completedOrders = filteredOrders.filter((order) => {
+        const status = String(order.status || '').toLowerCase();
+        return status.includes('مكتمل') || status.includes('completed') || status.includes('termine');
+    }).length;
 
     if (statActiveProjects) statActiveProjects.textContent = String(filteredOrders.length);
     if (statPendingOrders) statPendingOrders.textContent = String(pendingOrders);
     if (statTotalOrders) statTotalOrders.textContent = String(filteredOrders.length);
-    if (statCustomers) statCustomers.textContent = String(uniqueCustomers.size);
+    if (statCompletedOrders) statCompletedOrders.textContent = String(completedOrders);
 
     if (filteredOrders.length === 0) {
         tableBody.innerHTML = `<tr><td colspan="5" class="px-4 py-6 text-center text-gray-500">${escapeHtml(t('dashboardNoOrders'))}</td></tr>`;
