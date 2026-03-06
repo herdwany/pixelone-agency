@@ -281,6 +281,263 @@ const SERVICE_I18N = {
     },
 };
 
+const SERVICE_DETAIL_ALIASES = {
+    'svc-social-media-post': 'svc-social-media-designs',
+    'svc-logo-design': 'svc-logo-design',
+    'svc-digital-banner': 'svc-digital-banners',
+    'svc-presentation': 'svc-pitch-deck',
+    'svc-short-video': 'svc-short-video',
+    'svc-monthly-content': 'svc-professional-design',
+    'svc-brand-identity': 'svc-brand-identity',
+    'svc-professional-design': 'svc-professional-design',
+    'svc-short-videos-premium': 'svc-short-videos-premium',
+    'svc-advanced-promo-video': 'svc-advanced-promo-video',
+    'svc-web-landing-page': 'svc-web-landing-page',
+};
+
+const SERVICE_DETAIL_CONTENT = {
+    'svc-social-media-designs': {
+        image: 'https://source.unsplash.com/1600x900/?social-media,design',
+        imageAlt: 'تصاميم سوشيال ميديا احترافية على شاشة حاسوب',
+        deliverables: [
+            'تصميم منشورات ثابتة متوافقة مع Instagram وFacebook وLinkedIn.',
+            'نسختان مقاس لكل منصة حسب نوع النشر (Feed/Story عند الحاجة).',
+            'تسليم بصيغ JPG/PNG جاهزة للنشر بجودة عالية.',
+            'تنسيق بصري متناسق مع هوية نشاطك وألوانه الرسمية.',
+        ],
+        requirements: [
+            'شعار العلامة التجارية (PNG أو SVG إن توفر).',
+            'الألوان والخطوط المعتمدة أو أمثلة مرجعية.',
+            'النص المطلوب داخل التصميم وعرض اليوم/المنتج.',
+            'المنصة المستهدفة وموعد النشر المتوقع.',
+        ],
+        workflow: [
+            'تحليل الهدف الإعلاني والجمهور المستهدف.',
+            'تجهيز مسودة تصميم أولى للمراجعة.',
+            'تطبيق التعديلات داخل النطاق المتفق عليه.',
+            'التسليم النهائي بصيغ النشر المعتمدة.',
+        ],
+        turnaround: 'من 24 إلى 72 ساعة حسب حجم الطلب.',
+        revisions: 'جولتا تعديل ضمن نفس الفكرة.',
+    },
+    'svc-logo-design': {
+        image: 'https://source.unsplash.com/1600x900/?logo,branding,design',
+        imageAlt: 'عملية تصميم شعار احترافي',
+        deliverables: [
+            'شعار أساسي واضح وقابل للاستخدام في جميع المنصات.',
+            'نسخة بخلفية شفافة PNG عالية الجودة.',
+            'نسخة متجهة SVG أو PDF للطباعة عند الحاجة.',
+            'نسخ لونية رئيسية (ملون، أبيض، أسود).',
+        ],
+        requirements: [
+            'اسم المشروع كما سيظهر داخل الشعار.',
+            'مجال النشاط والجمهور المستهدف.',
+            'أمثلة شعارات تعجبك وأخرى لا تناسبك.',
+            'تفضيلات الألوان أو الاتجاه البصري المطلوب.',
+        ],
+        workflow: [
+            'بحث سريع للمجال وتحديد الاتجاه البصري.',
+            'اقتراحات أولية للشعار.',
+            'تطوير النسخة المعتمدة بعد المراجعة.',
+            'تسليم الملفات النهائية المنظمة.',
+        ],
+        turnaround: 'من 2 إلى 5 أيام عمل.',
+        revisions: 'جولتا تعديل على النسخة المختارة.',
+    },
+    'svc-digital-banners': {
+        image: 'https://source.unsplash.com/1600x900/?digital,advertising,banner',
+        imageAlt: 'بانرات وإعلانات رقمية لمواقع التواصل',
+        deliverables: [
+            'بانرات إعلانية بمقاسات معتمدة للمنصات المطلوبة.',
+            'نسخ متعددة للحملة عند الحاجة (A/B بسيط).',
+            'تنسيق بصري يركز على CTA واضح وقابل للنقر.',
+            'تسليم جاهز للنشر بصيغة JPG/PNG.',
+        ],
+        requirements: [
+            'هدف الحملة (مبيعات، رسائل، زيارات، تعريف).',
+            'العرض أو النص الإعلاني النهائي.',
+            'الصور/المنتج أو الروابط المرجعية.',
+            'المنصة والمقاسات المطلوبة.',
+        ],
+        workflow: [
+            'تحويل العرض التجاري إلى رسالة بصرية مباشرة.',
+            'تصميم نسخة أولى للحملة.',
+            'تحسين التصميم حسب الملاحظات.',
+            'تسليم المقاسات النهائية للنشر.',
+        ],
+        turnaround: 'من 24 إلى 72 ساعة.',
+        revisions: 'جولتا تعديل ضمن نفس الحملة.',
+    },
+    'svc-pitch-deck': {
+        image: 'https://source.unsplash.com/1600x900/?pitch,deck,presentation',
+        imageAlt: 'تصميم عرض تقديمي احترافي للأعمال',
+        deliverables: [
+            'تصميم عرض تقديمي بهيكل بصري احترافي.',
+            'تنسيق الشرائح بعناوين واضحة وتسلسل مقنع.',
+            'نسخة PowerPoint أو PDF جاهزة للعرض.',
+            'توحيد الألوان والخطوط بما يخدم صورة المشروع.',
+        ],
+        requirements: [
+            'المحتوى النصي الأساسي لكل شريحة.',
+            'نوع العرض: مستثمرين، مبيعات، تعريف شركة.',
+            'هوية بصرية أو شعار الشركة.',
+            'عدد الشرائح المتوقع والموعد النهائي.',
+        ],
+        workflow: [
+            'تنظيم المحتوى في هيكل واضح ومقنع.',
+            'تصميم الشرائح بنمط موحد.',
+            'مراجعة وتحسين قابلية القراءة والإقناع.',
+            'تسليم نسخة العرض النهائية.',
+        ],
+        turnaround: 'من 2 إلى 6 أيام حسب عدد الشرائح.',
+        revisions: 'جولتا تعديل على النسخة الأولية.',
+    },
+    'svc-short-video': {
+        image: 'https://source.unsplash.com/1600x900/?reels,video,editing',
+        imageAlt: 'مونتاج فيديو قصير لمنصات التواصل',
+        deliverables: [
+            'مونتاج فيديو قصير مناسب لـ Reels/TikTok/Shorts.',
+            'إيقاع سريع مع نصوص وحركات انتقال مناسبة.',
+            'تحسين بصري ولوني أساسي مع صوت متوازن.',
+            'تسليم MP4 بجودة مناسبة للنشر.',
+        ],
+        requirements: [
+            'مقاطع الفيديو الخام أو رابط تحميل واضح.',
+            'الفكرة أو السيناريو المختصر.',
+            'النصوص المطلوبة على الشاشة.',
+            'المنصة المستهدفة والمدة التقريبية.',
+        ],
+        workflow: [
+            'فرز اللقطات وتحديد التسلسل الأفضل.',
+            'مونتاج أولي وإضافة النصوص.',
+            'تحسين الإيقاع والمظهر النهائي.',
+            'تسليم نسخة جاهزة للنشر.',
+        ],
+        turnaround: 'من 24 إلى 96 ساعة حسب جودة المواد.',
+        revisions: 'جولتا تعديل داخل نفس المدة المتفق عليها.',
+    },
+    'svc-professional-design': {
+        image: 'https://source.unsplash.com/1600x900/?brand,identity,design',
+        imageAlt: 'باقة تصميم احترافية متكاملة للعلامة التجارية',
+        deliverables: [
+            'خطة تصميم متكاملة حسب احتياج المشروع.',
+            'حزمة عناصر بصرية للهوية والمحتوى.',
+            'قوالب أساسية للاستخدام المتكرر.',
+            'تسليم منظم للملفات مع هيكلة واضحة.',
+        ],
+        requirements: [
+            'وصف دقيق للنشاط التجاري وأهداف المرحلة.',
+            'الأولوية بين الهوية والمحتوى الإعلاني.',
+            'أمثلة مرجعية للاتجاه المرغوب.',
+            'نقطة اتصال واحدة لاعتماد المراجعات بسرعة.',
+        ],
+        workflow: [
+            'جلسة فهم النطاق وتحديد الأولويات.',
+            'تصميم أولي للمسار البصري.',
+            'مراجعات مرحلية مع اعتماد نهائي.',
+            'تسليم الحزمة الكاملة بشكل منظم.',
+        ],
+        turnaround: 'من 5 إلى 12 يوم عمل حسب النطاق.',
+        revisions: 'مراجعات مرحلية متفق عليها مسبقاً.',
+    },
+    'svc-short-videos-premium': {
+        image: 'https://source.unsplash.com/1600x900/?video,production,studio',
+        imageAlt: 'فيديوهات قصيرة بجودة أعلى لمنصات التواصل',
+        deliverables: [
+            'مونتاج فيديو قصير بجودة أعلى من الباقة الأساسية.',
+            'تحسين احترافي للألوان والصوت والإيقاع.',
+            'نسخة أساسية + نسخة بديلة للـ Hook إذا لزم.',
+            'تسليم نهائي مناسب للإعلانات أو النشر العضوي.',
+        ],
+        requirements: [
+            'لقطات واضحة بدقة جيدة.',
+            'هدف الفيديو (تعريف، بيع، تفاعل).',
+            'النصوص أو العبارات المطلوبة داخل الفيديو.',
+            'هوية المشروع أو مرجع بصري للحملة.',
+        ],
+        workflow: [
+            'صياغة خط زمني قصير يركز على النتيجة.',
+            'تنفيذ مونتاج احترافي مع تحسينات بصرية.',
+            'مراجعة نهائية وضبط النسخة الأخيرة.',
+            'تسليم الملف النهائي بجودة عالية.',
+        ],
+        turnaround: 'من 2 إلى 5 أيام.',
+        revisions: 'جولتا تعديل على النسخة الأولية.',
+    },
+    'svc-advanced-promo-video': {
+        image: 'https://source.unsplash.com/1600x900/?cinematic,video,production',
+        imageAlt: 'فيديو ترويجي متقدم بجودة إنتاجية عالية',
+        deliverables: [
+            'خدمة قادمة لإنتاج فيديو ترويجي متقدم.',
+            'سيناريو بصري أقوى متعدد اللقطات.',
+            'معالجة فنية أعلى للمؤثرات والهوية.',
+            'مخرجات مناسبة لحملات احترافية موسعة.',
+        ],
+        requirements: [
+            'ملف تعريفي بالمشروع والهدف من الفيديو.',
+            'المواد الخام أو خطة تصوير واضحة.',
+            'الميزانية والموعد المطلوب للتسليم.',
+            'أمثلة مرجعية لمستوى الإنتاج المطلوب.',
+        ],
+        workflow: [
+            'مرحلة دراسة نطاق الإنتاج.',
+            'اقتراح سيناريو وإطار زمني تفصيلي.',
+            'تنفيذ ومراجعات على مراحل.',
+            'تسليم نسخة نهائية عالية الجودة.',
+        ],
+        turnaround: 'قريباً — سيتم تحديد المدة حسب نطاق الإنتاج.',
+        revisions: 'قريباً — حسب باقة التنفيذ النهائية.',
+    },
+    'svc-web-landing-page': {
+        image: 'https://source.unsplash.com/1600x900/?landing-page,web-design',
+        imageAlt: 'تصميم مواقع وصفحات هبوط احترافية',
+        deliverables: [
+            'خدمة قادمة لتصميم صفحات هبوط ومواقع تعريفية.',
+            'هيكلة صفحة تركّز على التحويل والوضوح.',
+            'تصميم متجاوب للهواتف والكمبيوتر.',
+            'واجهة حديثة تعكس هوية النشاط التجاري.',
+        ],
+        requirements: [
+            'وصف الخدمة أو المنتج المستهدف.',
+            'النصوص الرئيسية وصور الهوية.',
+            'الهدف من الصفحة (طلبات، رسائل، مبيعات).',
+            'الدومين والاستضافة إذا كانت متوفرة.',
+        ],
+        workflow: [
+            'تخطيط هيكل الصفحة حسب هدف التحويل.',
+            'تصميم واجهة أولية للمراجعة.',
+            'تحسين المحتوى وتجربة الاستخدام.',
+            'تسليم النسخة النهائية الجاهزة للنشر.',
+        ],
+        turnaround: 'قريباً — سيتم تفعيلها ضمن باقات الويب.',
+        revisions: 'قريباً — حسب نوع المشروع.',
+    },
+    'svc-brand-identity': {
+        image: 'https://source.unsplash.com/1600x900/?brand,identity,guidelines',
+        imageAlt: 'بناء هوية بصرية للعلامة التجارية',
+        deliverables: [
+            'خدمة قادمة لإعداد هوية بصرية أساسية متناسقة.',
+            'شعار رئيسي مع لوحة ألوان وخطوط مقترحة.',
+            'دليل مبسط لاستخدام الهوية في السوشيال.',
+            'نماذج تطبيق أولية على منشورات رقمية.',
+        ],
+        requirements: [
+            'اسم المشروع وطبيعة نشاطه.',
+            'القيم أو الشخصية التي تريد إظهارها بصرياً.',
+            'أمثلة مرجعية لهويات قريبة من ذوقك.',
+            'الجمهور المستهدف داخل السوق المغربي.',
+        ],
+        workflow: [
+            'دراسة هوية النشاط وتحديد الاتجاه البصري.',
+            'اقتراح المسار الإبداعي الأولي.',
+            'تطوير الهوية بناء على المراجعة.',
+            'تسليم الملفات النهائية بشكل منظم.',
+        ],
+        turnaround: 'قريباً — الخدمة قيد التجهيز.',
+        revisions: 'قريباً — حسب الباقة النهائية.',
+    },
+};
+
 const ORDER_STORAGE_FALLBACK_KEY = 'pixelone_orders_v1';
 const OFFERS_STORAGE_KEY = 'pixelone_offers_v1';
 const SERVICES_STORAGE_KEY = 'pixelone_services_v2';
@@ -1473,13 +1730,44 @@ function applyDiscount(price, rule) {
 }
 
 const FALLBACK_SERVICES = DEFAULT_MANAGED_SERVICES.map((service, index) => ({
+    id: service.id,
     titles: { ar: service.titles.ar },
     price: service.price,
     descriptions: { ar: service.descriptions.ar },
     category: service.category,
+    serviceType: service.serviceType,
     is_coming_soon: service.is_coming_soon,
     popularity: service.popularity || index + 1,
+    enabled: service.enabled !== false,
 }));
+
+function resolveServiceDetailId(serviceId) {
+    const id = String(serviceId || '').trim();
+    if (!id) return '';
+    if (SERVICE_DETAIL_CONTENT[id]) return id;
+    return SERVICE_DETAIL_ALIASES[id] || id;
+}
+
+function getServiceDetailUrl(serviceId) {
+    const id = resolveServiceDetailId(serviceId) || String(serviceId || '').trim();
+    if (!id) return 'services.html';
+    return `service-detail.html?service=${encodeURIComponent(id)}`;
+}
+
+function getServiceDetailContent(serviceId) {
+    const resolvedId = resolveServiceDetailId(serviceId);
+    const content = SERVICE_DETAIL_CONTENT[resolvedId];
+    if (content) return content;
+    return {
+        image: 'https://source.unsplash.com/1600x900/?digital,design',
+        imageAlt: 'خدمة تصميم احترافية',
+        deliverables: ['تنفيذ احترافي حسب نطاق الطلب المتفق عليه.', 'تسليم منظم وجاهز للاستخدام.'],
+        requirements: ['فكرة المشروع والهدف الأساسي.', 'المحتوى والمواد المتاحة لديك.'],
+        workflow: ['فهم الطلب', 'تنفيذ أولي', 'مراجعة', 'تسليم نهائي'],
+        turnaround: 'يتم تحديد المدة بعد مراجعة التفاصيل.',
+        revisions: 'ضمن النطاق المتفق عليه.',
+    };
+}
 
 async function setupHomeSessionUI() {
     const desktopNavLink = document.getElementById('loginNavLink')
@@ -1631,6 +1919,9 @@ function renderServices(grid, services, discountContext) {
         const safeDesc = escapeHtml(serviceDesc);
         const safeType = escapeHtml(serviceType);
         const safeServiceNameAttr = escapeHtml(serviceName);
+        const serviceDetailUrl = getServiceDetailUrl(service.id);
+        const safeServiceDetailUrl = escapeHtml(serviceDetailUrl);
+        const moreLabel = currentLang === 'en' ? 'More' : currentLang === 'fr' ? 'Plus' : 'المزيد';
         const statusLabel = isSoon ? t('serviceSoon') : t('serviceAvailable');
         const statusClass = isSoon
             ? 'bg-white/5 border-white/10 text-gray-400'
@@ -1671,20 +1962,119 @@ function renderServices(grid, services, discountContext) {
                         ${priceHtml}
                     </div>
                     <h3 class="text-2xl font-black mb-4">${safeName}</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed mb-10">${safeDesc}</p>
+                    <a href="${safeServiceDetailUrl}" class="block text-gray-400 text-sm leading-relaxed mb-4 hover:text-gray-200 transition">${safeDesc}</a>
                 </div>
-                <button ${isSoon ? 'disabled' : ''}
-                    data-service-name="${safeServiceNameAttr}"
-                    data-final-price="${hasDiscount ? escapeHtml(String(discountResult.finalPrice.toFixed(2))) : safePrice}"
-                    data-discount-code="${hasDiscount ? escapeHtml(bestRule.code || '') : ''}"
-                    data-service-lang="${escapeHtml(currentLang)}"
-                    class="w-full py-4 rounded-lg font-black transition text-sm ${isSoon ? 'btn-disabled' : 'btn-filled-red'}">
-                    ${isSoon ? escapeHtml(t('serviceComingSoonBtn')) : escapeHtml(t('serviceOrderNow'))}
-                </button>
+                <div class="grid grid-cols-2 gap-3">
+                    <a href="${safeServiceDetailUrl}" class="w-full py-4 rounded-lg font-black transition text-sm text-center border border-white/20 text-gray-200 hover:bg-white/10">${escapeHtml(moreLabel)}</a>
+                    <button ${isSoon ? 'disabled' : ''}
+                        data-service-name="${safeServiceNameAttr}"
+                        data-final-price="${hasDiscount ? escapeHtml(String(discountResult.finalPrice.toFixed(2))) : safePrice}"
+                        data-discount-code="${hasDiscount ? escapeHtml(bestRule.code || '') : ''}"
+                        data-service-lang="${escapeHtml(currentLang)}"
+                        class="w-full py-4 rounded-lg font-black transition text-sm ${isSoon ? 'btn-disabled' : 'btn-filled-red'}">
+                        ${isSoon ? escapeHtml(t('serviceComingSoonBtn')) : escapeHtml(t('serviceOrderNow'))}
+                    </button>
+                </div>
             </div>
         `;
         grid.insertAdjacentHTML('beforeend', cardHTML);
     });
+}
+
+function renderServiceDetailPage() {
+    const root = document.getElementById('serviceDetailRoot');
+    if (!root) return;
+
+    const params = new URL(window.location.href).searchParams;
+    const serviceParam = params.get('service') || '';
+    const targetId = resolveServiceDetailId(serviceParam);
+    const services = getStoredServices();
+    const catalog = services.length > 0 ? services : FALLBACK_SERVICES;
+    const service = catalog.find((item) => resolveServiceDetailId(item.id) === targetId);
+
+    if (!service) {
+        root.innerHTML = `
+            <div class="water-card rounded-3xl p-8 text-center">
+                <h1 class="text-2xl font-black text-white mb-3">الخدمة غير متاحة حالياً</h1>
+                <p class="text-gray-400 mb-6">تعذر العثور على الخدمة المطلوبة. يمكنك الرجوع إلى قائمة الخدمات واختيار خدمة أخرى.</p>
+                <a href="services.html" class="btn-filled-red px-8 py-3 rounded-lg font-black inline-block">العودة إلى الخدمات</a>
+            </div>
+        `;
+        return;
+    }
+
+    const localized = getLocalizedServiceContent(service);
+    const details = getServiceDetailContent(service.id);
+    const isSoon = Boolean(service.is_coming_soon);
+    const servicePrice = escapeHtml(String(service.price || '0'));
+    const serviceType = escapeHtml(localized.serviceType || 'خدمة لمرة واحدة');
+    const serviceCategory = escapeHtml(localized.category || 'خدمة رقمية');
+    const serviceName = escapeHtml(localized.title || 'خدمة');
+    const serviceDesc = escapeHtml(localized.description || '');
+    const statusLabel = isSoon ? 'قريباً' : 'متاح الآن';
+    const statusClass = isSoon
+        ? 'bg-white/5 border-white/10 text-gray-300'
+        : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300';
+
+    document.title = `${localized.title || 'تفاصيل الخدمة'} | Pixel One Visuals`;
+
+    root.innerHTML = `
+        <article class="water-card rounded-3xl overflow-hidden">
+            <img src="${escapeHtml(details.image)}" alt="${escapeHtml(details.imageAlt)}" class="w-full h-[260px] md:h-[360px] object-cover" loading="eager" referrerpolicy="no-referrer">
+            <div class="p-7 md:p-10">
+                <div class="flex flex-wrap items-center gap-2 mb-4">
+                    <span class="text-[11px] px-3 py-1 rounded-full border ${statusClass}">${statusLabel}</span>
+                    <span class="text-[11px] px-3 py-1 rounded-full border border-white/10 bg-white/5 text-gray-300">${serviceType}</span>
+                    <span class="text-[11px] px-3 py-1 rounded-full border border-white/10 bg-white/5 text-gray-300">${serviceCategory}</span>
+                </div>
+                <h1 class="text-3xl md:text-4xl font-black text-white mb-3">${serviceName}</h1>
+                <p class="text-gray-300 leading-relaxed mb-6">${serviceDesc}</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    <div class="water-card rounded-2xl p-4">
+                        <p class="text-xs text-gray-500 mb-1">السعر</p>
+                        <p class="text-2xl font-black text-white number-font">${servicePrice} <span class="text-xs text-gray-500 font-en">MAD</span></p>
+                    </div>
+                    <div class="water-card rounded-2xl p-4">
+                        <p class="text-xs text-gray-500 mb-1">مدة التنفيذ المتوقعة</p>
+                        <p class="text-sm font-bold text-white">${escapeHtml(details.turnaround)}</p>
+                    </div>
+                    <div class="water-card rounded-2xl p-4">
+                        <p class="text-xs text-gray-500 mb-1">سياسة المراجعات</p>
+                        <p class="text-sm font-bold text-white">${escapeHtml(details.revisions)}</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-5">
+                    <section class="water-card rounded-2xl p-5">
+                        <h2 class="text-white font-black mb-4">ماذا ستحصل عليه</h2>
+                        <ul class="space-y-2 text-sm text-gray-300">
+                            ${details.deliverables.map((item) => `<li>• ${escapeHtml(item)}</li>`).join('')}
+                        </ul>
+                    </section>
+                    <section class="water-card rounded-2xl p-5">
+                        <h2 class="text-white font-black mb-4">ماذا نحتاج منك</h2>
+                        <ul class="space-y-2 text-sm text-gray-300">
+                            ${details.requirements.map((item) => `<li>• ${escapeHtml(item)}</li>`).join('')}
+                        </ul>
+                    </section>
+                    <section class="water-card rounded-2xl p-5">
+                        <h2 class="text-white font-black mb-4">كيف سنشتغل</h2>
+                        <ol class="space-y-2 text-sm text-gray-300">
+                            ${details.workflow.map((item, index) => `<li>${index + 1}) ${escapeHtml(item)}</li>`).join('')}
+                        </ol>
+                    </section>
+                </div>
+
+                <div class="mt-8 flex flex-col sm:flex-row gap-3">
+                    <button id="serviceDetailOrderBtn" type="button" data-action="open-order-modal" data-service-name="${serviceName}" data-final-price="${servicePrice}" class="btn-filled-red px-8 py-4 rounded-xl font-black ${isSoon ? 'btn-disabled' : ''}" ${isSoon ? 'disabled' : ''}>
+                        ${isSoon ? 'قريباً جداً' : 'اطلب الخدمة الآن'}
+                    </button>
+                    <a href="services.html" class="px-8 py-4 rounded-xl font-black border border-white/20 text-gray-200 hover:bg-white/10 text-center">كل الخدمات</a>
+                </div>
+            </div>
+        </article>
+    `;
 }
 
 async function loadServices() {
@@ -1762,12 +2152,18 @@ function setupHomeCspSafeBindings() {
 
         if (action === 'mobile-open-order-modal') {
             actionEl.closest('details')?.removeAttribute('open');
-            openOrderModal(actionEl.dataset.serviceName || 'طلب خدمة مخصص');
+            openOrderModal(actionEl.dataset.serviceName || 'طلب خدمة مخصص', {
+                finalPrice: actionEl.dataset.finalPrice || '',
+                discountCode: actionEl.dataset.discountCode || '',
+            });
             return;
         }
 
         if (action === 'open-order-modal') {
-            openOrderModal(actionEl.dataset.serviceName || 'طلب خدمة مخصص');
+            openOrderModal(actionEl.dataset.serviceName || 'طلب خدمة مخصص', {
+                finalPrice: actionEl.dataset.finalPrice || '',
+                discountCode: actionEl.dataset.discountCode || '',
+            });
             return;
         }
 
@@ -3800,6 +4196,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const hasAuthCallbackView = Boolean(document.getElementById('view-auth-callback'));
         const hasDashboardView = Boolean(document.getElementById('view-dashboard'));
         const hasAdminDashboardView = Boolean(document.getElementById('view-admin-dashboard'));
+        const hasServiceDetailView = Boolean(document.getElementById('view-service-detail'));
+        const hasOrderForm = Boolean(document.getElementById('orderForm'));
 
         if (hasAuthCallbackView) {
             setPageLoaderStatus('Verifying your secure callback link...');
@@ -3821,41 +4219,46 @@ document.addEventListener('DOMContentLoaded', async () => {
             await setupHomeSessionUI();
         }
 
+        if (hasServicesGrid || hasServiceDetailView) {
+            setupHomeCspSafeBindings();
+        }
+
         if (hasServicesGrid) {
             setPageLoaderStatus('Rendering services and dynamic pricing...');
-            setupHomeCspSafeBindings();
             await hydrateDataStores();
             await loadServices();
             renderOffersForHome();
+        }
 
-            const servicesGrid = document.getElementById('servicesGrid');
-            if (servicesGrid) {
-                servicesGrid.addEventListener('click', (e) => {
-                    const btn = e.target.closest('button[data-service-name]');
-                    if (!btn || btn.disabled) return;
+        if (hasServiceDetailView) {
+            setPageLoaderStatus('Preparing service details...');
+            await hydrateDataStores();
+            renderServiceDetailPage();
+        }
 
-                    openOrderModal(btn.dataset.serviceName || 'خدمة غير مسماة', {
-                        finalPrice: btn.dataset.finalPrice || '',
-                        discountCode: btn.dataset.discountCode || '',
-                    });
-                });
+        if (hasOrderForm) {
+            const orderForm = document.getElementById('orderForm');
+            if (orderForm && orderForm.dataset.bound !== 'true') {
+                orderForm.dataset.bound = 'true';
+                orderForm.addEventListener('submit', handleOrderSubmit);
             }
 
-            const orderForm = document.getElementById('orderForm');
-            if (orderForm) orderForm.addEventListener('submit', handleOrderSubmit);
-
             const modalOverlay = document.getElementById('orderModal');
-            if (modalOverlay) {
+            if (modalOverlay && modalOverlay.dataset.bound !== 'true') {
+                modalOverlay.dataset.bound = 'true';
                 modalOverlay.addEventListener('click', function(e) {
                     if (e.target === this) closeOrderModal();
                 });
             }
 
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && modalOverlay?.classList.contains('active')) {
-                    closeOrderModal();
-                }
-            });
+            if (document.body?.dataset.orderEscBound !== 'true') {
+                document.body.dataset.orderEscBound = 'true';
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && modalOverlay?.classList.contains('active')) {
+                        closeOrderModal();
+                    }
+                });
+            }
         }
 
         if (hasDashboardView) {
