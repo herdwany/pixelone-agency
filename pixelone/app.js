@@ -703,6 +703,7 @@ const TABLES = {
     discountsCustomer: 'pixel_discounts_customer',
     adminUsers: 'pixel_admin_users',
     inviteAudit: 'pixel_invite_audit',
+    userSignups: 'pixel_user_signups',
     i18nPages: 'pixel_i18n_pages',
 };
 
@@ -710,6 +711,8 @@ let siteSettings = { ...DEFAULT_SITE_SETTINGS };
 let currentSessionUser = null;
 let dataSourceMode = 'fallback';
 let pageLoaderController = null;
+const POST_AUTH_REDIRECT_KEY = 'pixelone_post_auth_redirect_v1';
+const PENDING_ORDER_INTENT_KEY = 'pixelone_pending_order_intent_v1';
 
 function getLoaderContext() {
     return null;
@@ -779,6 +782,30 @@ function safeStorageRemove(key) {
     }
 }
 
+function safeSessionStorageGet(key) {
+    try {
+        return sessionStorage.getItem(key);
+    } catch {
+        return null;
+    }
+}
+
+function safeSessionStorageSet(key, value) {
+    try {
+        sessionStorage.setItem(key, value);
+    } catch {
+        // Ignore storage permission errors.
+    }
+}
+
+function safeSessionStorageRemove(key) {
+    try {
+        sessionStorage.removeItem(key);
+    } catch {
+        // Ignore storage permission errors.
+    }
+}
+
 function readLocalJson(key, fallbackValue) {
     try {
         const raw = safeStorageGet(key);
@@ -792,6 +819,79 @@ function readLocalJson(key, fallbackValue) {
 
 function writeLocalJson(key, value) {
     safeStorageSet(key, JSON.stringify(value));
+}
+
+function normalizePostAuthRedirectPath(rawPath) {
+    if (!rawPath || typeof rawPath !== 'string') return '';
+    const cleaned = rawPath.trim();
+    if (!cleaned) return '';
+    if (!cleaned.startsWith('/') && !cleaned.startsWith('./') && !cleaned.startsWith('../')) return '';
+    try {
+        const targetUrl = new URL(cleaned, window.location.origin);
+        if (targetUrl.origin !== window.location.origin) return '';
+        return `${targetUrl.pathname}${targetUrl.search}${targetUrl.hash}`;
+    } catch {
+        return '';
+    }
+}
+
+function capturePostAuthRedirectFromCurrentUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const next = params.get('next') || '';
+    const safePath = normalizePostAuthRedirectPath(next);
+    if (safePath) {
+        safeStorageSet(POST_AUTH_REDIRECT_KEY, safePath);
+    }
+}
+
+function getStoredPostAuthRedirectPath() {
+    return normalizePostAuthRedirectPath(safeStorageGet(POST_AUTH_REDIRECT_KEY) || '');
+}
+
+function clearStoredPostAuthRedirectPath() {
+    safeStorageRemove(POST_AUTH_REDIRECT_KEY);
+}
+
+function getLoginRedirectTargetForCurrentPage() {
+    return `${window.location.pathname}${window.location.search}`;
+}
+
+function persistPendingOrderIntent(payload) {
+    if (!payload || typeof payload !== 'object') return;
+    safeSessionStorageSet(PENDING_ORDER_INTENT_KEY, JSON.stringify({
+        serviceName: String(payload.serviceName || ''),
+        finalPrice: String(payload.finalPrice || ''),
+        discountCode: String(payload.discountCode || ''),
+        lang: String(payload.lang || ''),
+        createdAt: new Date().toISOString(),
+    }));
+}
+
+function readPendingOrderIntent() {
+    try {
+        const raw = safeSessionStorageGet(PENDING_ORDER_INTENT_KEY);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') return null;
+        return {
+            serviceName: String(parsed.serviceName || ''),
+            finalPrice: String(parsed.finalPrice || ''),
+            discountCode: String(parsed.discountCode || ''),
+            lang: String(parsed.lang || ''),
+        };
+    } catch {
+        return null;
+    }
+}
+
+function clearPendingOrderIntent() {
+    safeSessionStorageRemove(PENDING_ORDER_INTENT_KEY);
+}
+
+function buildLoginUrlWithReturnPath(returnPath) {
+    const safeReturnPath = normalizePostAuthRedirectPath(returnPath);
+    if (!safeReturnPath) return 'login.html';
+    return `login.html?next=${encodeURIComponent(safeReturnPath)}`;
 }
 
 function serviceToRow(service) {
@@ -2065,6 +2165,7 @@ function renderServices(grid, services, discountContext) {
                 <div class="grid grid-cols-2 gap-3">
                     <a href="${safeServiceDetailUrl}" class="w-full py-4 rounded-lg font-black transition text-sm text-center border border-white/20 text-gray-200 hover:bg-white/10">${escapeHtml(moreLabel)}</a>
                     <button ${isSoon ? 'disabled' : ''}
+                        data-action="open-order-modal"
                         data-service-name="${safeServiceNameAttr}"
                         data-final-price="${hasDiscount ? escapeHtml(String(discountResult.finalPrice.toFixed(2))) : safePrice}"
                         data-discount-code="${hasDiscount ? escapeHtml(bestRule.code || '') : ''}"
@@ -2221,7 +2322,7 @@ async function loadServices() {
     renderServices(grid, managedServices.length > 0 ? managedServices : FALLBACK_SERVICES, discountContext);
 }
 
-window.openOrderModal = function(serviceName, meta = {}) {
+window.openOrderModal = async function(serviceName, meta = {}) {
     const modal = document.getElementById('orderModal');
     const selectedServiceText = document.getElementById('selectedServiceText');
     const hiddenServiceName = document.getElementById('hiddenServiceName');
@@ -2230,6 +2331,21 @@ window.openOrderModal = function(serviceName, meta = {}) {
     const firstInput = document.getElementById('orderName');
 
     if (!modal || !selectedServiceText || !hiddenServiceName || !orderForm || !orderMsgBox) return;
+
+    const { data: { user } } = await _supabase.auth.getUser();
+    if (!user) {
+        persistPendingOrderIntent({
+            serviceName,
+            finalPrice: meta.finalPrice || '',
+            discountCode: meta.discountCode || '',
+            lang: meta.lang || getCurrentLanguage(),
+        });
+        const loginUrl = buildLoginUrlWithReturnPath(getLoginRedirectTargetForCurrentPage());
+        window.location.href = loginUrl;
+        return;
+    }
+
+    currentSessionUser = user;
 
     orderForm.reset();
     orderMsgBox.classList.remove('active');
@@ -2289,6 +2405,7 @@ function setupHomeCspSafeBindings() {
             openOrderModal(actionEl.dataset.serviceName || 'طلب خدمة مخصص', {
                 finalPrice: actionEl.dataset.finalPrice || '',
                 discountCode: actionEl.dataset.discountCode || '',
+                lang: actionEl.dataset.serviceLang || '',
             });
             return;
         }
@@ -2297,6 +2414,7 @@ function setupHomeCspSafeBindings() {
             openOrderModal(actionEl.dataset.serviceName || 'طلب خدمة مخصص', {
                 finalPrice: actionEl.dataset.finalPrice || '',
                 discountCode: actionEl.dataset.discountCode || '',
+                lang: actionEl.dataset.serviceLang || '',
             });
             return;
         }
@@ -2373,7 +2491,19 @@ async function handleOrderSubmit(e) {
     }
 
     const { data: { user } } = await _supabase.auth.getUser();
-    currentSessionUser = user || currentSessionUser;
+    if (!user) {
+        persistPendingOrderIntent({
+            serviceName,
+            finalPrice,
+            discountCode,
+            lang: getCurrentLanguage(),
+        });
+        const loginUrl = buildLoginUrlWithReturnPath(getLoginRedirectTargetForCurrentPage());
+        window.location.href = loginUrl;
+        return;
+    }
+
+    currentSessionUser = user;
     const effectiveEmail = email || currentSessionUser?.email || '';
 
     if (!normalizeEmail(effectiveEmail)) {
@@ -2515,6 +2645,38 @@ async function setupAuthentication() {
     const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
     let authType = hashParams.get('type') || urlParams.get('type');
     const notice = urlParams.get('notice');
+    const policyConsentWrap = document.getElementById('policyConsentWrap');
+    const policyCheckboxes = Array.from(document.querySelectorAll('[data-policy-consent="required"]'));
+    const policyLinks = Array.from(document.querySelectorAll('[data-policy-link]'));
+    capturePostAuthRedirectFromCurrentUrl();
+
+    policyLinks.forEach((linkEl) => {
+        if (!linkEl || linkEl.dataset.bound === 'true') return;
+        linkEl.dataset.bound = 'true';
+        linkEl.addEventListener('click', () => {
+            linkEl.closest('label')?.querySelector('input[type="checkbox"]')?.focus();
+        });
+    });
+
+    function setPolicyConsentState(show) {
+        if (policyConsentWrap) {
+            policyConsentWrap.classList.toggle('hidden', !show);
+        }
+
+        policyCheckboxes.forEach((checkbox) => {
+            checkbox.required = show;
+            if (!show) {
+                checkbox.checked = false;
+            }
+        });
+    }
+
+    function getPostAuthDestination(user) {
+        if (isAdminUser(user)) return 'admin-dashboard.html';
+        const redirectPath = getStoredPostAuthRedirectPath();
+        clearStoredPostAuthRedirectPath();
+        return redirectPath || 'dashboard.html';
+    }
 
     try {
         const consumed = await consumeIncomingAuthLink();
@@ -2547,9 +2709,11 @@ async function setupAuthentication() {
 
     const { data: { user } } = await _supabase.auth.getUser();
     if (user && authType !== 'recovery') {
-        window.location.replace(isAdminUser(user) ? 'admin-dashboard.html' : 'dashboard.html');
+        window.location.replace(getPostAuthDestination(user));
         return;
     }
+
+    setPolicyConsentState(false);
 
     if (toggleBtn) {
         toggleBtn.addEventListener('click', (e) => {
@@ -2563,6 +2727,7 @@ async function setupAuthentication() {
             toggleBtn.textContent = isLogin ? 'إنشاء حساب جديد' : 'تسجيل الدخول';
 
             document.getElementById('msgBox').classList.remove('active');
+            setPolicyConsentState(!isLogin);
         });
     }
 
@@ -2606,11 +2771,15 @@ async function setupAuthentication() {
                     showAuthMessage('✅ تم الدخول بنجاح! جاري تحويلك...', 'success');
 
                     setTimeout(() => {
-                        window.location.href = isAdminUser(user)
-                            ? 'admin-dashboard.html'
-                            : 'dashboard.html';
+                        window.location.href = getPostAuthDestination(user);
                     }, 1000);
                 } else {
+                    const hasPolicyConsent = policyCheckboxes.every((checkbox) => checkbox.checked);
+                    if (!hasPolicyConsent) {
+                        showAuthMessage('❌ يجب الموافقة على سياسة الخصوصية وشروط الاستخدام وسياسة الاسترجاع قبل إنشاء الحساب.', 'error');
+                        return;
+                    }
+
                     const { error } = await _supabase.auth.signUp({
                         email,
                         password,
@@ -3323,6 +3492,41 @@ async function renderInviteAuditLog() {
                 <td class="px-4 py-3">
                     <span class="text-xs px-2 py-1 rounded-full border ${row.invited_role === 'admin' ? 'border-blue-400/40 bg-blue-500/10 text-blue-200' : 'border-emerald-400/40 bg-emerald-500/10 text-emerald-200'}">${escapeHtml(row.invited_role || 'client')}</span>
                 </td>
+                <td class="px-4 py-3 text-gray-300 number-font">${escapeHtml(formatArabicDateTime(row.created_at))}</td>
+            </tr>
+        `);
+    });
+}
+
+async function renderAdminNewUsersSection() {
+    const tableBody = document.getElementById('adminNewUsersTableBody');
+    if (!tableBody) return;
+
+    tableBody.innerHTML = '<tr><td colspan="4" class="px-4 py-5 text-center text-gray-500">جاري تحميل الحسابات الجديدة...</td></tr>';
+
+    const { data, error } = await _supabase
+        .from(TABLES.userSignups)
+        .select('auth_user_id, full_name, email, created_at')
+        .order('created_at', { ascending: false })
+        .limit(50);
+
+    if (error) {
+        tableBody.innerHTML = '<tr><td colspan="4" class="px-4 py-5 text-center text-red-300">تعذر تحميل الحسابات الجديدة. تأكد من تطبيق تحديثات قاعدة البيانات.</td></tr>';
+        return;
+    }
+
+    if (!Array.isArray(data) || data.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="4" class="px-4 py-5 text-center text-gray-500">لا توجد حسابات جديدة حتى الآن.</td></tr>';
+        return;
+    }
+
+    tableBody.innerHTML = '';
+    data.forEach((row, index) => {
+        tableBody.insertAdjacentHTML('beforeend', `
+            <tr>
+                <td class="px-4 py-3 font-en text-gray-400">${escapeHtml(String(index + 1))}</td>
+                <td class="px-4 py-3 text-white">${escapeHtml(row.full_name || '-')}</td>
+                <td class="px-4 py-3 font-en">${escapeHtml(row.email || '-')}</td>
                 <td class="px-4 py-3 text-gray-300 number-font">${escapeHtml(formatArabicDateTime(row.created_at))}</td>
             </tr>
         `);
@@ -4328,11 +4532,28 @@ async function initializeAdminDashboard() {
     renderServicesAdminSection();
     renderDiscountsSection();
     await renderInviteAuditLog();
+    await renderAdminNewUsersSection();
     resetOfferForm();
     resetServiceForm();
     setupAdminInviteUser();
     bindAdminForms();
     setupAdminI18nManager();
+}
+
+async function reopenPendingOrderIntentIfAvailable() {
+    const pendingIntent = readPendingOrderIntent();
+    if (!pendingIntent) return;
+
+    const { data: { user } } = await _supabase.auth.getUser();
+    if (!user) return;
+
+    currentSessionUser = user;
+    clearPendingOrderIntent();
+    await openOrderModal(pendingIntent.serviceName || t('customServiceName'), {
+        finalPrice: pendingIntent.finalPrice || '',
+        discountCode: pendingIntent.discountCode || '',
+        lang: pendingIntent.lang || '',
+    });
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -4413,6 +4634,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }
                 });
             }
+
+            await reopenPendingOrderIntentIfAvailable();
         }
 
         if (hasDashboardView) {

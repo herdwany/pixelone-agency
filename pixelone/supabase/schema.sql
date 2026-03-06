@@ -37,6 +37,49 @@ $$;
 
 grant execute on function public.is_admin_email() to anon, authenticated;
 
+create table if not exists public.pixel_user_signups (
+    auth_user_id uuid primary key,
+    full_name text not null default '',
+    email text not null default '',
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now()
+);
+
+create or replace function public.sync_pixel_user_signup()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+    insert into public.pixel_user_signups (auth_user_id, full_name, email, created_at, updated_at)
+    values (
+        new.id,
+        coalesce(
+            nullif(trim(coalesce(new.raw_user_meta_data ->> 'full_name', '')), ''),
+            split_part(coalesce(new.email, ''), '@', 1),
+            ''
+        ),
+        coalesce(new.email, ''),
+        coalesce(new.created_at, now()),
+        now()
+    )
+    on conflict (auth_user_id) do update
+    set
+        full_name = excluded.full_name,
+        email = excluded.email,
+        created_at = excluded.created_at,
+        updated_at = now();
+
+    return new;
+end;
+$$;
+
+drop trigger if exists trg_auth_users_sync_pixel_signup on auth.users;
+create trigger trg_auth_users_sync_pixel_signup
+after insert on auth.users
+for each row execute function public.sync_pixel_user_signup();
+
 -- ------------------------------------------------------------
 -- Core tables
 -- ------------------------------------------------------------
@@ -136,6 +179,7 @@ create index if not exists idx_pixel_services_enabled on public.pixel_services (
 create index if not exists idx_pixel_offers_enabled on public.pixel_offers (enabled);
 create index if not exists idx_pixel_offers_target_email on public.pixel_offers (lower(target_email));
 create index if not exists idx_pixel_orders_user_email on public.pixel_orders (lower(user_email));
+create index if not exists idx_pixel_user_signups_email on public.pixel_user_signups (lower(email));
 create index if not exists idx_pixel_discounts_customer_email on public.pixel_discounts_customer (lower(email));
 create index if not exists idx_pixel_i18n_pages_page on public.pixel_i18n_pages (page);
 
@@ -170,6 +214,7 @@ for each row execute function public.set_updated_at();
 -- RLS
 -- ------------------------------------------------------------
 alter table public.pixel_admin_users enable row level security;
+alter table public.pixel_user_signups enable row level security;
 alter table public.pixel_services enable row level security;
 alter table public.pixel_offers enable row level security;
 alter table public.pixel_orders enable row level security;
@@ -189,6 +234,19 @@ using (public.is_admin_email());
 drop policy if exists pixel_admin_users_mutation_admin on public.pixel_admin_users;
 create policy pixel_admin_users_mutation_admin
 on public.pixel_admin_users
+for all
+using (public.is_admin_email())
+with check (public.is_admin_email());
+
+drop policy if exists pixel_user_signups_select_admin on public.pixel_user_signups;
+create policy pixel_user_signups_select_admin
+on public.pixel_user_signups
+for select
+using (public.is_admin_email());
+
+drop policy if exists pixel_user_signups_mutation_admin on public.pixel_user_signups;
+create policy pixel_user_signups_mutation_admin
+on public.pixel_user_signups
 for all
 using (public.is_admin_email())
 with check (public.is_admin_email());

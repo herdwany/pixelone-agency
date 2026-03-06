@@ -50,6 +50,22 @@
                     <input type="password" id="password" name="password" autocomplete="current-password" required placeholder="••••••••" class="input-luxury font-en text-left" dir="ltr">
                 </div>
 
+                <div id="policyConsentWrap" class="hidden space-y-3 rounded-xl border border-white/10 bg-white/[0.02] p-4">
+                    <p class="text-xs text-gray-400">قبل إنشاء الحساب، يجب الموافقة على السياسات التالية:</p>
+                    <label class="flex items-start gap-3 text-sm text-gray-200">
+                        <input type="checkbox" id="agreePrivacyPolicy" data-policy-consent="required" class="mt-1 accent-[#E50914]">
+                        <span>أوافق على <a href="privacy-policy.html" data-policy-link="privacy" class="text-brand-red hover:text-red-300 transition">سياسة الخصوصية</a>.</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-200">
+                        <input type="checkbox" id="agreeTermsOfService" data-policy-consent="required" class="mt-1 accent-[#E50914]">
+                        <span>أوافق على <a href="terms-of-service.html" data-policy-link="terms" class="text-brand-red hover:text-red-300 transition">شروط الاستخدام</a>.</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-200">
+                        <input type="checkbox" id="agreeRefundPolicy" data-policy-consent="required" class="mt-1 accent-[#E50914]">
+                        <span>أوافق على <a href="refund-policy.html" data-policy-link="refund" class="text-brand-red hover:text-red-300 transition">سياسة الاسترجاع</a>.</span>
+                    </label>
+                </div>
+
                 <button type="submit" id="btnSubmit" class="btn-filled-red w-full py-4 rounded-xl text-lg mt-6 font-black">
                     دخول المنصة
                 </button>
