@@ -2429,7 +2429,6 @@ function ensureDashboardTrackingControls(onFilter) {
 function renderDashboardOrders(user) {
     const tableBody = document.getElementById('ordersTableBody');
     const mobileList = document.getElementById('ordersMobileList');
-    const supportEmailLink = document.getElementById('supportEmailLink');
     const statActiveProjects = document.getElementById('statActiveProjects');
     const statPendingOrders = document.getElementById('statPendingOrders');
     const statTotalOrders = document.getElementById('statTotalOrders');
@@ -2437,9 +2436,6 @@ function renderDashboardOrders(user) {
     const dashboardRoleHint = document.getElementById('dashboardRoleHint');
 
     if (!tableBody) return;
-
-    const supportEmail = siteSettings.brand?.supportEmail || DEFAULT_SITE_SETTINGS.brand.supportEmail;
-    wireEmailLink(supportEmailLink, supportEmail, 'استفسار عام - خدمة العملاء');
 
     const allOrders = getStoredOrders();
     const userEmail = normalizeEmail(user?.email);
@@ -2494,10 +2490,8 @@ function renderDashboardOrders(user) {
     if (mobileList) mobileList.innerHTML = '';
 
     filteredOrders.forEach((order) => {
-        const supportSubject = `استفسار حول الطلب ${order.id || ''}`;
         const safeService = escapeHtml(order.serviceName || 'طلب غير محدد');
         const safeDate = escapeHtml(formatLocalizedDateTime(order.createdAt || new Date().toISOString()));
-        const safeSpecs = escapeHtml(order.specs || '-');
         const currentStatus = order.status || DEFAULT_SITE_SETTINGS.orders.defaultStatus;
         const safeStatus = escapeHtml(getLocalizedOrderStatus(currentStatus));
         const safeEmail = escapeHtml(order.email || order.userEmail || '-');
@@ -2507,24 +2501,18 @@ function renderDashboardOrders(user) {
 
         tableBody.insertAdjacentHTML('beforeend', `
             <tr>
+                <td class="px-4 py-3 text-gray-200 font-en">${safeTrack}</td>
                 <td class="px-4 py-3 font-bold text-white">
                     <div>${safeService}</div>
-                    <div class="text-[11px] text-gray-500 font-en mt-1">${safeTrack}</div>
                 </td>
                 <td class="px-4 py-3 text-gray-300 number-font">${safeDate}</td>
-                <td class="px-4 py-3 text-gray-300 max-w-[360px]"><div class="max-h-16 overflow-y-auto break-words">${safeSpecs}</div></td>
                 <td class="px-4 py-3">
                     <div class="flex flex-col gap-2">
                         <span class="text-xs px-2 py-1 rounded-full border ${statusMeta.className} w-fit">${safeStatus}</span>
                         <span class="text-[11px] text-gray-500">${escapeHtml(t('dashboardLastUpdate'))} ${safeLastUpdate}</span>
                     </div>
                 </td>
-                <td class="px-4 py-3">
-                    <div class="flex flex-col gap-1">
-                        <span class="text-xs text-gray-400 font-en">${safeEmail}</span>
-                        <a href="#" class="order-support-link text-xs text-brand-red hover:text-red-300" data-email="${escapeHtml(supportEmail)}" data-subject="${escapeHtml(supportSubject)}">${escapeHtml(t('dashboardSupport'))}</a>
-                    </div>
-                </td>
+                <td class="px-4 py-3 text-xs text-gray-300 font-en">${safeEmail}</td>
             </tr>
         `);
 
@@ -2535,29 +2523,19 @@ function renderDashboardOrders(user) {
                         <h4 class="text-white font-bold text-sm">${safeService}</h4>
                         <span class="text-[11px] px-2 py-1 rounded-full border ${statusMeta.className}">${safeStatus}</span>
                     </div>
-                    <p class="text-xs text-gray-500 mb-2 font-en">${safeTrack}</p>
+                    <p class="text-xs text-gray-500 mb-2">رقم الطلب: <span class="font-en">${safeTrack}</span></p>
                     <p class="text-xs text-gray-400 mb-2">${escapeHtml(t('dashboardOrderDate'))} <span class="font-en">${safeDate}</span></p>
-                    <p class="text-xs text-gray-300 leading-relaxed mb-3 break-words">${safeSpecs}</p>
-                    <a href="#" class="order-support-link text-xs text-brand-red hover:text-red-300" data-email="${escapeHtml(supportEmail)}" data-subject="${escapeHtml(supportSubject)}">${escapeHtml(t('dashboardSupport'))} (${safeEmail})</a>
+                    <p class="text-xs text-gray-300 mb-2">البريد: <span class="font-en">${safeEmail}</span></p>
                     <p class="text-[11px] text-gray-500 mt-2">${escapeHtml(t('dashboardLastUpdate'))} ${safeLastUpdate}</p>
                 </article>
             `);
         }
-    });
-
-    const supportLinks = document.querySelectorAll('.order-support-link');
-    supportLinks.forEach((link) => {
-        const email = link.getAttribute('data-email');
-        const subject = link.getAttribute('data-subject') || '';
-        wireEmailLink(link, email, subject);
     });
 }
 
 function setupDashboardSecurity(user) {
     const changeEmailForm = document.getElementById('changeEmailForm');
     const changePasswordForm = document.getElementById('changePasswordForm');
-    const btnSendReauthLink = document.getElementById('btnSendReauthLink');
-    const btnSignOutAll = document.getElementById('btnSignOutAll');
 
     if (changeEmailForm && !changeEmailForm.dataset.bound) {
         changeEmailForm.dataset.bound = 'true';
@@ -2631,30 +2609,6 @@ function setupDashboardSecurity(user) {
         });
     }
 
-    if (btnSendReauthLink && !btnSendReauthLink.dataset.bound) {
-        btnSendReauthLink.dataset.bound = 'true';
-        btnSendReauthLink.addEventListener('click', async () => {
-            const { error } = await _supabase.auth.reauthenticate();
-            if (error) {
-                showAuthMessage(`❌ ${error.message}`, 'error');
-                return;
-            }
-            showAuthMessage('✅ تم إرسال رابط إعادة التحقق إلى بريدك.', 'success');
-        });
-    }
-
-    if (btnSignOutAll && !btnSignOutAll.dataset.bound) {
-        btnSignOutAll.dataset.bound = 'true';
-        btnSignOutAll.addEventListener('click', async () => {
-            const { error } = await _supabase.auth.signOut({ scope: 'global' });
-            if (error) {
-                showAuthMessage(`❌ ${error.message}`, 'error');
-                return;
-            }
-            showAuthMessage('✅ تم تسجيل الخروج من كل الأجهزة.', 'success');
-            setTimeout(() => window.location.replace('client-login.html'), 900);
-        });
-    }
 }
 
 function setupAdminInviteUser() {
