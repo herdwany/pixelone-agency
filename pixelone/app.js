@@ -347,8 +347,8 @@ const SERVICE_DETAIL_CONTENT = {
         revisions: 'جولتا تعديل ضمن نفس الفكرة.',
     },
     'svc-logo-design': {
-        image: 'https://images.unsplash.com/photo-1572044162444-ad60f128bdea?auto=format&fit=crop&w=1600&h=900&q=80',
-        imageAlt: 'عملية تصميم شعار احترافي',
+        image: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&w=1600&h=900&q=80',
+        imageAlt: 'عملية رسم وتصميم شعار احترافي على الورق',
         deliverables: [
             'شعار أساسي واضح وقابل للاستخدام في جميع المنصات.',
             'نسخة بخلفية شفافة PNG عالية الجودة.',
@@ -371,8 +371,8 @@ const SERVICE_DETAIL_CONTENT = {
         revisions: 'جولتا تعديل على النسخة المختارة.',
     },
     'svc-digital-banners': {
-        image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1600&h=900&q=80',
-        imageAlt: 'بانرات وإعلانات رقمية لمواقع التواصل',
+        image: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?auto=format&fit=crop&w=1600&h=900&q=80',
+        imageAlt: 'تصميم بانرات وإعلانات رقمية احترافية للحملات',
         deliverables: [
             'بانرات إعلانية بمقاسات معتمدة للمنصات المطلوبة.',
             'نسخ متعددة للحملة عند الحاجة (A/B بسيط).',
@@ -395,8 +395,8 @@ const SERVICE_DETAIL_CONTENT = {
         revisions: 'جولتا تعديل ضمن نفس الحملة.',
     },
     'svc-pitch-deck': {
-        image: 'https://images.unsplash.com/photo-1590098563686-06ab8778a6a7?auto=format&fit=crop&w=1600&h=900&q=80',
-        imageAlt: 'تصميم عرض تقديمي احترافي للأعمال',
+        image: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=1600&h=900&q=80',
+        imageAlt: 'عرض تقديمي احترافي في اجتماع أعمال',
         deliverables: [
             'تصميم عرض تقديمي بهيكل بصري احترافي.',
             'تنسيق الشرائح بعناوين واضحة وتسلسل مقنع.',
@@ -467,8 +467,8 @@ const SERVICE_DETAIL_CONTENT = {
         revisions: 'مراجعات مرحلية متفق عليها مسبقاً.',
     },
     'svc-short-videos-premium': {
-        image: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=1600&h=900&q=80',
-        imageAlt: 'فيديوهات قصيرة بجودة أعلى لمنصات التواصل',
+        image: 'https://images.unsplash.com/photo-1541516160071-4bb0c5af65ba?auto=format&fit=crop&w=1600&h=900&q=80',
+        imageAlt: 'كاميرا احترافية لإنتاج فيديوهات قصيرة عالية الجودة',
         deliverables: [
             'مونتاج فيديو قصير بجودة أعلى من الباقة الأساسية.',
             'تحسين احترافي للألوان والصوت والإيقاع.',
@@ -491,8 +491,8 @@ const SERVICE_DETAIL_CONTENT = {
         revisions: 'جولتا تعديل على النسخة الأولية.',
     },
     'svc-advanced-promo-video': {
-        image: 'https://images.unsplash.com/photo-1579566346927-c68383817a25?auto=format&fit=crop&w=1600&h=900&q=80',
-        imageAlt: 'فيديو ترويجي متقدم بجودة إنتاجية عالية',
+        image: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1600&h=900&q=80',
+        imageAlt: 'معدات إنتاج فيديو سينمائي متقدم',
         deliverables: [
             'خدمة قادمة لإنتاج فيديو ترويجي متقدم.',
             'سيناريو بصري أقوى متعدد اللقطات.',
@@ -539,8 +539,8 @@ const SERVICE_DETAIL_CONTENT = {
         revisions: 'قريباً — حسب نوع المشروع.',
     },
     'svc-brand-identity': {
-        image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=1600&h=900&q=80',
-        imageAlt: 'بناء هوية بصرية للعلامة التجارية',
+        image: 'https://images.unsplash.com/photo-1600508774634-4e11d34730e2?auto=format&fit=crop&w=1600&h=900&q=80',
+        imageAlt: 'هوية بصرية احترافية مع تطبيقات على المطبوعات',
         deliverables: [
             'خدمة قادمة لإعداد هوية بصرية أساسية متناسقة.',
             'شعار رئيسي مع لوحة ألوان وخطوط مقترحة.',
@@ -1805,6 +1805,7 @@ function updateServiceShareMeta(service, localized, details) {
     const publicUrl = `https://www.pixelonevisuals.tech/${detailPath}`;
     const title = `${localized.title || 'تفاصيل الخدمة'} | Pixel One Visuals`;
     const description = localized.description || 'تفاصيل الخدمة، المخرجات، والمتطلبات قبل الطلب.';
+    const ogDescription = `${description} — اطلب الآن واحصل على تنفيذ احترافي من Pixel One Visuals!`;
     const image = getServiceOgImage(resolvedId);
     const imageAlt = details.imageAlt || 'Pixel One Visuals';
 
@@ -1812,7 +1813,7 @@ function updateServiceShareMeta(service, localized, details) {
     setMetaTag('meta[name="description"]', 'content', description);
     setMetaTag('link[rel="canonical"]', 'href', publicUrl);
     setMetaTag('meta[property="og:title"]', 'content', title);
-    setMetaTag('meta[property="og:description"]', 'content', description);
+    setMetaTag('meta[property="og:description"]', 'content', ogDescription);
     setMetaTag('meta[property="og:url"]', 'content', publicUrl);
     setMetaTag('meta[property="og:image"]', 'content', image);
     setMetaTag('meta[property="og:image:secure_url"]', 'content', image);
@@ -1821,7 +1822,7 @@ function updateServiceShareMeta(service, localized, details) {
     setMetaTag('meta[property="og:image:height"]', 'content', '630');
     setMetaTag('meta[property="og:image:alt"]', 'content', imageAlt);
     setMetaTag('meta[name="twitter:title"]', 'content', title);
-    setMetaTag('meta[name="twitter:description"]', 'content', description);
+    setMetaTag('meta[name="twitter:description"]', 'content', ogDescription);
     setMetaTag('meta[name="twitter:image"]', 'content', image);
 }
 
@@ -2119,7 +2120,7 @@ function renderServiceDetailPage() {
     const detailPath = SERVICE_DETAIL_ROUTES[resolvedId] || `service-detail.html?service=${encodeURIComponent(resolvedId || '')}`;
     const shareUrl = `https://www.pixelonevisuals.tech/${detailPath}`;
     const shareTitle = `${localized.title || 'تفاصيل الخدمة'} | Pixel One Visuals`;
-    const shareText = localized.description || 'تفاصيل الخدمة والمخرجات والمتطلبات.';
+    const shareText = `${localized.description || 'تفاصيل الخدمة والمخرجات والمتطلبات.'} \n🔥 اطلب الآن من Pixel One Visuals واحصل على تنفيذ احترافي!`;
 
     root.innerHTML = `
         <article class="water-card rounded-3xl overflow-hidden">
