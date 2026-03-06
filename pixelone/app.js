@@ -308,9 +308,22 @@ const SERVICE_DETAIL_ROUTES = {
     'svc-brand-identity': 'service-brand-identity.html',
 };
 
+const SERVICE_OG_IMAGE_MAP = {
+    'svc-social-media-designs': 'https://www.pixelonevisuals.tech/og/social-media-designs-1200x630.png',
+    'svc-logo-design': 'https://www.pixelonevisuals.tech/og/logo-design-1200x630.png',
+    'svc-digital-banners': 'https://www.pixelonevisuals.tech/og/digital-banners-1200x630.png',
+    'svc-pitch-deck': 'https://www.pixelonevisuals.tech/og/pitch-deck-1200x630.png',
+    'svc-short-video': 'https://www.pixelonevisuals.tech/og/short-video-1200x630.png',
+    'svc-professional-design': 'https://www.pixelonevisuals.tech/og/professional-design-1200x630.png',
+    'svc-short-videos-premium': 'https://www.pixelonevisuals.tech/og/short-videos-premium-1200x630.png',
+    'svc-advanced-promo-video': 'https://www.pixelonevisuals.tech/og/advanced-promo-video-1200x630.png',
+    'svc-web-landing-page': 'https://www.pixelonevisuals.tech/og/web-landing-page-1200x630.png',
+    'svc-brand-identity': 'https://www.pixelonevisuals.tech/og/brand-identity-1200x630.png',
+};
+
 const SERVICE_DETAIL_CONTENT = {
     'svc-social-media-designs': {
-        image: 'https://www.pixelonevisuals.tech/og/social-media-designs-1200x630.svg',
+        image: 'https://source.unsplash.com/1600x900/?social-media,marketing,content',
         imageAlt: 'تصاميم سوشيال ميديا احترافية على شاشة حاسوب',
         deliverables: [
             'تصميم منشورات ثابتة متوافقة مع Instagram وFacebook وLinkedIn.',
@@ -334,7 +347,7 @@ const SERVICE_DETAIL_CONTENT = {
         revisions: 'جولتا تعديل ضمن نفس الفكرة.',
     },
     'svc-logo-design': {
-        image: 'https://www.pixelonevisuals.tech/og/logo-design-1200x630.svg',
+        image: 'https://source.unsplash.com/1600x900/?logo,branding,identity',
         imageAlt: 'عملية تصميم شعار احترافي',
         deliverables: [
             'شعار أساسي واضح وقابل للاستخدام في جميع المنصات.',
@@ -358,7 +371,7 @@ const SERVICE_DETAIL_CONTENT = {
         revisions: 'جولتا تعديل على النسخة المختارة.',
     },
     'svc-digital-banners': {
-        image: 'https://www.pixelonevisuals.tech/og/digital-banners-1200x630.svg',
+        image: 'https://source.unsplash.com/1600x900/?digital,ads,banner',
         imageAlt: 'بانرات وإعلانات رقمية لمواقع التواصل',
         deliverables: [
             'بانرات إعلانية بمقاسات معتمدة للمنصات المطلوبة.',
@@ -382,7 +395,7 @@ const SERVICE_DETAIL_CONTENT = {
         revisions: 'جولتا تعديل ضمن نفس الحملة.',
     },
     'svc-pitch-deck': {
-        image: 'https://www.pixelonevisuals.tech/og/pitch-deck-1200x630.svg',
+        image: 'https://source.unsplash.com/1600x900/?presentation,business,slides',
         imageAlt: 'تصميم عرض تقديمي احترافي للأعمال',
         deliverables: [
             'تصميم عرض تقديمي بهيكل بصري احترافي.',
@@ -406,7 +419,7 @@ const SERVICE_DETAIL_CONTENT = {
         revisions: 'جولتا تعديل على النسخة الأولية.',
     },
     'svc-short-video': {
-        image: 'https://www.pixelonevisuals.tech/og/short-video-1200x630.svg',
+        image: 'https://source.unsplash.com/1600x900/?video,editing,reels',
         imageAlt: 'مونتاج فيديو قصير لمنصات التواصل',
         deliverables: [
             'مونتاج فيديو قصير مناسب لـ Reels/TikTok/Shorts.',
@@ -430,7 +443,7 @@ const SERVICE_DETAIL_CONTENT = {
         revisions: 'جولتا تعديل داخل نفس المدة المتفق عليها.',
     },
     'svc-professional-design': {
-        image: 'https://www.pixelonevisuals.tech/og/professional-design-1200x630.svg',
+        image: 'https://source.unsplash.com/1600x900/?creative,agency,design',
         imageAlt: 'باقة تصميم احترافية متكاملة للعلامة التجارية',
         deliverables: [
             'خطة تصميم متكاملة حسب احتياج المشروع.',
@@ -454,7 +467,7 @@ const SERVICE_DETAIL_CONTENT = {
         revisions: 'مراجعات مرحلية متفق عليها مسبقاً.',
     },
     'svc-short-videos-premium': {
-        image: 'https://www.pixelonevisuals.tech/og/short-videos-premium-1200x630.svg',
+        image: 'https://source.unsplash.com/1600x900/?videography,studio,production',
         imageAlt: 'فيديوهات قصيرة بجودة أعلى لمنصات التواصل',
         deliverables: [
             'مونتاج فيديو قصير بجودة أعلى من الباقة الأساسية.',
@@ -478,7 +491,7 @@ const SERVICE_DETAIL_CONTENT = {
         revisions: 'جولتا تعديل على النسخة الأولية.',
     },
     'svc-advanced-promo-video': {
-        image: 'https://www.pixelonevisuals.tech/og/advanced-promo-video-1200x630.svg',
+        image: 'https://source.unsplash.com/1600x900/?cinematic,video,commercial',
         imageAlt: 'فيديو ترويجي متقدم بجودة إنتاجية عالية',
         deliverables: [
             'خدمة قادمة لإنتاج فيديو ترويجي متقدم.',
@@ -502,7 +515,7 @@ const SERVICE_DETAIL_CONTENT = {
         revisions: 'قريباً — حسب باقة التنفيذ النهائية.',
     },
     'svc-web-landing-page': {
-        image: 'https://www.pixelonevisuals.tech/og/web-landing-page-1200x630.svg',
+        image: 'https://source.unsplash.com/1600x900/?website,landing-page,ui',
         imageAlt: 'تصميم مواقع وصفحات هبوط احترافية',
         deliverables: [
             'خدمة قادمة لتصميم صفحات هبوط ومواقع تعريفية.',
@@ -526,7 +539,7 @@ const SERVICE_DETAIL_CONTENT = {
         revisions: 'قريباً — حسب نوع المشروع.',
     },
     'svc-brand-identity': {
-        image: 'https://www.pixelonevisuals.tech/og/brand-identity-1200x630.svg',
+        image: 'https://source.unsplash.com/1600x900/?brand,identity,guidelines',
         imageAlt: 'بناء هوية بصرية للعلامة التجارية',
         deliverables: [
             'خدمة قادمة لإعداد هوية بصرية أساسية متناسقة.',
@@ -1775,6 +1788,11 @@ function getServiceDetailIdFromPath(pathname) {
     return found ? found[0] : '';
 }
 
+function getServiceOgImage(serviceId) {
+    const resolvedId = resolveServiceDetailId(serviceId);
+    return SERVICE_OG_IMAGE_MAP[resolvedId] || 'https://www.pixelonevisuals.tech/og/professional-design-1200x630.png';
+}
+
 function setMetaTag(selector, attr, value) {
     const element = document.querySelector(selector);
     if (!element) return;
@@ -1787,7 +1805,7 @@ function updateServiceShareMeta(service, localized, details) {
     const publicUrl = `https://www.pixelonevisuals.tech/${detailPath}`;
     const title = `${localized.title || 'تفاصيل الخدمة'} | Pixel One Visuals`;
     const description = localized.description || 'تفاصيل الخدمة، المخرجات، والمتطلبات قبل الطلب.';
-    const image = details.image || 'https://www.pixelonevisuals.tech/icone/web-app-manifest-512x512.png';
+    const image = getServiceOgImage(resolvedId);
     const imageAlt = details.imageAlt || 'Pixel One Visuals';
 
     document.title = title;
@@ -1798,7 +1816,7 @@ function updateServiceShareMeta(service, localized, details) {
     setMetaTag('meta[property="og:url"]', 'content', publicUrl);
     setMetaTag('meta[property="og:image"]', 'content', image);
     setMetaTag('meta[property="og:image:secure_url"]', 'content', image);
-    setMetaTag('meta[property="og:image:type"]', 'content', 'image/svg+xml');
+    setMetaTag('meta[property="og:image:type"]', 'content', 'image/png');
     setMetaTag('meta[property="og:image:width"]', 'content', '1200');
     setMetaTag('meta[property="og:image:height"]', 'content', '630');
     setMetaTag('meta[property="og:image:alt"]', 'content', imageAlt);
@@ -1812,7 +1830,7 @@ function getServiceDetailContent(serviceId) {
     const content = SERVICE_DETAIL_CONTENT[resolvedId];
     if (content) return content;
     return {
-        image: 'https://www.pixelonevisuals.tech/og/professional-design-1200x630.svg',
+        image: 'https://source.unsplash.com/1600x900/?digital,design,creative',
         imageAlt: 'خدمة تصميم احترافية',
         deliverables: ['تنفيذ احترافي حسب نطاق الطلب المتفق عليه.', 'تسليم منظم وجاهز للاستخدام.'],
         requirements: ['فكرة المشروع والهدف الأساسي.', 'المحتوى والمواد المتاحة لديك.'],
@@ -1820,6 +1838,32 @@ function getServiceDetailContent(serviceId) {
         turnaround: 'يتم تحديد المدة بعد مراجعة التفاصيل.',
         revisions: 'ضمن النطاق المتفق عليه.',
     };
+}
+
+async function shareServiceLink(payload) {
+    const title = String(payload?.title || '').trim();
+    const text = String(payload?.text || '').trim();
+    const url = String(payload?.url || window.location.href).trim();
+    const shareData = { title, text, url };
+
+    if (navigator.share) {
+        try {
+            await navigator.share(shareData);
+            return;
+        } catch {
+        }
+    }
+
+    const composed = `${title}\n${text}\n${url}`.trim();
+    if (navigator.clipboard?.writeText) {
+        try {
+            await navigator.clipboard.writeText(composed);
+        } catch {
+        }
+    }
+
+    const waUrl = `https://wa.me/?text=${encodeURIComponent(composed)}`;
+    window.open(waUrl, '_blank', 'noopener,noreferrer');
 }
 
 async function setupHomeSessionUI() {
@@ -2071,6 +2115,11 @@ function renderServiceDetailPage() {
         : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300';
 
     updateServiceShareMeta(service, localized, details);
+    const resolvedId = resolveServiceDetailId(service.id);
+    const detailPath = SERVICE_DETAIL_ROUTES[resolvedId] || `service-detail.html?service=${encodeURIComponent(resolvedId || '')}`;
+    const shareUrl = `https://www.pixelonevisuals.tech/${detailPath}`;
+    const shareTitle = `${localized.title || 'تفاصيل الخدمة'} | Pixel One Visuals`;
+    const shareText = localized.description || 'تفاصيل الخدمة والمخرجات والمتطلبات.';
 
     root.innerHTML = `
         <article class="water-card rounded-3xl overflow-hidden">
@@ -2123,6 +2172,9 @@ function renderServiceDetailPage() {
                 <div class="mt-8 flex flex-col sm:flex-row gap-3">
                     <button id="serviceDetailOrderBtn" type="button" data-action="open-order-modal" data-service-name="${serviceName}" data-final-price="${servicePrice}" class="btn-filled-red px-8 py-4 rounded-xl font-black ${isSoon ? 'btn-disabled' : ''}" ${isSoon ? 'disabled' : ''}>
                         ${isSoon ? 'قريباً جداً' : 'اطلب الخدمة الآن'}
+                    </button>
+                    <button type="button" data-action="share-service" data-share-title="${escapeHtml(shareTitle)}" data-share-text="${escapeHtml(shareText)}" data-share-url="${escapeHtml(shareUrl)}" class="px-8 py-4 rounded-xl font-black border border-brand-red/40 text-brand-red hover:bg-brand-red/10 text-center">
+                        مشاركة الخدمة
                     </button>
                     <a href="services.html" class="px-8 py-4 rounded-xl font-black border border-white/20 text-gray-200 hover:bg-white/10 text-center">كل الخدمات</a>
                 </div>
@@ -2225,6 +2277,15 @@ function setupHomeCspSafeBindings() {
             const targetId = actionEl.dataset.targetId || '';
             const section = targetId ? document.getElementById(targetId) : null;
             if (section) section.scrollIntoView({ behavior: 'smooth' });
+            return;
+        }
+
+        if (action === 'share-service') {
+            shareServiceLink({
+                title: actionEl.dataset.shareTitle || document.title,
+                text: actionEl.dataset.shareText || '',
+                url: actionEl.dataset.shareUrl || window.location.href,
+            });
             return;
         }
 
