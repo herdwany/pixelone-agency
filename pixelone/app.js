@@ -2426,6 +2426,34 @@ function ensureDashboardTrackingControls(onFilter) {
     return input;
 }
 
+function copyText(value) {
+    const text = String(value || '').trim();
+    if (!text) return Promise.reject(new Error('empty'));
+
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+        return navigator.clipboard.writeText(text);
+    }
+
+    return new Promise((resolve, reject) => {
+        const el = document.createElement('textarea');
+        el.value = text;
+        el.setAttribute('readonly', 'readonly');
+        el.style.position = 'fixed';
+        el.style.opacity = '0';
+        document.body.appendChild(el);
+        el.select();
+        try {
+            const ok = document.execCommand('copy');
+            document.body.removeChild(el);
+            if (ok) resolve();
+            else reject(new Error('copy_failed'));
+        } catch (err) {
+            document.body.removeChild(el);
+            reject(err);
+        }
+    });
+}
+
 function renderDashboardOrders(user) {
     const tableBody = document.getElementById('ordersTableBody');
     const mobileList = document.getElementById('ordersMobileList');
@@ -2501,7 +2529,12 @@ function renderDashboardOrders(user) {
 
         tableBody.insertAdjacentHTML('beforeend', `
             <tr>
-                <td class="px-4 py-3 text-gray-200 font-en">${safeTrack}</td>
+                <td class="px-4 py-3">
+                    <div class="flex items-center gap-2">
+                        <span class="text-gray-200 font-en">${safeTrack}</span>
+                        <button type="button" class="copy-track-btn text-[11px] px-2 py-1 rounded border border-white/20 text-gray-200 hover:border-brand-red hover:text-white" data-track="${safeTrack}">نسخ</button>
+                    </div>
+                </td>
                 <td class="px-4 py-3 font-bold text-white">
                     <div>${safeService}</div>
                 </td>
@@ -2526,10 +2559,26 @@ function renderDashboardOrders(user) {
                     <p class="text-xs text-gray-500 mb-2">رقم الطلب: <span class="font-en">${safeTrack}</span></p>
                     <p class="text-xs text-gray-400 mb-2">${escapeHtml(t('dashboardOrderDate'))} <span class="font-en">${safeDate}</span></p>
                     <p class="text-xs text-gray-300 mb-2">البريد: <span class="font-en">${safeEmail}</span></p>
+                    <button type="button" class="copy-track-btn mt-1 text-xs px-2 py-1 rounded border border-white/20 text-gray-200 hover:border-brand-red hover:text-white" data-track="${safeTrack}">نسخ رقم الطلب</button>
                     <p class="text-[11px] text-gray-500 mt-2">${escapeHtml(t('dashboardLastUpdate'))} ${safeLastUpdate}</p>
                 </article>
             `);
         }
+    });
+
+    const copyButtons = document.querySelectorAll('.copy-track-btn');
+    copyButtons.forEach((btn) => {
+        if (btn.dataset.bound === 'true') return;
+        btn.dataset.bound = 'true';
+        btn.addEventListener('click', async () => {
+            const track = btn.getAttribute('data-track') || '';
+            try {
+                await copyText(track);
+                showAuthMessage('✅ تم نسخ رقم الطلب.', 'success');
+            } catch {
+                showAuthMessage('❌ تعذر نسخ رقم الطلب.', 'error');
+            }
+        });
     });
 }
 
@@ -2743,16 +2792,40 @@ function renderAdminStats() {
 
 function renderAdminOrdersSection() {
     const body = document.getElementById('adminOrdersTableBody');
-    if (!body) return;
+    const completedBody = document.getElementById('adminCompletedOrdersTableBody');
+    if (!body || !completedBody) return;
 
-    const orders = getStoredOrders();
-    if (orders.length === 0) {
-        body.innerHTML = '<tr><td colspan="5" class="px-4 py-6 text-center text-gray-500">لا توجد طلبات حالياً.</td></tr>';
+    const searchInput = document.getElementById('adminOrdersSearchInput');
+    const searchBtn = document.getElementById('adminOrdersSearchBtn');
+    const clearBtn = document.getElementById('adminOrdersSearchClearBtn');
+
+    const allOrders = getStoredOrders();
+    const searchTerm = String(searchInput?.value || '').trim().toLowerCase();
+    const orders = !searchTerm
+        ? allOrders
+        : allOrders.filter((order) => String(order.id || order.trackingCode || '').toLowerCase().includes(searchTerm));
+
+    const isCompletedStatus = (status) => {
+        const value = String(status || '').toLowerCase();
+        return value.includes('مكتمل') || value.includes('completed') || value.includes('termine');
+    };
+
+    const activeOrders = orders.filter((order) => !isCompletedStatus(order.status));
+    const completedOrders = orders.filter((order) => isCompletedStatus(order.status));
+
+    if (allOrders.length === 0) {
+        body.innerHTML = '<tr><td colspan="6" class="px-4 py-6 text-center text-gray-500">لا توجد طلبات حالياً.</td></tr>';
+        completedBody.innerHTML = '<tr><td colspan="6" class="px-4 py-6 text-center text-gray-500">لا توجد طلبات مكتملة حالياً.</td></tr>';
         return;
     }
 
     body.innerHTML = '';
-    orders.forEach((order) => {
+    if (activeOrders.length === 0) {
+        body.innerHTML = '<tr><td colspan="6" class="px-4 py-6 text-center text-gray-500">لا توجد طلبات قيد المتابعة حالياً.</td></tr>';
+    }
+
+    activeOrders.forEach((order) => {
+        const safeSpecs = escapeHtml(order.specs || '-');
         const statusOptions = ORDER_STATUS_OPTIONS.map((status) => {
             const selected = status === order.status ? 'selected' : '';
             return `<option value="${escapeHtml(status)}" ${selected}>${escapeHtml(status)}</option>`;
@@ -2764,10 +2837,32 @@ function renderAdminOrdersSection() {
                 <td class="px-4 py-3 text-white font-bold">${escapeHtml(order.serviceName || '-')}</td>
                 <td class="px-4 py-3 font-en">${escapeHtml(order.userEmail || order.email || '-')}</td>
                 <td class="px-4 py-3">${escapeHtml(formatArabicDateTime(order.createdAt || ''))}</td>
+                <td class="px-4 py-3 text-gray-300 max-w-[260px]"><div class="max-h-16 overflow-y-auto break-words">${safeSpecs}</div></td>
                 <td class="px-4 py-3">
                     <select class="order-status-select input-luxury !py-2 !px-3 !text-xs" data-order-id="${escapeHtml(order.id || '')}">
                         ${statusOptions}
                     </select>
+                </td>
+            </tr>
+        `);
+    });
+
+    completedBody.innerHTML = '';
+    if (completedOrders.length === 0) {
+        completedBody.innerHTML = '<tr><td colspan="6" class="px-4 py-6 text-center text-gray-500">لا توجد طلبات مكتملة حالياً.</td></tr>';
+    }
+
+    completedOrders.forEach((order) => {
+        const safeSpecs = escapeHtml(order.specs || '-');
+        completedBody.insertAdjacentHTML('beforeend', `
+            <tr>
+                <td class="px-4 py-3 font-en">${escapeHtml(order.id || '-')}</td>
+                <td class="px-4 py-3 text-white font-bold">${escapeHtml(order.serviceName || '-')}</td>
+                <td class="px-4 py-3 font-en">${escapeHtml(order.userEmail || order.email || '-')}</td>
+                <td class="px-4 py-3">${escapeHtml(formatArabicDateTime(order.createdAt || ''))}</td>
+                <td class="px-4 py-3 text-gray-300 max-w-[260px]"><div class="max-h-16 overflow-y-auto break-words">${safeSpecs}</div></td>
+                <td class="px-4 py-3">
+                    <button class="delete-completed-order px-3 py-2 rounded-lg border border-red-400/40 text-red-300 hover:bg-red-500/20 text-xs font-bold" data-order-id="${escapeHtml(order.id || '')}">حذف</button>
                 </td>
             </tr>
         `);
@@ -2785,6 +2880,42 @@ function renderAdminOrdersSection() {
             renderAdminStats();
         });
     });
+
+    const deleteCompletedButtons = document.querySelectorAll('.delete-completed-order');
+    deleteCompletedButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const orderId = btn.dataset.orderId;
+            if (!orderId) return;
+            const updated = getStoredOrders().filter((order) => order.id !== orderId);
+            saveStoredOrders(updated);
+            renderAdminOrdersSection();
+            renderAdminStats();
+        });
+    });
+
+    if (searchBtn && searchBtn.dataset.bound !== 'true') {
+        searchBtn.dataset.bound = 'true';
+        searchBtn.addEventListener('click', () => {
+            renderAdminOrdersSection();
+        });
+    }
+
+    if (clearBtn && clearBtn.dataset.bound !== 'true') {
+        clearBtn.dataset.bound = 'true';
+        clearBtn.addEventListener('click', () => {
+            if (searchInput) searchInput.value = '';
+            renderAdminOrdersSection();
+        });
+    }
+
+    if (searchInput && searchInput.dataset.bound !== 'true') {
+        searchInput.dataset.bound = 'true';
+        searchInput.addEventListener('keydown', (event) => {
+            if (event.key !== 'Enter') return;
+            event.preventDefault();
+            renderAdminOrdersSection();
+        });
+    }
 }
 
 function renderDisputesSection() {

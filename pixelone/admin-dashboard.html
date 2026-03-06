@@ -106,6 +106,13 @@
                         <p class="text-sm text-gray-500">تحديث حالة الطلبات لجميع العملاء.</p>
                     </div>
                 </div>
+                <div class="mb-5">
+                    <div class="flex flex-col md:flex-row gap-3">
+                        <input id="adminOrdersSearchInput" class="input-luxury font-en text-left flex-1" dir="ltr" placeholder="ابحث برقم الطلب (PO-...)">
+                        <button id="adminOrdersSearchBtn" class="px-5 py-3 rounded-lg border border-white/20 text-gray-100 hover:bg-white/10 text-sm font-bold" type="button">بحث</button>
+                        <button id="adminOrdersSearchClearBtn" class="px-5 py-3 rounded-lg border border-white/20 text-gray-300 hover:bg-white/10 text-sm font-bold" type="button">إلغاء</button>
+                    </div>
+                </div>
                 <div class="overflow-x-auto rounded-xl border border-white/10">
                     <table class="w-full min-w-[980px] text-sm">
                         <thead class="bg-black/50 text-gray-300">
@@ -114,6 +121,7 @@
                                 <th class="px-4 py-3 text-right">الخدمة</th>
                                 <th class="px-4 py-3 text-right">العميل</th>
                                 <th class="px-4 py-3 text-right">تاريخ الطلب</th>
+                                <th class="px-4 py-3 text-right">التفاصيل</th>
                                 <th class="px-4 py-3 text-right">الحالة</th>
                             </tr>
                         </thead>
@@ -121,6 +129,26 @@
                             <tr><td colspan="5" class="px-4 py-6 text-center text-gray-500">لا توجد طلبات حالياً.</td></tr>
                         </tbody>
                     </table>
+                </div>
+                <div class="mt-8">
+                    <h3 class="text-lg font-black text-white mb-3">الطلبات المكتملة</h3>
+                    <div class="overflow-x-auto rounded-xl border border-white/10">
+                        <table class="w-full min-w-[980px] text-sm">
+                            <thead class="bg-black/50 text-gray-300">
+                                <tr>
+                                    <th class="px-4 py-3 text-right">رقم الطلب</th>
+                                    <th class="px-4 py-3 text-right">الخدمة</th>
+                                    <th class="px-4 py-3 text-right">العميل</th>
+                                    <th class="px-4 py-3 text-right">تاريخ الطلب</th>
+                                    <th class="px-4 py-3 text-right">التفاصيل</th>
+                                    <th class="px-4 py-3 text-right">إجراء</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminCompletedOrdersTableBody" class="divide-y divide-white/10 text-gray-200 bg-black/20">
+                                <tr><td colspan="5" class="px-4 py-6 text-center text-gray-500">لا توجد طلبات مكتملة حالياً.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
 
@@ -312,7 +340,6 @@
     </main>
 
     <script src="app.js" defer></script>
-    <script src="page-text-loader.js" defer></script>
     <script src="visual-system.js" defer></script>
 </body>
 </html>
