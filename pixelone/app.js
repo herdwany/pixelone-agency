@@ -1133,7 +1133,8 @@ async function loadAdminEmailsFromDatabase() {
 }
 
 async function hydrateDataStores() {
-    runtimeStore.orders = getLocalOrders();
+    const localOrders = getLocalOrders();
+    runtimeStore.orders = localOrders;
     runtimeStore.offers = getLocalOffers();
     runtimeStore.services = getLocalServices();
     runtimeStore.disputes = getLocalDisputes();
@@ -1160,9 +1161,28 @@ async function hydrateDataStores() {
         ? offersResult.value.map(offerFromRow)
         : getLocalOffers();
 
-    runtimeStore.orders = ordersResult.status === 'fulfilled' && ordersResult.value.length > 0
-        ? ordersResult.value.map(orderFromRow)
-        : getLocalOrders();
+    if (ordersResult.status === 'fulfilled') {
+        const remoteOrders = ordersResult.value.map(orderFromRow);
+        const mergedById = new Map();
+        remoteOrders.forEach((order) => {
+            const key = String(order.id || order.trackingCode || '').trim();
+            if (!key) return;
+            mergedById.set(key, order);
+        });
+        localOrders.forEach((order) => {
+            const key = String(order.id || order.trackingCode || '').trim();
+            if (!key || mergedById.has(key)) return;
+            mergedById.set(key, order);
+        });
+        const mergedOrders = Array.from(mergedById.values()).sort((a, b) => {
+            const left = new Date(b.createdAt || 0).getTime();
+            const right = new Date(a.createdAt || 0).getTime();
+            return left - right;
+        });
+        runtimeStore.orders = mergedOrders.length > 0 ? mergedOrders : localOrders;
+    } else {
+        runtimeStore.orders = localOrders;
+    }
 
     runtimeStore.disputes = disputesResult.status === 'fulfilled' && disputesResult.value.length > 0
         ? disputesResult.value.map(disputeFromRow)
@@ -2359,7 +2379,7 @@ function setupLogout() {
 }
 
 function ensureDashboardTrackingControls(onFilter) {
-    const ordersSection = document.getElementById('ordersTableBody')?.closest('.bg-[#121212]');
+    const ordersSection = document.getElementById('dashboardOrdersSection') || document.getElementById('ordersTableBody')?.closest('.mt-12');
     if (!ordersSection) return null;
 
     let box = document.getElementById('dashboardTrackingBox');
