@@ -295,6 +295,19 @@ const SERVICE_DETAIL_ALIASES = {
     'svc-web-landing-page': 'svc-web-landing-page',
 };
 
+const SERVICE_DETAIL_ROUTES = {
+    'svc-social-media-designs': 'service-social-media-designs.html',
+    'svc-logo-design': 'service-logo-design.html',
+    'svc-digital-banners': 'service-digital-banners.html',
+    'svc-pitch-deck': 'service-pitch-deck.html',
+    'svc-short-video': 'service-short-video.html',
+    'svc-professional-design': 'service-professional-design.html',
+    'svc-short-videos-premium': 'service-short-videos-premium.html',
+    'svc-advanced-promo-video': 'service-advanced-promo-video.html',
+    'svc-web-landing-page': 'service-web-landing-page.html',
+    'svc-brand-identity': 'service-brand-identity.html',
+};
+
 const SERVICE_DETAIL_CONTENT = {
     'svc-social-media-designs': {
         image: 'https://source.unsplash.com/1600x900/?social-media,design',
@@ -1751,7 +1764,44 @@ function resolveServiceDetailId(serviceId) {
 function getServiceDetailUrl(serviceId) {
     const id = resolveServiceDetailId(serviceId) || String(serviceId || '').trim();
     if (!id) return 'services.html';
-    return `service-detail.html?service=${encodeURIComponent(id)}`;
+    return SERVICE_DETAIL_ROUTES[id] || `service-detail.html?service=${encodeURIComponent(id)}`;
+}
+
+function getServiceDetailIdFromPath(pathname) {
+    const currentFile = String(pathname || '').split('/').pop()?.toLowerCase();
+    if (!currentFile) return '';
+    const found = Object.entries(SERVICE_DETAIL_ROUTES)
+        .find((entry) => String(entry[1] || '').toLowerCase() === currentFile);
+    return found ? found[0] : '';
+}
+
+function setMetaTag(selector, attr, value) {
+    const element = document.querySelector(selector);
+    if (!element) return;
+    element.setAttribute(attr, value);
+}
+
+function updateServiceShareMeta(service, localized, details) {
+    const resolvedId = resolveServiceDetailId(service?.id);
+    const detailPath = SERVICE_DETAIL_ROUTES[resolvedId] || `service-detail.html?service=${encodeURIComponent(resolvedId || '')}`;
+    const publicUrl = `https://www.pixelonevisuals.tech/${detailPath}`;
+    const title = `${localized.title || 'تفاصيل الخدمة'} | Pixel One Visuals`;
+    const description = localized.description || 'تفاصيل الخدمة، المخرجات، والمتطلبات قبل الطلب.';
+    const image = details.image || 'https://www.pixelonevisuals.tech/icone/web-app-manifest-512x512.png';
+    const imageAlt = details.imageAlt || 'Pixel One Visuals';
+
+    document.title = title;
+    setMetaTag('meta[name="description"]', 'content', description);
+    setMetaTag('link[rel="canonical"]', 'href', publicUrl);
+    setMetaTag('meta[property="og:title"]', 'content', title);
+    setMetaTag('meta[property="og:description"]', 'content', description);
+    setMetaTag('meta[property="og:url"]', 'content', publicUrl);
+    setMetaTag('meta[property="og:image"]', 'content', image);
+    setMetaTag('meta[property="og:image:secure_url"]', 'content', image);
+    setMetaTag('meta[property="og:image:alt"]', 'content', imageAlt);
+    setMetaTag('meta[name="twitter:title"]', 'content', title);
+    setMetaTag('meta[name="twitter:description"]', 'content', description);
+    setMetaTag('meta[name="twitter:image"]', 'content', image);
 }
 
 function getServiceDetailContent(serviceId) {
@@ -1986,7 +2036,8 @@ function renderServiceDetailPage() {
     if (!root) return;
 
     const params = new URL(window.location.href).searchParams;
-    const serviceParam = params.get('service') || '';
+    const routeServiceId = getServiceDetailIdFromPath(window.location.pathname);
+    const serviceParam = params.get('service') || document.body?.dataset.serviceId || routeServiceId || '';
     const targetId = resolveServiceDetailId(serviceParam);
     const services = getStoredServices();
     const catalog = services.length > 0 ? services : FALLBACK_SERVICES;
@@ -2016,7 +2067,7 @@ function renderServiceDetailPage() {
         ? 'bg-white/5 border-white/10 text-gray-300'
         : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300';
 
-    document.title = `${localized.title || 'تفاصيل الخدمة'} | Pixel One Visuals`;
+    updateServiceShareMeta(service, localized, details);
 
     root.innerHTML = `
         <article class="water-card rounded-3xl overflow-hidden">
