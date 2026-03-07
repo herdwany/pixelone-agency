@@ -2658,6 +2658,14 @@ async function setupAuthentication() {
         });
     });
 
+    function updateSignupButtonState() {
+        const btn = document.getElementById('btnSubmit');
+        if (!btn || isLogin) return;
+        const allChecked = policyCheckboxes.every((cb) => cb.checked);
+        btn.disabled = !allChecked;
+        btn.classList.toggle('btn-disabled', !allChecked);
+    }
+
     function setPolicyConsentState(show) {
         if (policyConsentWrap) {
             policyConsentWrap.classList.toggle('hidden', !show);
@@ -2669,7 +2677,22 @@ async function setupAuthentication() {
                 checkbox.checked = false;
             }
         });
+
+        const btn = document.getElementById('btnSubmit');
+        if (btn) {
+            if (show) {
+                btn.disabled = true;
+                btn.classList.add('btn-disabled');
+            } else {
+                btn.disabled = false;
+                btn.classList.remove('btn-disabled');
+            }
+        }
     }
+
+    policyCheckboxes.forEach((cb) => {
+        cb.addEventListener('change', updateSignupButtonState);
+    });
 
     function getPostAuthDestination(user) {
         if (isAdminUser(user)) return 'admin-dashboard.html';
@@ -2805,8 +2828,13 @@ async function setupAuthentication() {
 
                 showAuthMessage(`❌ ${getFriendlyAuthErrorMessage(err, 'تعذر إكمال تسجيل الدخول.')}`, 'error');
             } finally {
-                btn.disabled = false;
                 btn.textContent = isLogin ? 'دخول المنصة' : 'تسجيل حساب جديد';
+                if (isLogin) {
+                    btn.disabled = false;
+                    btn.classList.remove('btn-disabled');
+                } else {
+                    updateSignupButtonState();
+                }
             }
         });
     }
