@@ -2660,10 +2660,18 @@ async function setupAuthentication() {
 
     function updateSignupButtonState() {
         const btn = document.getElementById('btnSubmit');
-        if (!btn || isLogin) return;
+        const gBtn = document.getElementById('btnGoogleAuth');
+        if (isLogin) return;
         const allChecked = policyCheckboxes.every((cb) => cb.checked);
-        btn.disabled = !allChecked;
-        btn.classList.toggle('btn-disabled', !allChecked);
+        if (btn) {
+            btn.disabled = !allChecked;
+            btn.classList.toggle('btn-disabled', !allChecked);
+        }
+        if (gBtn) {
+            gBtn.disabled = !allChecked;
+            gBtn.classList.toggle('opacity-40', !allChecked);
+            gBtn.classList.toggle('cursor-not-allowed', !allChecked);
+        }
     }
 
     function setPolicyConsentState(show) {
@@ -2682,6 +2690,7 @@ async function setupAuthentication() {
         });
 
         const btn = document.getElementById('btnSubmit');
+        const gBtn = document.getElementById('btnGoogleAuth');
         if (btn) {
             if (show) {
                 btn.disabled = true;
@@ -2689,6 +2698,15 @@ async function setupAuthentication() {
             } else {
                 btn.disabled = false;
                 btn.classList.remove('btn-disabled');
+            }
+        }
+        if (gBtn) {
+            if (show) {
+                gBtn.disabled = true;
+                gBtn.classList.add('opacity-40', 'cursor-not-allowed');
+            } else {
+                gBtn.disabled = false;
+                gBtn.classList.remove('opacity-40', 'cursor-not-allowed');
             }
         }
     }
@@ -2885,12 +2903,19 @@ async function setupAuthentication() {
     const googleBtn = document.getElementById('btnGoogleAuth');
     if (googleBtn) {
         googleBtn.addEventListener('click', async () => {
+            if (!isLogin) {
+                const allChecked = policyCheckboxes.every((cb) => cb.checked);
+                if (!allChecked) {
+                    showAuthMessage('❌ يجب الموافقة على السياسات أولاً قبل إنشاء حساب عبر Google.', 'error');
+                    return;
+                }
+            }
             googleBtn.disabled = true;
             try {
                 const { error } = await _supabase.auth.signInWithOAuth({
                     provider: 'google',
                     options: {
-                        redirectTo: window.location.origin + window.location.pathname.replace(/[^/]*$/, '') + 'auth-callback.html#type=signup',
+                        redirectTo: getAuthCallbackUrl('signup'),
                     },
                 });
                 if (error) throw error;
@@ -3004,6 +3029,7 @@ async function setupAuthCallbackPage() {
     const actionBtn = document.getElementById('authCallbackActionBtn');
 
     function setState(title, text, details, action) {
+        clearTimeout(safetyTimer);
         if (titleEl) titleEl.textContent = title;
         if (textEl) textEl.textContent = text;
         if (detailsEl) detailsEl.textContent = details || '';
@@ -3013,6 +3039,15 @@ async function setupAuthCallbackPage() {
             actionBtn.href = action.href;
         }
     }
+
+    const safetyTimer = setTimeout(() => {
+        setState(
+            'انتهت مهلة التحقق',
+            'تعذر إكمال التحقق في الوقت المحدد. قد تكون هناك مشكلة في الاتصال.',
+            'حاول مرة أخرى من صفحة تسجيل الدخول.',
+            { href: getLoginPageUrl(), label: 'العودة لتسجيل الدخول' },
+        );
+    }, 15000);
 
     const url = new URL(window.location.href);
     const search = url.searchParams;
