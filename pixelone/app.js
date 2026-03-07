@@ -649,7 +649,7 @@ function getLoginRedirectTargetForCurrentPage() {
 
 function persistPendingOrderIntent(payload) {
     if (!payload || typeof payload !== 'object') return;
-    safeSessionStorageSet(PENDING_ORDER_INTENT_KEY, JSON.stringify({
+    safeStorageSet(PENDING_ORDER_INTENT_KEY, JSON.stringify({
         serviceName: String(payload.serviceName || ''),
         finalPrice: String(payload.finalPrice || ''),
         discountCode: String(payload.discountCode || ''),
@@ -660,7 +660,7 @@ function persistPendingOrderIntent(payload) {
 
 function readPendingOrderIntent() {
     try {
-        const raw = safeSessionStorageGet(PENDING_ORDER_INTENT_KEY);
+        const raw = safeStorageGet(PENDING_ORDER_INTENT_KEY);
         if (!raw) return null;
         const parsed = JSON.parse(raw);
         if (!parsed || typeof parsed !== 'object') return null;
@@ -676,7 +676,7 @@ function readPendingOrderIntent() {
 }
 
 function clearPendingOrderIntent() {
-    safeSessionStorageRemove(PENDING_ORDER_INTENT_KEY);
+    safeStorageRemove(PENDING_ORDER_INTENT_KEY);
 }
 
 function buildLoginUrlWithReturnPath(returnPath) {
@@ -2535,7 +2535,7 @@ async function setupAuthentication() {
         if (isAdminUser(user)) return 'admin-dashboard.html';
         const redirectPath = getStoredPostAuthRedirectPath();
         clearStoredPostAuthRedirectPath();
-        return redirectPath || 'dashboard.html';
+        return redirectPath || 'index.html';
     }
 
     try {
@@ -2915,11 +2915,11 @@ async function setupAuthCallbackPage() {
 
         if (user) {
             if (isInvite) {
-                setState('تم قبول الدعوة', 'تم تفعيل الدعوة بنجاح.', 'سيتم تحويلك إلى لوحة التحكم.', null);
+                setState('تم قبول الدعوة', 'تم تفعيل الدعوة بنجاح.', 'سيتم تحويلك الآن...', null);
             } else if (isSignup) {
-                setState('تم تأكيد البريد', 'تم تفعيل حسابك بنجاح.', 'سيتم تحويلك إلى لوحة التحكم.', null);
+                setState('تم تأكيد البريد', 'تم تفعيل حسابك بنجاح.', 'سيتم تحويلك الآن...', null);
             } else if (isMagicLink) {
-                setState('تم تسجيل الدخول', 'تم التحقق من Magic Link بنجاح.', 'سيتم تحويلك إلى لوحة التحكم.', null);
+                setState('تم تسجيل الدخول', 'تم التحقق من Magic Link بنجاح.', 'سيتم تحويلك الآن...', null);
             } else if (isReauth) {
                 setState('تمت إعادة المصادقة', 'تم التحقق الأمني بنجاح.', 'سيتم تحويلك الآن.', null);
             } else {
@@ -2927,7 +2927,15 @@ async function setupAuthCallbackPage() {
             }
 
             setTimeout(() => {
-                window.location.replace(isAdminUser(user) ? 'admin-dashboard.html' : 'dashboard.html');
+                if (isAdminUser(user)) {
+                    window.location.replace('admin-dashboard.html');
+                } else {
+                    const pendingOrder = readPendingOrderIntent();
+                    const storedPath = getStoredPostAuthRedirectPath();
+                    clearStoredPostAuthRedirectPath();
+                    const dest = pendingOrder ? (storedPath || 'index.html') : (storedPath || 'index.html');
+                    window.location.replace(dest);
+                }
             }, 900);
             return;
         }
