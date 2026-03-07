@@ -940,6 +940,19 @@ footer .btn-filled-red {
     color: var(--brand-red-light);
 }
 
+/* Policy consent links */
+.policy-link {
+    color: var(--brand-red);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: var(--transition-normal);
+}
+.policy-link:hover {
+    color: var(--brand-red-light);
+    text-decoration-thickness: 2px;
+}
+
 /* ==========================================================================
    Social Share Buttons
    ========================================================================== */
