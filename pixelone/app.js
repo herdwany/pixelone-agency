@@ -2103,6 +2103,7 @@ window.openOrderModal = async function(serviceName, meta = {}) {
     const orderForm = document.getElementById('orderForm');
     const orderMsgBox = document.getElementById('orderMsgBox');
     const firstInput = document.getElementById('orderName');
+    const orderPriceTag = document.getElementById('orderPriceTag');
 
     if (!modal || !selectedServiceText || !hiddenServiceName || !orderForm || !orderMsgBox) return;
 
@@ -2133,6 +2134,12 @@ window.openOrderModal = async function(serviceName, meta = {}) {
     if (hiddenPrice) hiddenPrice.value = meta.finalPrice || '';
     if (hiddenDiscountCode) hiddenDiscountCode.value = meta.discountCode || '';
 
+    // Show price next to service name
+    if (orderPriceTag) {
+        orderPriceTag.textContent = meta.finalPrice ? `- ${meta.finalPrice} MAD` : '';
+    }
+
+    // Auto-fill email silently into hidden field
     const emailInput = document.getElementById('orderEmail');
     if (emailInput && currentSessionUser?.email) {
         emailInput.value = currentSessionUser.email;
@@ -2156,7 +2163,7 @@ window.openOrderModal = async function(serviceName, meta = {}) {
     }
 
     const submitBtn = document.getElementById('btnOrderSubmit');
-    if (submitBtn) submitBtn.textContent = t('orderSubmitDefault');
+    if (submitBtn) submitBtn.lastChild.textContent = ' إرسال ومتابعة عبر واتساب';
 
     modal.setAttribute('aria-hidden', 'false');
     modal.classList.add('active');
@@ -2257,11 +2264,12 @@ async function handleOrderSubmit(e) {
     const emailInput = document.getElementById('orderEmail');
     const specsInput = document.getElementById('orderSpecs');
 
-    if (!btn || !msgBox || !hiddenServiceName || !nameInput || !phoneInput || !emailInput || !specsInput) return;
+    if (!btn || !msgBox || !hiddenServiceName || !nameInput || !phoneInput) return;
 
     // 1. تأمين واجهة المستخدم (CRO & UX)
     btn.disabled = true;
-    btn.textContent = t('orderProcessing');
+    const btnTextNode = btn.lastChild;
+    if (btnTextNode) btnTextNode.textContent = ' جاري الإرسال...';
 
     const serviceName = hiddenServiceName.value;
     const finalPrice = hiddenPrice?.value || '';
@@ -2269,15 +2277,15 @@ async function handleOrderSubmit(e) {
     const name = nameInput.value;
     const projectName = projectNameInput?.value || '';
     const phone = phoneInput.value;
-    const email = emailInput.value;
-    const specs = specsInput.value;
+    const email = emailInput?.value || '';
+    const specs = specsInput?.value || '';
 
     // Validate phone is not empty
     if (!phone.trim()) {
-        msgBox.textContent = '❌ رقم الهاتف مطلوب. يرجى إدخال رقمك للتواصل.';
+        msgBox.textContent = '❌ رقم الواتساب مطلوب للتواصل معك.';
         msgBox.className = 'msg-box msg-error active';
         btn.disabled = false;
-        btn.textContent = t('orderSubmitDefault');
+        if (btnTextNode) btnTextNode.textContent = ' إرسال ومتابعة عبر واتساب';
         phoneInput.focus();
         return;
     }
@@ -2289,7 +2297,7 @@ async function handleOrderSubmit(e) {
         msgBox.textContent = t('orderWhatsAppNotSet');
         msgBox.className = 'msg-box msg-error active';
         btn.disabled = false;
-        btn.textContent = t('orderSubmitDefault');
+        if (btnTextNode) btnTextNode.textContent = ' إرسال ومتابعة عبر واتساب';
         return;
     }
 
@@ -2313,7 +2321,7 @@ async function handleOrderSubmit(e) {
         msgBox.textContent = t('orderEmailRequired');
         msgBox.className = 'msg-box msg-error active';
         btn.disabled = false;
-        btn.textContent = t('orderSubmitDefault');
+        if (btnTextNode) btnTextNode.textContent = ' إرسال ومتابعة عبر واتساب';
         return;
     }
 
@@ -2372,6 +2380,7 @@ async function handleOrderSubmit(e) {
     const discountLine = discountCode ? `${t('waDiscountCode')} ${discountCode}\n` : '';
     const priceLine = finalPrice ? `${t('waFinalPrice')} ${finalPrice} MAD\n` : '';
     const projectLine = projectName ? `🏢 المشروع/الشركة: ${projectName}\n` : '';
+    const specsLine = specs.trim() ? `${t('waSpecs')}\n${specs}\n\n` : '';
 
     const message = `${t('waTitle')} 🔴\n\n`
         + `${t('waOrderId')} ${orderId}\n`
@@ -2383,7 +2392,7 @@ async function handleOrderSubmit(e) {
         + `${projectLine}`
         + `${t('waPhone')} ${phone}\n`
         + `${t('waEmail')} ${effectiveEmail || '-'}\n\n`
-        + `${t('waSpecs')}\n${specs}\n\n`
+        + `${specsLine}`
         + `--- مرسل من موقع Pixel One ---`;
 
     const encodedMessage = encodeURIComponent(message);
@@ -2393,14 +2402,14 @@ async function handleOrderSubmit(e) {
     window.open(whatsappUrl, '_blank');
 
     // 5. إظهار رسالة النجاح وتفريغ الاستمارة
-    msgBox.textContent = `${t('orderSuccessPrefix')} ${t('orderTrackingNotice')} ${orderId}. ${t('orderAuthNotice')}`;
+    msgBox.textContent = `✅ تم إرسال طلبك بنجاح! رمز التتبع: ${orderId} — سنتواصل معك عبر الواتساب.`;
     msgBox.className = 'msg-box msg-success active';
-    btn.textContent = t('orderSubmitDone');
+    if (btnTextNode) btnTextNode.textContent = ' تم الإرسال ✓';
 
     setTimeout(() => {
         closeOrderModal();
         btn.disabled = false;
-        btn.textContent = t('orderSubmitDefault');
+        if (btnTextNode) btnTextNode.textContent = ' إرسال ومتابعة عبر واتساب';
     }, 3000);
 }
 
