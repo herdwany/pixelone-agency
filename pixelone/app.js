@@ -2667,6 +2667,9 @@ async function setupAuthentication() {
     }
 
     function setPolicyConsentState(show) {
+        const phoneWrap = document.getElementById('phoneFieldWrap');
+        if (phoneWrap) phoneWrap.classList.toggle('hidden', !show);
+
         if (policyConsentWrap) {
             policyConsentWrap.classList.toggle('hidden', !show);
         }
@@ -2803,11 +2806,16 @@ async function setupAuthentication() {
                         return;
                     }
 
+                    const signupPhone = (document.getElementById('signupPhone')?.value || '').trim();
+
                     const { error } = await _supabase.auth.signUp({
                         email,
                         password,
                         options: {
                             emailRedirectTo: getAuthCallbackUrl('signup'),
+                            data: {
+                                phone: signupPhone,
+                            },
                         },
                     });
                     if (error) throw error;
@@ -2871,6 +2879,25 @@ async function setupAuthentication() {
 
             setAuthCooldown('magiclink', email, AUTH_RATE_LIMIT_DEFAULT_SECONDS.magiclink);
             showAuthMessage('✅ تم إرسال رابط تسجيل الدخول إلى بريدك.', 'success');
+        });
+    }
+
+    const googleBtn = document.getElementById('btnGoogleAuth');
+    if (googleBtn) {
+        googleBtn.addEventListener('click', async () => {
+            googleBtn.disabled = true;
+            try {
+                const { error } = await _supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.origin + window.location.pathname.replace(/[^/]*$/, '') + 'auth-callback.html#type=signup',
+                    },
+                });
+                if (error) throw error;
+            } catch (err) {
+                showAuthMessage(`❌ ${getFriendlyAuthErrorMessage(err, 'تعذر تسجيل الدخول عبر Google.')}`, 'error');
+                googleBtn.disabled = false;
+            }
         });
     }
 
@@ -3350,6 +3377,40 @@ function renderDashboardOrders(user) {
 }
 
 function setupDashboardSecurity(user) {
+    /* ---------- Phone update form ---------- */
+    const updatePhoneForm = document.getElementById('updatePhoneForm');
+    if (updatePhoneForm && !updatePhoneForm.dataset.bound) {
+        updatePhoneForm.dataset.bound = 'true';
+
+        // Load current phone from pixel_user_signups
+        (async () => {
+            const { data } = await _supabase
+                .from(TABLES.userSignups)
+                .select('phone')
+                .eq('auth_user_id', user.id)
+                .maybeSingle();
+            const phoneInput = document.getElementById('profilePhone');
+            if (phoneInput && data?.phone) phoneInput.value = data.phone;
+        })();
+
+        updatePhoneForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const phone = (document.getElementById('profilePhone')?.value || '').trim();
+            const msgBox = document.getElementById('profileMsgBox');
+
+            const { error } = await _supabase
+                .from(TABLES.userSignups)
+                .update({ phone, updated_at: new Date().toISOString() })
+                .eq('auth_user_id', user.id);
+
+            if (error) {
+                if (msgBox) { msgBox.textContent = '❌ تعذر حفظ رقم الهاتف.'; msgBox.className = 'msg-box active error'; }
+                return;
+            }
+            if (msgBox) { msgBox.textContent = '✅ تم حفظ رقم الهاتف بنجاح.'; msgBox.className = 'msg-box active success'; }
+        });
+    }
+
     const changeEmailForm = document.getElementById('changeEmailForm');
     const changePasswordForm = document.getElementById('changePasswordForm');
 
@@ -3530,21 +3591,21 @@ async function renderAdminNewUsersSection() {
     const tableBody = document.getElementById('adminNewUsersTableBody');
     if (!tableBody) return;
 
-    tableBody.innerHTML = '<tr><td colspan="4" class="px-4 py-5 text-center text-gray-500">جاري تحميل الحسابات الجديدة...</td></tr>';
+    tableBody.innerHTML = '<tr><td colspan="5" class="px-4 py-5 text-center text-gray-500">جاري تحميل الحسابات الجديدة...</td></tr>';
 
     const { data, error } = await _supabase
         .from(TABLES.userSignups)
-        .select('auth_user_id, full_name, email, created_at')
+        .select('auth_user_id, full_name, email, phone, created_at')
         .order('created_at', { ascending: false })
         .limit(50);
 
     if (error) {
-        tableBody.innerHTML = '<tr><td colspan="4" class="px-4 py-5 text-center text-red-300">تعذر تحميل الحسابات الجديدة. تأكد من تطبيق تحديثات قاعدة البيانات.</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="5" class="px-4 py-5 text-center text-red-300">تعذر تحميل الحسابات الجديدة. تأكد من تطبيق تحديثات قاعدة البيانات.</td></tr>';
         return;
     }
 
     if (!Array.isArray(data) || data.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="4" class="px-4 py-5 text-center text-gray-500">لا توجد حسابات جديدة حتى الآن.</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="5" class="px-4 py-5 text-center text-gray-500">لا توجد حسابات جديدة حتى الآن.</td></tr>';
         return;
     }
 
@@ -3555,6 +3616,7 @@ async function renderAdminNewUsersSection() {
                 <td class="px-4 py-3 font-en text-gray-400">${escapeHtml(String(index + 1))}</td>
                 <td class="px-4 py-3 text-white">${escapeHtml(row.full_name || '-')}</td>
                 <td class="px-4 py-3 font-en">${escapeHtml(row.email || '-')}</td>
+                <td class="px-4 py-3 font-en">${escapeHtml(row.phone || '-')}</td>
                 <td class="px-4 py-3 text-gray-300 number-font">${escapeHtml(formatArabicDateTime(row.created_at))}</td>
             </tr>
         `);

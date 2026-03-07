@@ -41,6 +41,7 @@ create table if not exists public.pixel_user_signups (
     auth_user_id uuid primary key,
     full_name text not null default '',
     email text not null default '',
+    phone text not null default '',
     created_at timestamptz not null default now(),
     updated_at timestamptz not null default now()
 );
@@ -52,7 +53,7 @@ security definer
 set search_path = public
 as $$
 begin
-    insert into public.pixel_user_signups (auth_user_id, full_name, email, created_at, updated_at)
+    insert into public.pixel_user_signups (auth_user_id, full_name, email, phone, created_at, updated_at)
     values (
         new.id,
         coalesce(
@@ -61,6 +62,7 @@ begin
             ''
         ),
         coalesce(new.email, ''),
+        coalesce(nullif(trim(coalesce(new.raw_user_meta_data ->> 'phone', '')), ''), ''),
         coalesce(new.created_at, now()),
         now()
     )
@@ -68,6 +70,7 @@ begin
     set
         full_name = excluded.full_name,
         email = excluded.email,
+        phone = excluded.phone,
         created_at = excluded.created_at,
         updated_at = now();
 
@@ -250,6 +253,21 @@ on public.pixel_user_signups
 for all
 using (public.is_admin_email())
 with check (public.is_admin_email());
+
+drop policy if exists pixel_user_signups_select_own on public.pixel_user_signups;
+create policy pixel_user_signups_select_own
+on public.pixel_user_signups
+for select
+to authenticated
+using (auth_user_id = auth.uid());
+
+drop policy if exists pixel_user_signups_update_own on public.pixel_user_signups;
+create policy pixel_user_signups_update_own
+on public.pixel_user_signups
+for update
+to authenticated
+using (auth_user_id = auth.uid())
+with check (auth_user_id = auth.uid());
 
 -- services
 
