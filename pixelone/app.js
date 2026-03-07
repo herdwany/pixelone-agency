@@ -43,8 +43,8 @@ const UI_TEXT = {
         orderSubmitDefault: 'تأكيد وإرسال الطلب الآن',
         orderSubmitDone: 'تم الإرسال',
         orderEmailRequired: '❌ أدخل بريدك الإلكتروني حتى تتمكن من تتبع الطلب لاحقاً.',
-        orderWhatsAppNotSet: '❌ رقم الواتساب غير مضبوط بعد. حدّث contact.whatsappNumber داخل site-settings.json أولاً.',
-        orderSuccessPrefix: '✅ تم تأكيد الطلب بنجاح! سيتم تحويلك للواتساب.',
+        orderWhatsAppNotSet: '❌ رقم التواصل غير مضبوط بعد. حدّث contact.whatsappNumber داخل site-settings.json أولاً.',
+        orderSuccessPrefix: '✅ تم تأكيد الطلب بنجاح! سنتواصل معك قريباً.',
         orderTrackingNotice: 'رمز تتبع طلبك:',
         orderAuthNotice: 'للمتابعة التفصيلية، الشكايات، والعروض المخصصة: سجّل الدخول بنفس البريد المستخدم في الطلب.',
         waTitle: '*طلب خدمة جديد - Pixel One*',
@@ -959,6 +959,7 @@ function orderToRow(order) {
         customer_name: order.name || '',
         customer_phone: order.phone || '',
         customer_email: order.email || '',
+        project_name: order.projectName || '',
         specs: order.specs || '',
         status: order.status || DEFAULT_SITE_SETTINGS.orders.defaultStatus,
         support_email: order.supportEmail || '',
@@ -979,6 +980,7 @@ function orderFromRow(row) {
         name: row.customer_name,
         phone: row.customer_phone,
         email: row.customer_email,
+        projectName: row.project_name || '',
         specs: row.specs,
         status: row.status,
         supportEmail: row.support_email,
@@ -2364,6 +2366,23 @@ window.openOrderModal = async function(serviceName, meta = {}) {
         emailInput.value = currentSessionUser.email;
     }
 
+    // Auto-fill phone from user profile (pixel_user_signups)
+    const phoneInput = document.getElementById('orderPhone');
+    const phoneHint = document.getElementById('orderPhoneHint');
+    if (phoneInput && currentSessionUser?.id) {
+        try {
+            const { data } = await _supabase
+                .from(TABLES.userSignups)
+                .select('phone')
+                .eq('auth_user_id', currentSessionUser.id)
+                .maybeSingle();
+            if (data?.phone) {
+                phoneInput.value = data.phone;
+                if (phoneHint) phoneHint.classList.remove('hidden');
+            }
+        } catch { /* silently skip auto-fill */ }
+    }
+
     const submitBtn = document.getElementById('btnOrderSubmit');
     if (submitBtn) submitBtn.textContent = t('orderSubmitDefault');
 
@@ -2461,6 +2480,7 @@ async function handleOrderSubmit(e) {
     const hiddenPrice = document.getElementById('hiddenFinalPrice');
     const hiddenDiscountCode = document.getElementById('hiddenDiscountCode');
     const nameInput = document.getElementById('orderName');
+    const projectNameInput = document.getElementById('orderProjectName');
     const phoneInput = document.getElementById('orderPhone');
     const emailInput = document.getElementById('orderEmail');
     const specsInput = document.getElementById('orderSpecs');
@@ -2475,9 +2495,20 @@ async function handleOrderSubmit(e) {
     const finalPrice = hiddenPrice?.value || '';
     const discountCode = hiddenDiscountCode?.value || '';
     const name = nameInput.value;
+    const projectName = projectNameInput?.value || '';
     const phone = phoneInput.value;
     const email = emailInput.value;
     const specs = specsInput.value;
+
+    // Validate phone is not empty
+    if (!phone.trim()) {
+        msgBox.textContent = '❌ رقم الهاتف مطلوب. يرجى إدخال رقمك للتواصل.';
+        msgBox.className = 'msg-box msg-error active';
+        btn.disabled = false;
+        btn.textContent = t('orderSubmitDefault');
+        phoneInput.focus();
+        return;
+    }
 
     const myWhatsappNumber = siteSettings.contact?.whatsappNumber || DEFAULT_SITE_SETTINGS.contact.whatsappNumber;
     const supportEmail = siteSettings.brand?.supportEmail || DEFAULT_SITE_SETTINGS.brand.supportEmail;
@@ -2524,6 +2555,7 @@ async function handleOrderSubmit(e) {
         trackingCode: orderId,
         serviceName,
         name,
+        projectName,
         phone,
         email: effectiveEmail,
         specs,
@@ -2549,6 +2581,7 @@ async function handleOrderSubmit(e) {
                 orderId,
                 serviceName,
                 customerName: name,
+                projectName,
                 customerPhone: phone,
                 customerEmail: effectiveEmail,
                 specs,
@@ -2566,6 +2599,7 @@ async function handleOrderSubmit(e) {
     // 4. تجهيز رسالة الواتساب وتوجيه العميل
     const discountLine = discountCode ? `${t('waDiscountCode')} ${discountCode}\n` : '';
     const priceLine = finalPrice ? `${t('waFinalPrice')} ${finalPrice} MAD\n` : '';
+    const projectLine = projectName ? `🏢 المشروع/الشركة: ${projectName}\n` : '';
 
     const message = `${t('waTitle')} 🔴\n\n`
         + `${t('waOrderId')} ${orderId}\n`
@@ -2574,6 +2608,7 @@ async function handleOrderSubmit(e) {
         + `${priceLine}`
         + `${discountLine}`
         + `${t('waCustomerName')} ${name}\n`
+        + `${projectLine}`
         + `${t('waPhone')} ${phone}\n`
         + `${t('waEmail')} ${effectiveEmail || '-'}\n\n`
         + `${t('waSpecs')}\n${specs}\n\n`
@@ -3336,7 +3371,7 @@ function renderDashboardOrders(user) {
     if (statCompletedOrders) statCompletedOrders.textContent = String(completedOrders);
 
     if (filteredOrders.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="5" class="px-4 py-6 text-center text-gray-500">${escapeHtml(t('dashboardNoOrders'))}</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="6" class="px-4 py-6 text-center text-gray-500">${escapeHtml(t('dashboardNoOrders'))}</td></tr>`;
         if (mobileList) {
             mobileList.innerHTML = `<article class="border border-white/10 rounded-xl p-4 bg-black/30 text-gray-400 text-sm text-center">${escapeHtml(t('dashboardNoOrders'))}</article>`;
         }
@@ -3351,7 +3386,8 @@ function renderDashboardOrders(user) {
         const safeDate = escapeHtml(formatLocalizedDateTime(order.createdAt || new Date().toISOString()));
         const currentStatus = order.status || DEFAULT_SITE_SETTINGS.orders.defaultStatus;
         const safeStatus = escapeHtml(getLocalizedOrderStatus(currentStatus));
-        const safeEmail = escapeHtml(order.email || order.userEmail || '-');
+        const safeSpecs = escapeHtml(order.specs || '-');
+        const safeProject = escapeHtml(order.projectName || '-');
         const safeLastUpdate = escapeHtml(formatLocalizedDateTime(order.lastUpdateAt || order.createdAt || new Date().toISOString()));
         const statusMeta = getStatusMeta(currentStatus);
         const safeTrack = escapeHtml(order.trackingCode || order.id || '-');
@@ -3367,14 +3403,15 @@ function renderDashboardOrders(user) {
                 <td class="px-4 py-3 font-bold text-white">
                     <div>${safeService}</div>
                 </td>
+                <td class="px-4 py-3">${safeProject}</td>
                 <td class="px-4 py-3 text-gray-300 number-font">${safeDate}</td>
+                <td class="px-4 py-3 text-gray-300 max-w-[200px]"><div class="max-h-14 overflow-y-auto break-words text-xs">${safeSpecs}</div></td>
                 <td class="px-4 py-3">
                     <div class="flex flex-col gap-2">
                         <span class="text-xs px-2 py-1 rounded-full border ${statusMeta.className} w-fit">${safeStatus}</span>
                         <span class="text-[11px] text-gray-500">${escapeHtml(t('dashboardLastUpdate'))} ${safeLastUpdate}</span>
                     </div>
                 </td>
-                <td class="px-4 py-3 text-xs text-gray-300 font-en">${safeEmail}</td>
             </tr>
         `);
 
@@ -3386,8 +3423,9 @@ function renderDashboardOrders(user) {
                         <span class="text-[11px] px-2 py-1 rounded-full border ${statusMeta.className}">${safeStatus}</span>
                     </div>
                     <p class="text-xs text-gray-500 mb-2">رقم الطلب: <span class="font-en">${safeTrack}</span></p>
+                    ${safeProject !== '-' ? `<p class="text-xs text-gray-400 mb-2">المشروع/الشركة: ${safeProject}</p>` : ''}
                     <p class="text-xs text-gray-400 mb-2">${escapeHtml(t('dashboardOrderDate'))} <span class="font-en">${safeDate}</span></p>
-                    <p class="text-xs text-gray-300 mb-2">البريد: <span class="font-en">${safeEmail}</span></p>
+                    ${safeSpecs !== '-' ? `<p class="text-xs text-gray-300 mb-2 max-h-12 overflow-y-auto break-words">التفاصيل: ${safeSpecs}</p>` : ''}
                     <button type="button" class="copy-track-btn mt-1 text-xs px-2 py-1 rounded border border-white/20 text-gray-200 hover:border-brand-red hover:text-white" data-track="${safeTrack}">نسخ رقم الطلب</button>
                     <p class="text-[11px] text-gray-500 mt-2">${escapeHtml(t('dashboardLastUpdate'))} ${safeLastUpdate}</p>
                 </article>
@@ -3713,14 +3751,14 @@ function renderAdminOrdersSection() {
     const completedOrders = orders.filter((order) => isCompletedStatus(order.status));
 
     if (allOrders.length === 0) {
-        body.innerHTML = '<tr><td colspan="6" class="px-4 py-6 text-center text-gray-500">لا توجد طلبات حالياً.</td></tr>';
-        completedBody.innerHTML = '<tr><td colspan="6" class="px-4 py-6 text-center text-gray-500">لا توجد طلبات مكتملة حالياً.</td></tr>';
+        body.innerHTML = '<tr><td colspan="9" class="px-4 py-6 text-center text-gray-500">لا توجد طلبات حالياً.</td></tr>';
+        completedBody.innerHTML = '<tr><td colspan="8" class="px-4 py-6 text-center text-gray-500">لا توجد طلبات مكتملة حالياً.</td></tr>';
         return;
     }
 
     body.innerHTML = '';
     if (activeOrders.length === 0) {
-        body.innerHTML = '<tr><td colspan="6" class="px-4 py-6 text-center text-gray-500">لا توجد طلبات قيد المتابعة حالياً.</td></tr>';
+        body.innerHTML = '<tr><td colspan="9" class="px-4 py-6 text-center text-gray-500">لا توجد طلبات قيد المتابعة حالياً.</td></tr>';
     }
 
     activeOrders.forEach((order) => {
@@ -3735,8 +3773,11 @@ function renderAdminOrdersSection() {
                 <td class="px-4 py-3 font-en">${escapeHtml(order.id || '-')}</td>
                 <td class="px-4 py-3 text-white font-bold">${escapeHtml(order.serviceName || '-')}</td>
                 <td class="px-4 py-3 font-en">${escapeHtml(order.userEmail || order.email || '-')}</td>
+                <td class="px-4 py-3">${escapeHtml(order.projectName || '-')}</td>
+                <td class="px-4 py-3 font-en">${escapeHtml(order.phone || '-')}</td>
                 <td class="px-4 py-3">${escapeHtml(formatArabicDateTime(order.createdAt || ''))}</td>
                 <td class="px-4 py-3 text-gray-300 max-w-[260px]"><div class="max-h-16 overflow-y-auto break-words">${safeSpecs}</div></td>
+                <td class="px-4 py-3 font-en">${escapeHtml(order.finalPrice ? order.finalPrice + ' MAD' : '-')}</td>
                 <td class="px-4 py-3">
                     <select class="order-status-select input-luxury !py-2 !px-3 !text-xs" data-order-id="${escapeHtml(order.id || '')}">
                         ${statusOptions}
@@ -3748,7 +3789,7 @@ function renderAdminOrdersSection() {
 
     completedBody.innerHTML = '';
     if (completedOrders.length === 0) {
-        completedBody.innerHTML = '<tr><td colspan="6" class="px-4 py-6 text-center text-gray-500">لا توجد طلبات مكتملة حالياً.</td></tr>';
+        completedBody.innerHTML = '<tr><td colspan="8" class="px-4 py-6 text-center text-gray-500">لا توجد طلبات مكتملة حالياً.</td></tr>';
     }
 
     completedOrders.forEach((order) => {
@@ -3758,6 +3799,8 @@ function renderAdminOrdersSection() {
                 <td class="px-4 py-3 font-en">${escapeHtml(order.id || '-')}</td>
                 <td class="px-4 py-3 text-white font-bold">${escapeHtml(order.serviceName || '-')}</td>
                 <td class="px-4 py-3 font-en">${escapeHtml(order.userEmail || order.email || '-')}</td>
+                <td class="px-4 py-3">${escapeHtml(order.projectName || '-')}</td>
+                <td class="px-4 py-3 font-en">${escapeHtml(order.phone || '-')}</td>
                 <td class="px-4 py-3">${escapeHtml(formatArabicDateTime(order.createdAt || ''))}</td>
                 <td class="px-4 py-3 text-gray-300 max-w-[260px]"><div class="max-h-16 overflow-y-auto break-words">${safeSpecs}</div></td>
                 <td class="px-4 py-3">
