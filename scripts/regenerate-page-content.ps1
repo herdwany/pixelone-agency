@@ -1,5 +1,6 @@
 param(
-    [string]$Root = "C:\Users\herdw\Documents\pixelone-agency\pixelone"
+    [string]$Root = "C:\Users\herdw\Documents\pixelone-agency\pixelone",
+    [switch]$Force
 )
 
 $ErrorActionPreference = 'Stop'
@@ -12,7 +13,7 @@ $outDir = Join-Path $Root 'content'
 New-Item -ItemType Directory -Force -Path $outDir | Out-Null
 
 $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
-$files = Get-ChildItem -Path $Root -Filter *.html -File
+$files = Get-ChildItem -Path $Root -Filter *.html -File | Where-Object { $_.Name -notmatch '^google' }
 $langs = @('ar')
 
 foreach ($file in $files) {
@@ -52,7 +53,7 @@ foreach ($file in $files) {
     foreach ($lang in $langs) {
         $langPath = Join-Path $outDir ($file.BaseName + '.' + $lang + '.json')
 
-        if (Test-Path $langPath) {
+        if ((Test-Path $langPath) -and (-not $Force)) {
             continue
         }
 
