@@ -1,13 +1,12 @@
 # Page Content JSON
 
-Each HTML page has multilingual JSON files in this folder.
+Each HTML page has an Arabic JSON file in this folder.
 
 Examples:
 
-- `index.html` -> `content/index.ar.json`, `content/index.en.json`, `content/index.fr.json`
-- `about.html` -> `content/about.ar.json`, `content/about.en.json`, `content/about.fr.json`
-- `services.html` -> `content/services.ar.json`, `content/services.en.json`, `content/services.fr.json`
-- Legacy fallback is still supported: `content/page.json`
+- `index.html` -> `content/index.ar.json`
+- `about.html` -> `content/about.ar.json`
+- `services.html` -> `content/services.ar.json`
 
 ## What to edit
 

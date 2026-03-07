@@ -8,7 +8,7 @@ const SUPABASE_KEY = runtimeSupabaseConfig.publishableKey || 'sb_publishable_09I
 const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 window._supabase = _supabase;
 
-const I18N_LANGS = ['ar', 'en', 'fr'];
+const I18N_LANGS = ['ar'];
 const I18N_DEFAULT_LANG = 'ar';
 const I18N_STORAGE_KEY = 'pixelone_lang_v1';
 const I18N_MANAGED_PAGES = [
@@ -68,218 +68,9 @@ const UI_TEXT = {
         trackButton: 'تتبع',
         trackClear: 'عرض الكل',
     },
-    en: {
-        navDashboard: 'Dashboard',
-        navClientLogin: 'Client Login',
-        offerEmpty: 'No active offers right now.',
-        offerTitleFallback: 'Special Offer',
-        offerBadgeFallback: 'SPECIAL',
-        serviceSoon: 'Coming Soon',
-        serviceAvailable: 'Available Now',
-        serviceOrderNow: 'Order This Service',
-        serviceComingSoonBtn: 'Coming Soon',
-        customServiceName: 'Custom Service Request',
-        discountLabel: 'Discount',
-        orderProcessing: 'Submitting your order...',
-        orderSubmitDefault: 'Confirm and Submit Order',
-        orderSubmitDone: 'Submitted',
-        orderEmailRequired: '❌ Please enter your email so you can track this order later.',
-        orderWhatsAppNotSet: '❌ WhatsApp number is not configured yet. Update contact.whatsappNumber in site-settings.json first.',
-        orderSuccessPrefix: '✅ Your order has been submitted successfully. Redirecting to WhatsApp.',
-        orderTrackingNotice: 'Your tracking code:',
-        orderAuthNotice: 'To track details, create disputes, and receive personalized offers, sign in with the same email used in this order.',
-        waTitle: '*New Service Order - Pixel One*',
-        waOrderId: '*Order ID:*',
-        waOrderDate: '*Order Date:*',
-        waService: '*Requested Service:*',
-        waFinalPrice: '*Final Price:*',
-        waDiscountCode: '*Discount Code:*',
-        waCustomerName: '*Client Name:*',
-        waPhone: '*Phone:*',
-        waEmail: '*Email:*',
-        waSpecs: '*Project Details:*',
-        dashboardClientMode: 'Client mode: you can track your own orders.',
-        dashboardNoOrders: 'No orders available yet.',
-        dashboardLastUpdate: 'Last update:',
-        dashboardSupport: 'Contact support',
-        dashboardOrderDate: 'Order date:',
-        trackTitle: 'Order Tracking Center',
-        trackHint: 'Enter your order ID/tracking code, or leave it empty to view all your orders.',
-        trackInputPlaceholder: 'Example: PO-8K4M2Q',
-        trackButton: 'Track',
-        trackClear: 'Show all',
-    },
-    fr: {
-        navDashboard: 'Tableau de bord',
-        navClientLogin: 'Espace Client',
-        offerEmpty: 'Aucune offre active pour le moment.',
-        offerTitleFallback: 'Offre Speciale',
-        offerBadgeFallback: 'SPECIAL',
-        serviceSoon: 'Bientot',
-        serviceAvailable: 'Disponible',
-        serviceOrderNow: 'Commander ce service',
-        serviceComingSoonBtn: 'Bientot disponible',
-        customServiceName: 'Demande de Service Personnalisee',
-        discountLabel: 'Remise',
-        orderProcessing: 'Envoi de votre demande...',
-        orderSubmitDefault: 'Confirmer et envoyer',
-        orderSubmitDone: 'Envoye',
-        orderEmailRequired: '❌ Veuillez entrer votre e-mail pour pouvoir suivre votre demande plus tard.',
-        orderWhatsAppNotSet: '❌ Le numero WhatsApp n\'est pas configure. Mettez a jour contact.whatsappNumber dans site-settings.json.',
-        orderSuccessPrefix: '✅ Votre demande a ete envoyee avec succes. Redirection vers WhatsApp.',
-        orderTrackingNotice: 'Votre code de suivi :',
-        orderAuthNotice: 'Pour suivre les details, ouvrir une reclamation et recevoir des offres personnalisees, connectez-vous avec le meme e-mail que celui de la demande.',
-        waTitle: '*Nouvelle Demande de Service - Pixel One*',
-        waOrderId: '*ID de demande :*',
-        waOrderDate: '*Date :*',
-        waService: '*Service demande :*',
-        waFinalPrice: '*Prix final :*',
-        waDiscountCode: '*Code promo :*',
-        waCustomerName: '*Nom du client :*',
-        waPhone: '*Telephone :*',
-        waEmail: '*E-mail :*',
-        waSpecs: '*Details du projet :*',
-        dashboardClientMode: 'Mode client : vous pouvez suivre vos propres commandes.',
-        dashboardNoOrders: 'Aucune commande pour le moment.',
-        dashboardLastUpdate: 'Derniere mise a jour :',
-        dashboardSupport: 'Contacter le support',
-        dashboardOrderDate: 'Date de commande :',
-        trackTitle: 'Centre de suivi des commandes',
-        trackHint: 'Entrez votre ID/code de suivi, ou laissez vide pour afficher toutes vos commandes.',
-        trackInputPlaceholder: 'Exemple : PO-8K4M2Q',
-        trackButton: 'Suivre',
-        trackClear: 'Tout afficher',
-    },
 };
 
-const SERVICE_I18N = {
-    'svc-social-media-designs': {
-        en: {
-            title: 'Social Media Static Designs',
-            description: 'Professional ad posts for Instagram/Facebook/LinkedIn.',
-            category: 'Social Media',
-            serviceType: 'One-Time Service',
-        },
-        fr: {
-            title: 'Designs Réseaux Sociaux',
-            description: 'Publications publicitaires professionnelles pour Instagram/Facebook/LinkedIn.',
-            category: 'Réseaux Sociaux',
-            serviceType: 'Service Ponctuel',
-        },
-    },
-    'svc-logo-design': {
-        en: {
-            title: 'Professional Logo Design',
-            description: 'Clear logo usable across platforms with transparent export.',
-            category: 'Branding',
-            serviceType: 'One-Time Service',
-        },
-        fr: {
-            title: 'Création de Logo Professionnel',
-            description: 'Logo clair utilisable sur toutes les plateformes avec export transparent.',
-            category: 'Identité Visuelle',
-            serviceType: 'Service Ponctuel',
-        },
-    },
-    'svc-digital-banners': {
-        en: {
-            title: 'Digital Banners & Ads',
-            description: 'Campaign-ready banners in publish-ready sizes.',
-            category: 'Digital Ads',
-            serviceType: 'One-Time Service',
-        },
-        fr: {
-            title: 'Bannières et Publicités Numériques',
-            description: 'Bannières prêtes pour les campagnes aux formats de publication standard.',
-            category: 'Publicité Numérique',
-            serviceType: 'Service Ponctuel',
-        },
-    },
-    'svc-pitch-deck': {
-        en: {
-            title: 'Pitch Deck Design',
-            description: 'Business/investor slides with strong visual hierarchy.',
-            category: 'Business',
-            serviceType: 'One-Time Service',
-        },
-        fr: {
-            title: 'Conception Pitch Deck',
-            description: 'Diapositives professionnelles avec hiérarchie visuelle forte.',
-            category: 'Business',
-            serviceType: 'Service Ponctuel',
-        },
-    },
-    'svc-short-video': {
-        en: {
-            title: 'Short Video (Reels/TikTok)',
-            description: 'Fast lightweight edit for short-form daily content.',
-            category: 'Video Editing',
-            serviceType: 'One-Time Service',
-        },
-        fr: {
-            title: 'Vidéo Courte (Reels/TikTok)',
-            description: 'Montage léger et rapide pour contenu quotidien court.',
-            category: 'Montage Vidéo',
-            serviceType: 'Service Ponctuel',
-        },
-    },
-    'svc-professional-design': {
-        en: {
-            title: 'Professional Design Service',
-            description: 'Advanced design package for identity and content.',
-            category: 'Design',
-            serviceType: 'One-Time Service',
-        },
-        fr: {
-            title: 'Service de Design Professionnel',
-            description: 'Package design avancé pour identité et contenu.',
-            category: 'Design',
-            serviceType: 'Service Ponctuel',
-        },
-    },
-    'svc-short-videos-premium': {
-        en: {
-            title: 'Short Videos (< 1 min)',
-            description: 'High-quality short video editing for social platforms.',
-            category: 'Video Editing',
-            serviceType: 'One-Time Service',
-        },
-        fr: {
-            title: 'Vidéos Courtes (< 1 min)',
-            description: 'Montage vidéo court haute qualité pour les réseaux sociaux.',
-            category: 'Montage Vidéo',
-            serviceType: 'Service Ponctuel',
-        },
-    },
-    'svc-advanced-promo-video': {
-        en: {
-            title: 'Advanced Promo Video (Coming Soon)',
-            description: 'Complex production-grade video service coming soon.',
-            category: 'Advanced Video',
-            serviceType: 'One-Time Service',
-        },
-        fr: {
-            title: 'Vidéo Promo Avancée (Bientôt)',
-            description: 'Service vidéo de qualité production — bientôt disponible.',
-            category: 'Vidéo Avancée',
-            serviceType: 'Service Ponctuel',
-        },
-    },
-    'svc-web-landing-page': {
-        en: {
-            title: 'Web & Landing Page Design (Coming Soon)',
-            description: 'Soon: high-converting landing pages and websites.',
-            category: 'Web Design',
-            serviceType: 'One-Time Service',
-        },
-        fr: {
-            title: 'Création de Sites et Landing Pages (Bientôt)',
-            description: 'Bientôt: pages de destination et sites web à haute conversion.',
-            category: 'Design Web',
-            serviceType: 'Service Ponctuel',
-        },
-    },
-};
+const SERVICE_I18N = {};
 
 const SERVICE_DETAIL_ALIASES = {
     'svc-social-media-post': 'svc-social-media-designs',
@@ -1119,9 +910,7 @@ function formatMoneyMAD(value) {
 
 function formatLocalizedDateTime(isoString) {
     try {
-        const lang = getCurrentLanguage();
-        const locale = lang === 'fr' ? 'fr-FR' : (lang === 'en' ? 'en-US' : 'ar-MA');
-        return new Date(isoString).toLocaleString(locale, {
+        return new Date(isoString).toLocaleString('ar-MA', {
             year: 'numeric',
             month: 'short',
             day: '2-digit',
@@ -1152,33 +941,16 @@ function normalizeStatusKey(status) {
 
 function getLocalizedOrderStatus(status) {
     const key = normalizeStatusKey(status);
-    const lang = getCurrentLanguage();
 
     const labels = {
-        ar: {
-            received: 'تم استلام الطلب',
-            accepted: 'مقبول',
-            needs_changes: 'يحتاج تعديلات',
-            in_progress: 'قيد التنفيذ',
-            completed: 'مكتمل',
-        },
-        en: {
-            received: 'Order Received',
-            accepted: 'Accepted',
-            needs_changes: 'Needs Changes',
-            in_progress: 'In Progress',
-            completed: 'Completed',
-        },
-        fr: {
-            received: 'Commande Recue',
-            accepted: 'Acceptee',
-            needs_changes: 'Modifications Requises',
-            in_progress: 'En Cours',
-            completed: 'Terminee',
-        },
+        received: 'تم استلام الطلب',
+        accepted: 'مقبول',
+        needs_changes: 'يحتاج تعديلات',
+        in_progress: 'قيد التنفيذ',
+        completed: 'مكتمل',
     };
 
-    return labels[lang]?.[key] || labels.ar[key];
+    return labels[key] || labels.received;
 }
 
 function formatDateInput(isoString) {

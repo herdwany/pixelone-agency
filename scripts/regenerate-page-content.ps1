@@ -13,7 +13,7 @@ New-Item -ItemType Directory -Force -Path $outDir | Out-Null
 
 $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
 $files = Get-ChildItem -Path $Root -Filter *.html -File
-$langs = @('ar', 'en', 'fr')
+$langs = @('ar')
 
 foreach ($file in $files) {
     $raw = [System.IO.File]::ReadAllText($file.FullName)
@@ -48,10 +48,6 @@ foreach ($file in $files) {
         texts           = $texts
         attributes      = @()
     }
-
-    $jsonPath = Join-Path $outDir ($file.BaseName + '.json')
-    $json = $payload | ConvertTo-Json -Depth 6
-    [System.IO.File]::WriteAllText($jsonPath, $json, $utf8NoBom)
 
     foreach ($lang in $langs) {
         $langPath = Join-Path $outDir ($file.BaseName + '.' + $lang + '.json')

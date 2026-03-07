@@ -138,12 +138,8 @@
     }
 
     async function loadLocaleFromFile(page, lang) {
-        var localizedUrl = 'content/' + page + '.' + lang + '.json';
-        var response = await fetch(localizedUrl, { cache: 'no-store' });
-        if (response.ok) return response.json();
-
-        var legacyUrl = 'content/' + page + '.json';
-        response = await fetch(legacyUrl, { cache: 'no-store' });
+        var url = 'content/' + page + '.' + lang + '.json';
+        var response = await fetch(url, { cache: 'no-store' });
         if (!response.ok) return null;
         return response.json();
     }
