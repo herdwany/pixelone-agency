@@ -4584,7 +4584,103 @@ async function reopenPendingOrderIntentIfAvailable() {
     });
 }
 
+/* ---------------------------------------------------------------------------
+   Auto-inject site navbar + mobile menu + back button on pages that lack one
+   --------------------------------------------------------------------------- */
+function injectSiteNavIfMissing() {
+    // Skip dashboard/admin/login/auth-callback layouts — they have their own nav
+    const isDashboard = Boolean(document.getElementById('view-dashboard') || document.getElementById('view-admin-dashboard'));
+    const isAuthForm = Boolean(document.getElementById('authForm'));
+    const isAuthCallback = Boolean(document.getElementById('view-auth-callback'));
+    if (isDashboard || isAuthForm || isAuthCallback) return;
+
+    // If nav already exists, just add the back button
+    const existingNav = document.querySelector('.site-nav, header nav');
+    if (existingNav) {
+        injectBackButton(existingNav);
+        return;
+    }
+
+    // Build the full navbar for pages that have none (e.g. service-*.html)
+    const nav = document.createElement('nav');
+    nav.className = 'navbar-glass site-nav';
+    nav.setAttribute('aria-label', 'التنقل الرئيسي');
+
+    nav.innerHTML = `
+        <a href="index.html" class="logo-container">
+            <span class="logo-p text-3xl">P</span>
+            <span class="text-xl font-black tracking-tighter hidden sm:block uppercase font-en text-white">Pixel One</span>
+        </a>
+        <div class="site-nav-links hidden md:flex items-center gap-8">
+            <a href="about.html" class="text-sm font-bold nav-link">من نحن</a>
+            <a href="services.html" class="text-sm font-bold nav-link">خدماتنا</a>
+            <a href="how-we-work.html" class="text-sm font-bold nav-link">كيف نعمل</a>
+            <a href="privacy-policy.html" class="text-sm font-bold nav-link">الخصوصية</a>
+        </div>
+        <div class="site-nav-cta hidden md:flex gap-4 items-center">
+            <a id="loginNavLink" data-role="client-auth-link" href="client-login.html" class="text-sm font-bold text-gray-300 hover:text-white transition">دخول العملاء</a>
+            <button type="button" data-action="open-order-modal" data-service-name="طلب خدمة مخصص" class="btn-filled-red px-6 py-2 rounded-md text-sm font-bold">طلب خدمة</button>
+        </div>
+        <details class="mobile-nav-menu md:hidden">
+            <summary class="mobile-nav-toggle" aria-label="فتح القائمة">
+                <span></span><span></span><span></span>
+            </summary>
+            <div class="mobile-nav-panel">
+                <a href="about.html" data-action="close-mobile-menu" class="mobile-nav-link">من نحن</a>
+                <a href="services.html" data-action="close-mobile-menu" class="mobile-nav-link">خدماتنا</a>
+                <a href="how-we-work.html" data-action="close-mobile-menu" class="mobile-nav-link">كيف نعمل</a>
+                <a href="privacy-policy.html" data-action="close-mobile-menu" class="mobile-nav-link">الخصوصية</a>
+                <a href="client-login.html" data-action="close-mobile-menu" class="mobile-nav-link mobile-nav-link-accent">دخول العملاء</a>
+                <button type="button" data-action="mobile-open-order-modal" data-service-name="طلب خدمة مخصص" class="btn-filled-red mobile-nav-btn">طلب خدمة</button>
+            </div>
+        </details>
+    `;
+
+    document.body.insertBefore(nav, document.body.firstChild);
+    injectBackButton(nav);
+}
+
+/* Close mobile menu when tapping outside it */
+document.addEventListener('click', (e) => {
+    const openMenu = document.querySelector('details[open].mobile-nav-menu, details[open].relative');
+    if (!openMenu) return;
+    if (!openMenu.contains(e.target)) {
+        openMenu.removeAttribute('open');
+    }
+}, true);
+
+function injectBackButton(navElement) {
+    // Don't add if already present, or if this is the homepage
+    if (navElement.querySelector('.nav-back-btn')) return;
+    const path = window.location.pathname.replace(/\\/g, '/');
+    const fileName = path.split('/').pop() || '';
+    const isHome = !fileName || fileName === 'index.html';
+    if (isHome) return;
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'nav-back-btn';
+    btn.setAttribute('aria-label', 'رجوع');
+    btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>';
+    btn.addEventListener('click', () => {
+        if (window.history.length > 1) {
+            window.history.back();
+        } else {
+            window.location.href = 'index.html';
+        }
+    });
+
+    // Insert at the start of the nav, before the logo
+    const logo = navElement.querySelector('.logo-container, a[href*="index"]');
+    if (logo) {
+        logo.parentNode.insertBefore(btn, logo);
+    } else {
+        navElement.prepend(btn);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
+    injectSiteNavIfMissing();
     ensurePageLoader();
 
     try {

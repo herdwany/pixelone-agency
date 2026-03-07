@@ -451,6 +451,33 @@ textarea:focus-visible {
     gap: 1rem;
 }
 
+/* Back button */
+.nav-back-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.85);
+    cursor: pointer;
+    transition: var(--transition-fast);
+    flex-shrink: 0;
+}
+
+.nav-back-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #fff;
+}
+
+.nav-back-btn svg {
+    transform: scaleX(-1);
+}
+
 .site-nav-links {
     flex: 1;
     justify-content: center;
@@ -1265,9 +1292,9 @@ textarea.input-luxury {
     }
 
     .navbar-glass {
-        position: relative;
-        top: auto;
-        padding: 0.75rem 1rem !important;
+        position: sticky;
+        top: 0;
+        padding: 0.65rem 0.85rem !important;
     }
 
     .site-nav-links,
@@ -1285,8 +1312,10 @@ textarea.input-luxury {
     }
 
     .site-shell main {
-        padding-top: 3rem !important;
+        padding-top: 1.5rem !important;
         padding-bottom: 3rem !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
     }
 
     .site-shell .water-card {
@@ -1313,7 +1342,7 @@ textarea.input-luxury {
     }
 
     .water-card {
-        padding: 1.5rem !important;
+        padding: 1.25rem !important;
     }
     
     .hero-glow {
@@ -1334,6 +1363,38 @@ textarea.input-luxury {
 
     .stat-card {
         padding: 1rem;
+    }
+
+    .nav-back-btn {
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+        border-radius: 8px;
+    }
+
+    /* Mobile nav panel - full width slide down */
+    .mobile-nav-panel {
+        width: min(92vw, 320px);
+    }
+
+    /* Better mobile form inputs */
+    .input-luxury {
+        font-size: 16px !important;
+    }
+
+    /* Service detail mobile improvements */
+    #serviceDetailRoot h1 {
+        font-size: 1.65rem !important;
+    }
+
+    #serviceDetailRoot .grid.grid-cols-1.md\:grid-cols-3 {
+        gap: 0.65rem;
+    }
+
+    /* Share buttons on mobile */
+    .share-btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.78rem;
     }
 }
 

@@ -53,6 +53,19 @@
             <a id="loginNavLink" data-role="client-auth-link" href="client-login.html" class="text-sm font-bold text-gray-300 hover:text-white transition">دخول العملاء</a>
             <button type="button" data-action="open-order-modal" data-service-name="طلب خدمة مخصص" class="btn-filled-red px-6 py-2 rounded-md text-sm font-bold">طلب خدمة</button>
         </div>
+        <details class="mobile-nav-menu md:hidden">
+            <summary class="mobile-nav-toggle" aria-label="فتح القائمة">
+                <span></span><span></span><span></span>
+            </summary>
+            <div class="mobile-nav-panel">
+                <a href="about.html" data-action="close-mobile-menu" class="mobile-nav-link">من نحن</a>
+                <a href="services.html" data-action="close-mobile-menu" class="mobile-nav-link">خدماتنا</a>
+                <a href="how-we-work.html" data-action="close-mobile-menu" class="mobile-nav-link">كيف نعمل</a>
+                <a href="privacy-policy.html" data-action="close-mobile-menu" class="mobile-nav-link">الخصوصية</a>
+                <a href="client-login.html" data-action="close-mobile-menu" class="mobile-nav-link mobile-nav-link-accent">دخول العملاء</a>
+                <button type="button" data-action="mobile-open-order-modal" data-service-name="طلب خدمة مخصص" class="btn-filled-red mobile-nav-btn">طلب خدمة</button>
+            </div>
+        </details>
     </nav>
 
     <main id="mainContent" class="max-w-7xl mx-auto px-6 py-16 relative z-10">
