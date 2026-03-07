@@ -174,12 +174,13 @@
         if (!base) return override;
         if (!override) return base;
 
+        // File (base) is the primary source; Supabase (override) is only a fallback.
         return {
-            page: override.page || base.page,
-            title: override.title || base.title,
-            metaDescription: override.metaDescription || base.metaDescription,
-            texts: Array.isArray(override.texts) && override.texts.length > 0 ? override.texts : base.texts,
-            attributes: Array.isArray(override.attributes) && override.attributes.length > 0 ? override.attributes : base.attributes,
+            page: base.page || override.page,
+            title: base.title || override.title,
+            metaDescription: base.metaDescription || override.metaDescription,
+            texts: Array.isArray(base.texts) && base.texts.length > 0 ? base.texts : override.texts,
+            attributes: Array.isArray(base.attributes) && base.attributes.length > 0 ? base.attributes : override.attributes,
         };
     }
 
