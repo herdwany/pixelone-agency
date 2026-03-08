@@ -378,7 +378,7 @@ const DEFAULT_SITE_SETTINGS = {
         adminDomains: [],
     },
     contact: {
-        whatsappNumber: '212661234567',
+        whatsappNumber: '212751201626',
         country: 'MA',
         email: 'contact@pixelonevisuals.tech',
     },
