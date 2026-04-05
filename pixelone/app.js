@@ -2397,7 +2397,7 @@ async function handleOrderSubmit(e) {
 
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${myWhatsappNumber}?text=${encodedMessage}`;
-    
+
     // فتح واتساب للعميل
     window.open(whatsappUrl, '_blank');
 
