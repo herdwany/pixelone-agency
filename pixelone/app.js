@@ -1248,6 +1248,23 @@ function saveStoredOffers(offers) {
     }
 }
 
+function normalizeStringList(value) {
+    if (Array.isArray(value)) {
+        return value
+            .map((item) => String(item || '').trim())
+            .filter(Boolean);
+    }
+
+    if (typeof value === 'string') {
+        return value
+            .split(/\r?\n/g)
+            .map((item) => item.trim())
+            .filter(Boolean);
+    }
+
+    return [];
+}
+
 function normalizeManagedService(service, index = 0) {
     const title = String(service?.titles?.ar || service?.title || '').trim() || 'خدمة بدون اسم';
     const description = String(service?.descriptions?.ar || service?.description || '').trim() || 'وصف الخدمة غير متوفر حالياً.';
@@ -1264,6 +1281,13 @@ function normalizeManagedService(service, index = 0) {
         is_coming_soon: Boolean(service?.is_coming_soon),
         popularity: Number.isFinite(rawPopularity) ? rawPopularity : index + 1,
         enabled: service?.enabled !== false,
+        imageUrl: String(service?.imageUrl || service?.image_url || '').trim(),
+        imageAlt: String(service?.imageAlt || service?.image_alt_ar || '').trim(),
+        deliverables: normalizeStringList(service?.deliverables ?? service?.deliverables_ar),
+        requirements: normalizeStringList(service?.requirements ?? service?.requirements_ar),
+        workflow: normalizeStringList(service?.workflow ?? service?.workflow_ar),
+        turnaround: String(service?.turnaround ?? service?.turnaround_ar || '').trim(),
+        revisions: String(service?.revisions ?? service?.revisions_ar || '').trim(),
         createdAt: service?.createdAt || new Date().toISOString(),
         updatedAt: service?.updatedAt || new Date().toISOString(),
     };
@@ -1429,7 +1453,6 @@ const FALLBACK_SERVICES = DEFAULT_MANAGED_SERVICES.map((service, index) => ({
 function resolveServiceDetailId(serviceId) {
     const id = String(serviceId || '').trim();
     if (!id) return '';
-    if (SERVICE_DETAIL_CONTENT[id]) return id;
     return SERVICE_DETAIL_ALIASES[id] || id;
 }
 
@@ -1498,12 +1521,16 @@ function getServiceDetailContent(service) {
         };
     }
 
+    const deliverables = normalizeStringList(service.deliverables);
+    const requirements = normalizeStringList(service.requirements);
+    const workflow = normalizeStringList(service.workflow);
+
     return {
         image: service.imageUrl || 'https://images.unsplash.com/photo-1558655146-9f40138edfeb?auto=format&fit=crop&w=1600&h=900&q=80',
         imageAlt: service.imageAlt || 'خدمة تصميم احترافية',
-        deliverables: Array.isArray(service.deliverables) ? service.deliverables : [],
-        requirements: Array.isArray(service.requirements) ? service.requirements : [],
-        workflow: Array.isArray(service.workflow) ? service.workflow : [],
+        deliverables: deliverables.length > 0 ? deliverables : ['تنفيذ احترافي حسب نطاق الطلب المتفق عليه.', 'تسليم منظم وجاهز للاستخدام.'],
+        requirements: requirements.length > 0 ? requirements : ['فكرة المشروع والهدف الأساسي.', 'المحتوى والمواد المتاحة لديك.'],
+        workflow: workflow.length > 0 ? workflow : ['فهم الطلب', 'تنفيذ أولي', 'مراجعة', 'تسليم نهائي'],
         turnaround: service.turnaround || 'يتم تحديد المدة بعد مراجعة التفاصيل.',
         revisions: service.revisions || 'ضمن النطاق المتفق عليه.',
     };
@@ -1655,8 +1682,7 @@ function getLocalizedServiceContent(service) {
 function renderServices(grid, services, discountContext) {
     grid.innerHTML = '';
 
-    const FALLBACK_SERVICES = []; // This is a failsafe, should not be hit if services are loaded.
-    if (!services || services.length === 0) {
+    if (!Array.isArray(services) || services.length === 0) {
         console.warn('RenderServices: Received empty or null services array. Using fallback.');
         services = FALLBACK_SERVICES;
     }
@@ -4184,6 +4210,13 @@ function bindAdminForms() {
                 const title = document.getElementById('serviceTitle').value.trim();
                 const price = document.getElementById('servicePrice').value.trim();
                 const description = document.getElementById('serviceDescription').value.trim();
+                const imageUrl = document.getElementById('serviceImageUrl')?.value.trim() || '';
+                const imageAlt = document.getElementById('serviceImageAlt')?.value.trim() || '';
+                const deliverables = normalizeStringList(document.getElementById('serviceDeliverables')?.value || '');
+                const requirements = normalizeStringList(document.getElementById('serviceRequirements')?.value || '');
+                const workflow = normalizeStringList(document.getElementById('serviceWorkflow')?.value || '');
+                const turnaround = document.getElementById('serviceTurnaround')?.value.trim() || '';
+                const revisions = document.getElementById('serviceRevisions')?.value.trim() || '';
                 const popularity = Number.parseInt(document.getElementById('servicePopularity').value, 10);
                 const isComingSoon = document.getElementById('serviceComingSoon').checked;
                 const enabled = document.getElementById('serviceEnabled').checked;
@@ -4208,6 +4241,13 @@ function bindAdminForms() {
                             popularity,
                             is_coming_soon: isComingSoon,
                             enabled,
+                            imageUrl,
+                            imageAlt,
+                            deliverables,
+                            requirements,
+                            workflow,
+                            turnaround,
+                            revisions,
                             updatedAt: now,
                         };
                     });
@@ -4222,6 +4262,13 @@ function bindAdminForms() {
                         popularity,
                         is_coming_soon: isComingSoon,
                         enabled,
+                        imageUrl,
+                        imageAlt,
+                        deliverables,
+                        requirements,
+                        workflow,
+                        turnaround,
+                        revisions,
                         createdAt: now,
                         updatedAt: now,
                     }));
