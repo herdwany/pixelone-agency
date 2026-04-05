@@ -1286,8 +1286,8 @@ function normalizeManagedService(service, index = 0) {
         deliverables: normalizeStringList(service?.deliverables ?? service?.deliverables_ar),
         requirements: normalizeStringList(service?.requirements ?? service?.requirements_ar),
         workflow: normalizeStringList(service?.workflow ?? service?.workflow_ar),
-        turnaround: String(service?.turnaround ?? service?.turnaround_ar || '').trim(),
-        revisions: String(service?.revisions ?? service?.revisions_ar || '').trim(),
+        turnaround: String((service?.turnaround ?? service?.turnaround_ar) || '').trim(),
+        revisions: String((service?.revisions ?? service?.revisions_ar) || '').trim(),
         createdAt: service?.createdAt || new Date().toISOString(),
         updatedAt: service?.updatedAt || new Date().toISOString(),
     };
