@@ -1015,7 +1015,18 @@ function getLocalServices() {
 
 function enforceExclusiveServiceCatalog() {
     // Only apply defaults when runtimeStore has no services (Supabase returned empty).
-    if (runtimeStore.services && runtimeStore.services.length > 0) return;
+    if (runtimeStore.services && runtimeStore.services.length > 0) {
+        // If we have services from Supabase, ensure local storage is up to date.
+        writeLocalJson(SERVICES_STORAGE_KEY, runtimeStore.services);
+        return;
+    }
+    // If Supabase is empty but local storage has data, use local storage.
+    const localServices = getLocalServices();
+    if (localServices.length > 0) {
+        runtimeStore.services = localServices;
+        return;
+    }
+    // If both are empty, use the hardcoded defaults as a last resort.
     runtimeStore.services = DEFAULT_MANAGED_SERVICES.map((service, index) => normalizeManagedService(service, index));
     writeLocalJson(SERVICES_STORAGE_KEY, runtimeStore.services);
 }
