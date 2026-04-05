@@ -112,248 +112,8 @@ const SERVICE_OG_IMAGE_MAP = {
     'svc-brand-identity': 'https://www.pixelonevisuals.tech/og/brand-identity-1200x630.png',
 };
 
-const SERVICE_DETAIL_CONTENT = {
-    'svc-social-media-designs': {
-        image: 'https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?auto=format&fit=crop&w=1600&h=900&q=80',
-        imageAlt: 'تصاميم سوشيال ميديا احترافية على شاشة حاسوب',
-        deliverables: [
-            'تصميم منشورات ثابتة متوافقة مع Instagram وFacebook وLinkedIn.',
-            'نسختان مقاس لكل منصة حسب نوع النشر (Feed/Story عند الحاجة).',
-            'تسليم بصيغ JPG/PNG جاهزة للنشر بجودة عالية.',
-            'تنسيق بصري متناسق مع هوية نشاطك وألوانه الرسمية.',
-        ],
-        requirements: [
-            'شعار العلامة التجارية (PNG أو SVG إن توفر).',
-            'الألوان والخطوط المعتمدة أو أمثلة مرجعية.',
-            'النص المطلوب داخل التصميم وعرض اليوم/المنتج.',
-            'المنصة المستهدفة وموعد النشر المتوقع.',
-        ],
-        workflow: [
-            'تحليل الهدف الإعلاني والجمهور المستهدف.',
-            'تجهيز مسودة تصميم أولى للمراجعة.',
-            'تطبيق التعديلات داخل النطاق المتفق عليه.',
-            'التسليم النهائي بصيغ النشر المعتمدة.',
-        ],
-        turnaround: 'من 24 إلى 72 ساعة حسب حجم الطلب.',
-        revisions: 'جولتا تعديل ضمن نفس الفكرة.',
-    },
-    'svc-logo-design': {
-        image: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&w=1600&h=900&q=80',
-        imageAlt: 'عملية رسم وتصميم شعار احترافي على الورق',
-        deliverables: [
-            'شعار أساسي واضح وقابل للاستخدام في جميع المنصات.',
-            'نسخة بخلفية شفافة PNG عالية الجودة.',
-            'نسخة متجهة SVG أو PDF للطباعة عند الحاجة.',
-            'نسخ لونية رئيسية (ملون، أبيض، أسود).',
-        ],
-        requirements: [
-            'اسم المشروع كما سيظهر داخل الشعار.',
-            'مجال النشاط والجمهور المستهدف.',
-            'أمثلة شعارات تعجبك وأخرى لا تناسبك.',
-            'تفضيلات الألوان أو الاتجاه البصري المطلوب.',
-        ],
-        workflow: [
-            'بحث سريع للمجال وتحديد الاتجاه البصري.',
-            'اقتراحات أولية للشعار.',
-            'تطوير النسخة المعتمدة بعد المراجعة.',
-            'تسليم الملفات النهائية المنظمة.',
-        ],
-        turnaround: 'من 2 إلى 5 أيام عمل.',
-        revisions: 'جولتا تعديل على النسخة المختارة.',
-    },
-    'svc-digital-banners': {
-        image: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?auto=format&fit=crop&w=1600&h=900&q=80',
-        imageAlt: 'تصميم بانرات وإعلانات رقمية احترافية للحملات',
-        deliverables: [
-            'بانرات إعلانية بمقاسات معتمدة للمنصات المطلوبة.',
-            'نسخ متعددة للحملة عند الحاجة (A/B بسيط).',
-            'تنسيق بصري يركز على CTA واضح وقابل للنقر.',
-            'تسليم جاهز للنشر بصيغة JPG/PNG.',
-        ],
-        requirements: [
-            'هدف الحملة (مبيعات، رسائل، زيارات، تعريف).',
-            'العرض أو النص الإعلاني النهائي.',
-            'الصور/المنتج أو الروابط المرجعية.',
-            'المنصة والمقاسات المطلوبة.',
-        ],
-        workflow: [
-            'تحويل العرض التجاري إلى رسالة بصرية مباشرة.',
-            'تصميم نسخة أولى للحملة.',
-            'تحسين التصميم حسب الملاحظات.',
-            'تسليم المقاسات النهائية للنشر.',
-        ],
-        turnaround: 'من 24 إلى 72 ساعة.',
-        revisions: 'جولتا تعديل ضمن نفس الحملة.',
-    },
-    'svc-pitch-deck': {
-        image: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=1600&h=900&q=80',
-        imageAlt: 'عرض تقديمي احترافي في اجتماع أعمال',
-        deliverables: [
-            'تصميم عرض تقديمي بهيكل بصري احترافي.',
-            'تنسيق الشرائح بعناوين واضحة وتسلسل مقنع.',
-            'نسخة PowerPoint أو PDF جاهزة للعرض.',
-            'توحيد الألوان والخطوط بما يخدم صورة المشروع.',
-        ],
-        requirements: [
-            'المحتوى النصي الأساسي لكل شريحة.',
-            'نوع العرض: مستثمرين، مبيعات، تعريف شركة.',
-            'هوية بصرية أو شعار الشركة.',
-            'عدد الشرائح المتوقع والموعد النهائي.',
-        ],
-        workflow: [
-            'تنظيم المحتوى في هيكل واضح ومقنع.',
-            'تصميم الشرائح بنمط موحد.',
-            'مراجعة وتحسين قابلية القراءة والإقناع.',
-            'تسليم نسخة العرض النهائية.',
-        ],
-        turnaround: 'من 2 إلى 6 أيام حسب عدد الشرائح.',
-        revisions: 'جولتا تعديل على النسخة الأولية.',
-    },
-    'svc-short-video': {
-        image: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=1600&h=900&q=80',
-        imageAlt: 'مونتاج فيديو قصير لمنصات التواصل',
-        deliverables: [
-            'مونتاج فيديو قصير مناسب لـ Reels/TikTok/Shorts.',
-            'إيقاع سريع مع نصوص وحركات انتقال مناسبة.',
-            'تحسين بصري ولوني أساسي مع صوت متوازن.',
-            'تسليم MP4 بجودة مناسبة للنشر.',
-        ],
-        requirements: [
-            'مقاطع الفيديو الخام أو رابط تحميل واضح.',
-            'الفكرة أو السيناريو المختصر.',
-            'النصوص المطلوبة على الشاشة.',
-            'المنصة المستهدفة والمدة التقريبية.',
-        ],
-        workflow: [
-            'فرز اللقطات وتحديد التسلسل الأفضل.',
-            'مونتاج أولي وإضافة النصوص.',
-            'تحسين الإيقاع والمظهر النهائي.',
-            'تسليم نسخة جاهزة للنشر.',
-        ],
-        turnaround: 'من 24 إلى 96 ساعة حسب جودة المواد.',
-        revisions: 'جولتا تعديل داخل نفس المدة المتفق عليها.',
-    },
-    'svc-professional-design': {
-        image: 'https://images.unsplash.com/photo-1558655146-9f40138edfeb?auto=format&fit=crop&w=1600&h=900&q=80',
-        imageAlt: 'باقة تصميم احترافية متكاملة للعلامة التجارية',
-        deliverables: [
-            'خطة تصميم متكاملة حسب احتياج المشروع.',
-            'حزمة عناصر بصرية للهوية والمحتوى.',
-            'قوالب أساسية للاستخدام المتكرر.',
-            'تسليم منظم للملفات مع هيكلة واضحة.',
-        ],
-        requirements: [
-            'وصف دقيق للنشاط التجاري وأهداف المرحلة.',
-            'الأولوية بين الهوية والمحتوى الإعلاني.',
-            'أمثلة مرجعية للاتجاه المرغوب.',
-            'نقطة اتصال واحدة لاعتماد المراجعات بسرعة.',
-        ],
-        workflow: [
-            'جلسة فهم النطاق وتحديد الأولويات.',
-            'تصميم أولي للمسار البصري.',
-            'مراجعات مرحلية مع اعتماد نهائي.',
-            'تسليم الحزمة الكاملة بشكل منظم.',
-        ],
-        turnaround: 'من 5 إلى 12 يوم عمل حسب النطاق.',
-        revisions: 'مراجعات مرحلية متفق عليها مسبقاً.',
-    },
-    'svc-short-videos-premium': {
-        image: 'https://images.unsplash.com/photo-1541516160071-4bb0c5af65ba?auto=format&fit=crop&w=1600&h=900&q=80',
-        imageAlt: 'كاميرا احترافية لإنتاج فيديوهات قصيرة عالية الجودة',
-        deliverables: [
-            'مونتاج فيديو قصير بجودة أعلى من الباقة الأساسية.',
-            'تحسين احترافي للألوان والصوت والإيقاع.',
-            'نسخة أساسية + نسخة بديلة للـ Hook إذا لزم.',
-            'تسليم نهائي مناسب للإعلانات أو النشر العضوي.',
-        ],
-        requirements: [
-            'لقطات واضحة بدقة جيدة.',
-            'هدف الفيديو (تعريف، بيع، تفاعل).',
-            'النصوص أو العبارات المطلوبة داخل الفيديو.',
-            'هوية المشروع أو مرجع بصري للحملة.',
-        ],
-        workflow: [
-            'صياغة خط زمني قصير يركز على النتيجة.',
-            'تنفيذ مونتاج احترافي مع تحسينات بصرية.',
-            'مراجعة نهائية وضبط النسخة الأخيرة.',
-            'تسليم الملف النهائي بجودة عالية.',
-        ],
-        turnaround: 'من 2 إلى 5 أيام.',
-        revisions: 'جولتا تعديل على النسخة الأولية.',
-    },
-    'svc-advanced-promo-video': {
-        image: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1600&h=900&q=80',
-        imageAlt: 'معدات إنتاج فيديو سينمائي متقدم',
-        deliverables: [
-            'خدمة قادمة لإنتاج فيديو ترويجي متقدم.',
-            'سيناريو بصري أقوى متعدد اللقطات.',
-            'معالجة فنية أعلى للمؤثرات والهوية.',
-            'مخرجات مناسبة لحملات احترافية موسعة.',
-        ],
-        requirements: [
-            'ملف تعريفي بالمشروع والهدف من الفيديو.',
-            'المواد الخام أو خطة تصوير واضحة.',
-            'الميزانية والموعد المطلوب للتسليم.',
-            'أمثلة مرجعية لمستوى الإنتاج المطلوب.',
-        ],
-        workflow: [
-            'مرحلة دراسة نطاق الإنتاج.',
-            'اقتراح سيناريو وإطار زمني تفصيلي.',
-            'تنفيذ ومراجعات على مراحل.',
-            'تسليم نسخة نهائية عالية الجودة.',
-        ],
-        turnaround: 'قريباً — سيتم تحديد المدة حسب نطاق الإنتاج.',
-        revisions: 'قريباً — حسب باقة التنفيذ النهائية.',
-    },
-    'svc-web-landing-page': {
-        image: 'https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&w=1600&h=900&q=80',
-        imageAlt: 'تصميم مواقع وصفحات هبوط احترافية',
-        deliverables: [
-            'خدمة قادمة لتصميم صفحات هبوط ومواقع تعريفية.',
-            'هيكلة صفحة تركّز على التحويل والوضوح.',
-            'تصميم متجاوب للهواتف والكمبيوتر.',
-            'واجهة حديثة تعكس هوية النشاط التجاري.',
-        ],
-        requirements: [
-            'وصف الخدمة أو المنتج المستهدف.',
-            'النصوص الرئيسية وصور الهوية.',
-            'الهدف من الصفحة (طلبات، رسائل، مبيعات).',
-            'الدومين والاستضافة إذا كانت متوفرة.',
-        ],
-        workflow: [
-            'تخطيط هيكل الصفحة حسب هدف التحويل.',
-            'تصميم واجهة أولية للمراجعة.',
-            'تحسين المحتوى وتجربة الاستخدام.',
-            'تسليم النسخة النهائية الجاهزة للنشر.',
-        ],
-        turnaround: 'قريباً — سيتم تفعيلها ضمن باقات الويب.',
-        revisions: 'قريباً — حسب نوع المشروع.',
-    },
-    'svc-brand-identity': {
-        image: 'https://images.unsplash.com/photo-1600508774634-4e11d34730e2?auto=format&fit=crop&w=1600&h=900&q=80',
-        imageAlt: 'هوية بصرية احترافية مع تطبيقات على المطبوعات',
-        deliverables: [
-            'خدمة قادمة لإعداد هوية بصرية أساسية متناسقة.',
-            'شعار رئيسي مع لوحة ألوان وخطوط مقترحة.',
-            'دليل مبسط لاستخدام الهوية في السوشيال.',
-            'نماذج تطبيق أولية على منشورات رقمية.',
-        ],
-        requirements: [
-            'اسم المشروع وطبيعة نشاطه.',
-            'القيم أو الشخصية التي تريد إظهارها بصرياً.',
-            'أمثلة مرجعية لهويات قريبة من ذوقك.',
-            'الجمهور المستهدف داخل السوق المغربي.',
-        ],
-        workflow: [
-            'دراسة هوية النشاط وتحديد الاتجاه البصري.',
-            'اقتراح المسار الإبداعي الأولي.',
-            'تطوير الهوية بناء على المراجعة.',
-            'تسليم الملفات النهائية بشكل منظم.',
-        ],
-        turnaround: 'قريباً — الخدمة قيد التجهيز.',
-        revisions: 'قريباً — حسب الباقة النهائية.',
-    },
-};
+// This object is now obsolete as content is managed in the database.
+// const SERVICE_DETAIL_CONTENT = { ... };
 
 const ORDER_STORAGE_FALLBACK_KEY = 'pixelone_orders_v1';
 const OFFERS_STORAGE_KEY = 'pixelone_offers_v1';
@@ -697,6 +457,13 @@ function serviceToRow(service) {
         enabled: service.enabled !== false,
         created_at: service.createdAt || new Date().toISOString(),
         updated_at: new Date().toISOString(),
+        image_url: service.imageUrl || null,
+        image_alt_ar: service.imageAlt || null,
+        deliverables_ar: service.deliverables || null,
+        requirements_ar: service.requirements || null,
+        workflow_ar: service.workflow || null,
+        turnaround_ar: service.turnaround || null,
+        revisions_ar: service.revisions || null,
     };
 }
 
@@ -712,6 +479,13 @@ function serviceFromRow(row, index = 0) {
         enabled: row.enabled,
         createdAt: row.created_at,
         updatedAt: row.updated_at,
+        imageUrl: row.image_url,
+        imageAlt: row.image_alt_ar,
+        deliverables: row.deliverables_ar,
+        requirements: row.requirements_ar,
+        workflow: row.workflow_ar,
+        turnaround: row.turnaround_ar,
+        revisions: row.revisions_ar,
     }, index);
 }
 
@@ -1700,18 +1474,27 @@ function updateServiceShareMeta(service, localized, details) {
     setMetaTag('meta[name="twitter:image"]', 'content', image);
 }
 
-function getServiceDetailContent(serviceId) {
-    const resolvedId = resolveServiceDetailId(serviceId);
-    const content = SERVICE_DETAIL_CONTENT[resolvedId];
-    if (content) return content;
+function getServiceDetailContent(service) {
+    if (!service) {
+        return {
+            image: 'https://images.unsplash.com/photo-1558655146-9f40138edfeb?auto=format&fit=crop&w=1600&h=900&q=80',
+            imageAlt: 'خدمة تصميم احترافية',
+            deliverables: ['تنفيذ احترافي حسب نطاق الطلب المتفق عليه.', 'تسليم منظم وجاهز للاستخدام.'],
+            requirements: ['فكرة المشروع والهدف الأساسي.', 'المحتوى والمواد المتاحة لديك.'],
+            workflow: ['فهم الطلب', 'تنفيذ أولي', 'مراجعة', 'تسليم نهائي'],
+            turnaround: 'يتم تحديد المدة بعد مراجعة التفاصيل.',
+            revisions: 'ضمن النطاق المتفق عليه.',
+        };
+    }
+
     return {
-        image: 'https://images.unsplash.com/photo-1558655146-9f40138edfeb?auto=format&fit=crop&w=1600&h=900&q=80',
-        imageAlt: 'خدمة تصميم احترافية',
-        deliverables: ['تنفيذ احترافي حسب نطاق الطلب المتفق عليه.', 'تسليم منظم وجاهز للاستخدام.'],
-        requirements: ['فكرة المشروع والهدف الأساسي.', 'المحتوى والمواد المتاحة لديك.'],
-        workflow: ['فهم الطلب', 'تنفيذ أولي', 'مراجعة', 'تسليم نهائي'],
-        turnaround: 'يتم تحديد المدة بعد مراجعة التفاصيل.',
-        revisions: 'ضمن النطاق المتفق عليه.',
+        image: service.imageUrl || 'https://images.unsplash.com/photo-1558655146-9f40138edfeb?auto=format&fit=crop&w=1600&h=900&q=80',
+        imageAlt: service.imageAlt || 'خدمة تصميم احترافية',
+        deliverables: Array.isArray(service.deliverables) ? service.deliverables : [],
+        requirements: Array.isArray(service.requirements) ? service.requirements : [],
+        workflow: Array.isArray(service.workflow) ? service.workflow : [],
+        turnaround: service.turnaround || 'يتم تحديد المدة بعد مراجعة التفاصيل.',
+        revisions: service.revisions || 'ضمن النطاق المتفق عليه.',
     };
 }
 
@@ -1861,6 +1644,12 @@ function getLocalizedServiceContent(service) {
 function renderServices(grid, services, discountContext) {
     grid.innerHTML = '';
 
+    const FALLBACK_SERVICES = []; // This is a failsafe, should not be hit if services are loaded.
+    if (!services || services.length === 0) {
+        console.warn('RenderServices: Received empty or null services array. Using fallback.');
+        services = FALLBACK_SERVICES;
+    }
+
     const activeServices = services.filter((service) => service.enabled !== false);
 
     const availableServices = activeServices
@@ -1963,7 +1752,7 @@ function renderServiceDetailPage() {
     const serviceParam = params.get('service') || document.body?.dataset.serviceId || routeServiceId || '';
     const targetId = resolveServiceDetailId(serviceParam);
     const services = getStoredServices();
-    const catalog = services.length > 0 ? services : FALLBACK_SERVICES;
+    const catalog = services.length > 0 ? services : [];
     const service = catalog.find((item) => resolveServiceDetailId(item.id) === targetId);
 
     if (!service) {
@@ -1978,7 +1767,7 @@ function renderServiceDetailPage() {
     }
 
     const localized = getLocalizedServiceContent(service);
-    const details = getServiceDetailContent(service.id);
+    const details = getServiceDetailContent(service);
     const isSoon = Boolean(service.is_coming_soon);
     const servicePrice = escapeHtml(String(service.price || '0'));
     const serviceType = escapeHtml(localized.serviceType || 'خدمة لمرة واحدة');
@@ -3922,6 +3711,13 @@ function renderServicesAdminSection() {
             const priceEl = document.getElementById('servicePrice');
             const popularityEl = document.getElementById('servicePopularity');
             const descriptionEl = document.getElementById('serviceDescription');
+            const imageUrlEl = document.getElementById('serviceImageUrl');
+            const imageAltEl = document.getElementById('serviceImageAlt');
+            const deliverablesEl = document.getElementById('serviceDeliverables');
+            const requirementsEl = document.getElementById('serviceRequirements');
+            const workflowEl = document.getElementById('serviceWorkflow');
+            const turnaroundEl = document.getElementById('serviceTurnaround');
+            const revisionsEl = document.getElementById('serviceRevisions');
             const comingSoonEl = document.getElementById('serviceComingSoon');
             const enabledEl = document.getElementById('serviceEnabled');
             const submitBtn = document.getElementById('serviceSubmitBtn');
@@ -3933,6 +3729,13 @@ function renderServicesAdminSection() {
             if (priceEl) priceEl.value = service.price || '';
             if (popularityEl) popularityEl.value = String(service.popularity || 1);
             if (descriptionEl) descriptionEl.value = service.descriptions?.ar || '';
+            if (imageUrlEl) imageUrlEl.value = service.imageUrl || '';
+            if (imageAltEl) imageAltEl.value = service.imageAlt || '';
+            if (deliverablesEl) deliverablesEl.value = Array.isArray(service.deliverables) ? service.deliverables.join('\n') : '';
+            if (requirementsEl) requirementsEl.value = Array.isArray(service.requirements) ? service.requirements.join('\n') : '';
+            if (workflowEl) workflowEl.value = Array.isArray(service.workflow) ? service.workflow.join('\n') : '';
+            if (turnaroundEl) turnaroundEl.value = service.turnaround || '';
+            if (revisionsEl) revisionsEl.value = service.revisions || '';
             if (comingSoonEl) comingSoonEl.checked = Boolean(service.is_coming_soon);
             if (enabledEl) enabledEl.checked = Boolean(service.enabled);
             if (submitBtn) submitBtn.textContent = 'تحديث الخدمة';

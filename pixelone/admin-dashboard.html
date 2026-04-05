@@ -9,7 +9,7 @@
     <link rel="icon" type="image/png" sizes="96x96" href="icone/favicon-96x96.png">
     <link rel="apple-touch-icon" sizes="180x180" href="icone/apple-touch-icon.png">
     <link rel="manifest" href="icone/site.webmanifest">
-    
+
     <meta name="robots" content="noindex, nofollow">
     <title>لوحة تحكم - Pixel One</title>
     <meta name="description" content="لوحة تحكم المدير لإدارة الطلبات، النزاعات المالية، العروض، والخصومات في Pixel One Visuals.">
@@ -255,6 +255,22 @@
                     <input id="servicePrice" class="input-luxury" placeholder="السعر (مثال: 120 أو قريباً)" required>
                     <input id="servicePopularity" type="number" class="input-luxury" placeholder="أولوية الظهور (1 = أعلى)" required>
                     <textarea id="serviceDescription" class="input-luxury md:col-span-2" placeholder="وصف الخدمة" required></textarea>
+
+                    <hr class="md:col-span-2 border-white/10 my-2">
+                    <h3 class="md:col-span-2 text-lg font-bold text-gray-300">محتوى صفحة تفاصيل الخدمة</h3>
+
+                    <input id="serviceImageUrl" class="input-luxury md:col-span-2 font-en" dir="ltr" placeholder="رابط صورة الخدمة (URL)">
+                    <input id="serviceImageAlt" class="input-luxury md:col-span-2" placeholder="النص البديل للصورة (Image Alt)">
+
+                    <textarea id="serviceDeliverables" class="input-luxury md:col-span-2" placeholder="المخرجات (كل عنصر في سطر)"></textarea>
+                    <textarea id="serviceRequirements" class="input-luxury md:col-span-2" placeholder="المتطلبات (كل عنصر في سطر)"></textarea>
+                    <textarea id="serviceWorkflow" class="input-luxury md:col-span-2" placeholder="آلية العمل (كل خطوة في سطر)"></textarea>
+
+                    <input id="serviceTurnaround" class="input-luxury" placeholder="مدة التنفيذ">
+                    <input id="serviceRevisions" class="input-luxury" placeholder="سياسة المراجعات">
+
+                    <hr class="md:col-span-2 border-white/10 my-2">
+
                     <label class="flex items-center gap-2 text-sm text-gray-300">
                         <input id="serviceComingSoon" type="checkbox">
                         الخدمة قريباً
