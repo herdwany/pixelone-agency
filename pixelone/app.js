@@ -1475,6 +1475,21 @@ function getServiceOgImage(serviceId) {
     return SERVICE_OG_IMAGE_MAP[resolvedId] || 'https://www.pixelonevisuals.tech/og/professional-design-1200x630.png';
 }
 
+function getDefaultServiceDetailContent(service) {
+    const serviceName = String(service?.titles?.ar || service?.title || '').trim();
+    const safeName = serviceName || 'الخدمة';
+
+    return {
+        image: getServiceOgImage(service?.id),
+        imageAlt: `صورة توضيحية لخدمة ${safeName}`,
+        deliverables: ['تنفيذ احترافي حسب نطاق الطلب المتفق عليه.', 'تسليم منظم وجاهز للاستخدام.'],
+        requirements: ['فكرة المشروع والهدف الأساسي.', 'المحتوى والمواد المتاحة لديك.'],
+        workflow: ['فهم الطلب', 'تنفيذ أولي', 'مراجعة', 'تسليم نهائي'],
+        turnaround: 'يتم تحديد المدة بعد مراجعة التفاصيل.',
+        revisions: 'ضمن النطاق المتفق عليه.',
+    };
+}
+
 function setMetaTag(selector, attr, value) {
     const element = document.querySelector(selector);
     if (!element) return;
@@ -1509,16 +1524,10 @@ function updateServiceShareMeta(service, localized, details) {
 }
 
 function getServiceDetailContent(service) {
+    const defaults = getDefaultServiceDetailContent(service);
+
     if (!service) {
-        return {
-            image: 'https://images.unsplash.com/photo-1558655146-9f40138edfeb?auto=format&fit=crop&w=1600&h=900&q=80',
-            imageAlt: 'خدمة تصميم احترافية',
-            deliverables: ['تنفيذ احترافي حسب نطاق الطلب المتفق عليه.', 'تسليم منظم وجاهز للاستخدام.'],
-            requirements: ['فكرة المشروع والهدف الأساسي.', 'المحتوى والمواد المتاحة لديك.'],
-            workflow: ['فهم الطلب', 'تنفيذ أولي', 'مراجعة', 'تسليم نهائي'],
-            turnaround: 'يتم تحديد المدة بعد مراجعة التفاصيل.',
-            revisions: 'ضمن النطاق المتفق عليه.',
-        };
+        return defaults;
     }
 
     const deliverables = normalizeStringList(service.deliverables);
@@ -1526,13 +1535,13 @@ function getServiceDetailContent(service) {
     const workflow = normalizeStringList(service.workflow);
 
     return {
-        image: service.imageUrl || 'https://images.unsplash.com/photo-1558655146-9f40138edfeb?auto=format&fit=crop&w=1600&h=900&q=80',
-        imageAlt: service.imageAlt || 'خدمة تصميم احترافية',
-        deliverables: deliverables.length > 0 ? deliverables : ['تنفيذ احترافي حسب نطاق الطلب المتفق عليه.', 'تسليم منظم وجاهز للاستخدام.'],
-        requirements: requirements.length > 0 ? requirements : ['فكرة المشروع والهدف الأساسي.', 'المحتوى والمواد المتاحة لديك.'],
-        workflow: workflow.length > 0 ? workflow : ['فهم الطلب', 'تنفيذ أولي', 'مراجعة', 'تسليم نهائي'],
-        turnaround: service.turnaround || 'يتم تحديد المدة بعد مراجعة التفاصيل.',
-        revisions: service.revisions || 'ضمن النطاق المتفق عليه.',
+        image: service.imageUrl || defaults.image,
+        imageAlt: service.imageAlt || defaults.imageAlt,
+        deliverables: deliverables.length > 0 ? deliverables : defaults.deliverables,
+        requirements: requirements.length > 0 ? requirements : defaults.requirements,
+        workflow: workflow.length > 0 ? workflow : defaults.workflow,
+        turnaround: service.turnaround || defaults.turnaround,
+        revisions: service.revisions || defaults.revisions,
     };
 }
 
@@ -3741,6 +3750,7 @@ function renderServicesAdminSection() {
             const id = btn.dataset.id;
             const service = getStoredServices().find((item) => item.id === id);
             if (!service) return;
+            const details = getServiceDetailContent(service);
 
             const editIdEl = document.getElementById('serviceEditId');
             const categoryEl = document.getElementById('serviceCategory');
@@ -3766,13 +3776,13 @@ function renderServicesAdminSection() {
             if (priceEl) priceEl.value = service.price || '';
             if (popularityEl) popularityEl.value = String(service.popularity || 1);
             if (descriptionEl) descriptionEl.value = service.descriptions?.ar || '';
-            if (imageUrlEl) imageUrlEl.value = service.imageUrl || '';
-            if (imageAltEl) imageAltEl.value = service.imageAlt || '';
-            if (deliverablesEl) deliverablesEl.value = Array.isArray(service.deliverables) ? service.deliverables.join('\n') : '';
-            if (requirementsEl) requirementsEl.value = Array.isArray(service.requirements) ? service.requirements.join('\n') : '';
-            if (workflowEl) workflowEl.value = Array.isArray(service.workflow) ? service.workflow.join('\n') : '';
-            if (turnaroundEl) turnaroundEl.value = service.turnaround || '';
-            if (revisionsEl) revisionsEl.value = service.revisions || '';
+            if (imageUrlEl) imageUrlEl.value = details.image || '';
+            if (imageAltEl) imageAltEl.value = details.imageAlt || '';
+            if (deliverablesEl) deliverablesEl.value = Array.isArray(details.deliverables) ? details.deliverables.join('\n') : '';
+            if (requirementsEl) requirementsEl.value = Array.isArray(details.requirements) ? details.requirements.join('\n') : '';
+            if (workflowEl) workflowEl.value = Array.isArray(details.workflow) ? details.workflow.join('\n') : '';
+            if (turnaroundEl) turnaroundEl.value = details.turnaround || '';
+            if (revisionsEl) revisionsEl.value = details.revisions || '';
             if (comingSoonEl) comingSoonEl.checked = Boolean(service.is_coming_soon);
             if (enabledEl) enabledEl.checked = Boolean(service.enabled);
             if (submitBtn) submitBtn.textContent = 'تحديث الخدمة';
