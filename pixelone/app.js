@@ -67,6 +67,11 @@ const UI_TEXT = {
         trackInputPlaceholder: 'مثال: PO-8K4M2Q',
         trackButton: 'تتبع',
         trackClear: 'عرض الكل',
+        quoteReadyTitle: 'عرض السعر جاهز',
+        quoteReadyDownload: 'تحميل PDF',
+        quoteReadyNotice: 'سنتواصل معك قريباً على واتساب.',
+        dashboardNoQuotes: 'لا توجد عروض أسعار حالياً.',
+        dashboardNoInvoices: 'لا توجد فواتير حالياً.',
     },
 };
 
@@ -129,10 +134,13 @@ const SERVICE_OG_IMAGE_LOCAL_MAP = {
 // const SERVICE_DETAIL_CONTENT = { ... };
 
 const ORDER_STORAGE_FALLBACK_KEY = 'pixelone_orders_v1';
+const QUOTES_STORAGE_KEY = 'pixelone_quotes_v1';
+const INVOICES_STORAGE_KEY = 'pixelone_invoices_v1';
 const OFFERS_STORAGE_KEY = 'pixelone_offers_v1';
 const SERVICES_STORAGE_KEY = 'pixelone_services_v2';
 const DISPUTES_STORAGE_KEY = 'pixelone_disputes_v1';
 const DISCOUNTS_STORAGE_KEY = 'pixelone_discounts_v1';
+const AUTOMATION_WEBHOOK_URL = 'https://flow.sokt.io/func/scriekZWLgOh';
 
 const DEFAULT_SITE_SETTINGS = {
     brand: {
@@ -258,10 +266,15 @@ const ORDER_STATUS_OPTIONS = [
     'مكتمل',
 ];
 
+const QUOTE_STATUS_OPTIONS = ['draft', 'sent', 'accepted', 'rejected', 'expired', 'converted'];
+const INVOICE_STATUS_OPTIONS = ['unpaid', 'paid', 'cancelled'];
+
 const TABLES = {
     services: 'pixel_services',
     offers: 'pixel_offers',
     orders: 'pixel_orders',
+    quotes: 'pixel_quotes',
+    invoices: 'pixel_invoices',
     disputes: 'pixel_disputes',
     discountsGlobal: 'pixel_discounts_global',
     discountsCustomer: 'pixel_discounts_customer',
@@ -309,6 +322,8 @@ async function finalizePageLoader() {
 
 const runtimeStore = {
     orders: [],
+    quotes: [],
+    invoices: [],
     offers: [],
     services: [],
     disputes: [],
@@ -423,6 +438,7 @@ function getLoginRedirectTargetForCurrentPage() {
 function persistPendingOrderIntent(payload) {
     if (!payload || typeof payload !== 'object') return;
     safeStorageSet(PENDING_ORDER_INTENT_KEY, JSON.stringify({
+        serviceId: String(payload.serviceId || ''),
         serviceName: String(payload.serviceName || ''),
         finalPrice: String(payload.finalPrice || ''),
         discountCode: String(payload.discountCode || ''),
@@ -438,6 +454,7 @@ function readPendingOrderIntent() {
         const parsed = JSON.parse(raw);
         if (!parsed || typeof parsed !== 'object') return null;
         return {
+            serviceId: String(parsed.serviceId || ''),
             serviceName: String(parsed.serviceName || ''),
             finalPrice: String(parsed.finalPrice || ''),
             discountCode: String(parsed.discountCode || ''),
@@ -571,6 +588,66 @@ function orderFromRow(row) {
     };
 }
 
+function quoteToRow(quote) {
+    return {
+        id: quote.id,
+        order_id: quote.orderId,
+        quote_number: quote.quoteNumber,
+        status: quote.status || 'draft',
+        subtotal: normalizeMoneyValue(quote.subtotal),
+        discount_value: normalizeMoneyValue(quote.discountValue),
+        total: normalizeMoneyValue(quote.total),
+        currency: quote.currency || 'MAD',
+        valid_until: quote.validUntil || null,
+        notes: quote.notes || '',
+        created_at: quote.createdAt || new Date().toISOString(),
+    };
+}
+
+function quoteFromRow(row) {
+    return {
+        id: row.id,
+        orderId: row.order_id,
+        quoteNumber: row.quote_number,
+        status: row.status,
+        subtotal: normalizeMoneyValue(row.subtotal),
+        discountValue: normalizeMoneyValue(row.discount_value),
+        total: normalizeMoneyValue(row.total),
+        currency: row.currency || 'MAD',
+        validUntil: row.valid_until,
+        notes: row.notes || '',
+        createdAt: row.created_at,
+    };
+}
+
+function invoiceToRow(invoice) {
+    return {
+        id: invoice.id,
+        order_id: invoice.orderId,
+        quote_id: invoice.quoteId,
+        invoice_number: invoice.invoiceNumber,
+        status: invoice.status || 'unpaid',
+        total: normalizeMoneyValue(invoice.total),
+        issued_at: invoice.issuedAt || null,
+        due_date: invoice.dueDate || null,
+        created_at: invoice.createdAt || new Date().toISOString(),
+    };
+}
+
+function invoiceFromRow(row) {
+    return {
+        id: row.id,
+        orderId: row.order_id,
+        quoteId: row.quote_id,
+        invoiceNumber: row.invoice_number,
+        status: row.status,
+        total: normalizeMoneyValue(row.total),
+        issuedAt: row.issued_at,
+        dueDate: row.due_date,
+        createdAt: row.created_at,
+    };
+}
+
 function disputeToRow(dispute) {
     return {
         id: dispute.id,
@@ -681,6 +758,12 @@ function mergeI18nPayload(base, override) {
 function parsePrice(value) {
     const numeric = Number.parseFloat(String(value || '').replace(/[^0-9.]/g, ''));
     return Number.isFinite(numeric) ? numeric : null;
+}
+
+function normalizeMoneyValue(value) {
+    const numeric = Number.parseFloat(String(value ?? '').replace(/[^0-9.\-]/g, ''));
+    if (!Number.isFinite(numeric)) return 0;
+    return Math.max(0, Number(numeric.toFixed(2)));
 }
 
 function formatMoneyMAD(value) {
@@ -807,6 +890,36 @@ function wireEmailLink(linkEl, email, subject) {
 
 function createId(prefix) {
     return `${prefix}-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+}
+
+function generateUuid() {
+    if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+        return window.crypto.randomUUID();
+    }
+
+    const template = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
+    return template.replace(/[xy]/g, (char) => {
+        const random = Math.floor(Math.random() * 16);
+        const value = char === 'x' ? random : ((random & 0x3) | 0x8);
+        return value.toString(16);
+    });
+}
+
+async function sendAutomationEvent(eventType, payload) {
+    try {
+        await fetch(AUTOMATION_WEBHOOK_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                eventType,
+                ...payload,
+            }),
+        });
+    } catch {
+        // Notifications are best-effort and must not block core order flow.
+    }
 }
 
 function getAuthMsgBox() {
@@ -1015,6 +1128,16 @@ function getLocalOrders() {
     return Array.isArray(parsed) ? parsed : [];
 }
 
+function getLocalQuotes() {
+    const parsed = readLocalJson(QUOTES_STORAGE_KEY, []);
+    return Array.isArray(parsed) ? parsed : [];
+}
+
+function getLocalInvoices() {
+    const parsed = readLocalJson(INVOICES_STORAGE_KEY, []);
+    return Array.isArray(parsed) ? parsed : [];
+}
+
 function getLocalOffers() {
     const parsed = readLocalJson(OFFERS_STORAGE_KEY, DEFAULT_OFFERS);
     return Array.isArray(parsed) ? parsed : cloneData(DEFAULT_OFFERS);
@@ -1089,7 +1212,11 @@ async function loadAdminEmailsFromDatabase() {
 
 async function hydrateDataStores() {
     const localOrders = getLocalOrders();
+    const localQuotes = getLocalQuotes();
+    const localInvoices = getLocalInvoices();
     runtimeStore.orders = localOrders;
+    runtimeStore.quotes = localQuotes;
+    runtimeStore.invoices = localInvoices;
     runtimeStore.offers = getLocalOffers();
     runtimeStore.services = getLocalServices();
     runtimeStore.disputes = getLocalDisputes();
@@ -1099,12 +1226,45 @@ async function hydrateDataStores() {
         fetchAllRows(TABLES.services, 'popularity'),
         fetchAllRows(TABLES.offers, 'updated_at'),
         fetchAllRows(TABLES.orders, 'created_at'),
+        fetchAllRows(TABLES.quotes, 'created_at'),
+        fetchAllRows(TABLES.invoices, 'created_at'),
         fetchAllRows(TABLES.disputes, 'created_at'),
         fetchAllRows(TABLES.discountsGlobal, 'id'),
         fetchAllRows(TABLES.discountsCustomer, 'created_at'),
     ]);
 
-    const [servicesResult, offersResult, ordersResult, disputesResult, globalResult, customerResult] = results;
+    const [
+        servicesResult,
+        offersResult,
+        ordersResult,
+        quotesResult,
+        invoicesResult,
+        disputesResult,
+        globalResult,
+        customerResult,
+    ] = results;
+
+    const mergeById = (remoteItems, localItems, keyResolver) => {
+        const merged = new Map();
+
+        remoteItems.forEach((item) => {
+            const key = keyResolver(item);
+            if (!key) return;
+            merged.set(key, item);
+        });
+
+        localItems.forEach((item) => {
+            const key = keyResolver(item);
+            if (!key || merged.has(key)) return;
+            merged.set(key, item);
+        });
+
+        return Array.from(merged.values()).sort((a, b) => {
+            const left = new Date(b.createdAt || 0).getTime();
+            const right = new Date(a.createdAt || 0).getTime();
+            return left - right;
+        });
+    };
 
     runtimeStore.services = servicesResult.status === 'fulfilled' && servicesResult.value.length > 0
         ? servicesResult.value.map((row, index) => serviceFromRow(row, index))
@@ -1118,25 +1278,38 @@ async function hydrateDataStores() {
 
     if (ordersResult.status === 'fulfilled') {
         const remoteOrders = ordersResult.value.map(orderFromRow);
-        const mergedById = new Map();
-        remoteOrders.forEach((order) => {
-            const key = String(order.id || order.trackingCode || '').trim();
-            if (!key) return;
-            mergedById.set(key, order);
-        });
-        localOrders.forEach((order) => {
-            const key = String(order.id || order.trackingCode || '').trim();
-            if (!key || mergedById.has(key)) return;
-            mergedById.set(key, order);
-        });
-        const mergedOrders = Array.from(mergedById.values()).sort((a, b) => {
-            const left = new Date(b.createdAt || 0).getTime();
-            const right = new Date(a.createdAt || 0).getTime();
-            return left - right;
-        });
+        const mergedOrders = mergeById(
+            remoteOrders,
+            localOrders,
+            (order) => String(order.id || order.trackingCode || '').trim(),
+        );
         runtimeStore.orders = mergedOrders.length > 0 ? mergedOrders : localOrders;
     } else {
         runtimeStore.orders = localOrders;
+    }
+
+    if (quotesResult.status === 'fulfilled') {
+        const remoteQuotes = quotesResult.value.map(quoteFromRow);
+        const mergedQuotes = mergeById(
+            remoteQuotes,
+            localQuotes,
+            (quote) => String(quote.id || '').trim(),
+        );
+        runtimeStore.quotes = mergedQuotes.length > 0 ? mergedQuotes : localQuotes;
+    } else {
+        runtimeStore.quotes = localQuotes;
+    }
+
+    if (invoicesResult.status === 'fulfilled') {
+        const remoteInvoices = invoicesResult.value.map(invoiceFromRow);
+        const mergedInvoices = mergeById(
+            remoteInvoices,
+            localInvoices,
+            (invoice) => String(invoice.id || '').trim(),
+        );
+        runtimeStore.invoices = mergedInvoices.length > 0 ? mergedInvoices : localInvoices;
+    } else {
+        runtimeStore.invoices = localInvoices;
     }
 
     runtimeStore.disputes = disputesResult.status === 'fulfilled' && disputesResult.value.length > 0
@@ -1169,12 +1342,23 @@ async function hydrateDataStores() {
         })),
     };
 
-    const hasSupabaseData = [servicesResult, offersResult, ordersResult, disputesResult, globalResult, customerResult]
+    const hasSupabaseData = [
+        servicesResult,
+        offersResult,
+        ordersResult,
+        quotesResult,
+        invoicesResult,
+        disputesResult,
+        globalResult,
+        customerResult,
+    ]
         .some((result) => result.status === 'fulfilled');
 
     dataSourceMode = hasSupabaseData ? 'supabase' : 'fallback';
 
     writeLocalJson(getOrdersStorageKey(), runtimeStore.orders);
+    writeLocalJson(QUOTES_STORAGE_KEY, runtimeStore.quotes);
+    writeLocalJson(INVOICES_STORAGE_KEY, runtimeStore.invoices);
     writeLocalJson(OFFERS_STORAGE_KEY, runtimeStore.offers);
     writeLocalJson(SERVICES_STORAGE_KEY, runtimeStore.services);
     writeLocalJson(DISPUTES_STORAGE_KEY, runtimeStore.disputes);
@@ -1230,6 +1414,700 @@ function addOrderRecord(order) {
         });
     }
 }
+
+function getStoredQuotes() {
+    return cloneData(runtimeStore.quotes);
+}
+
+function saveStoredQuotes(quotes) {
+    runtimeStore.quotes = Array.isArray(quotes) ? cloneData(quotes) : [];
+    writeLocalJson(QUOTES_STORAGE_KEY, runtimeStore.quotes);
+
+    if (dataSourceMode === 'supabase') {
+        replaceTableSnapshot(TABLES.quotes, runtimeStore.quotes.map(quoteToRow)).catch(() => {
+            dataSourceMode = 'fallback';
+        });
+    }
+}
+
+function addQuoteRecord(quote) {
+    const now = quote.createdAt || new Date().toISOString();
+    const normalizedQuote = {
+        currency: 'MAD',
+        status: 'draft',
+        ...quote,
+        createdAt: now,
+    };
+
+    const existing = getStoredQuotes().filter((item) => item.id !== normalizedQuote.id);
+    existing.unshift(normalizedQuote);
+    saveStoredQuotes(existing);
+
+    if (dataSourceMode === 'supabase') {
+        _supabase.from(TABLES.quotes).upsert(quoteToRow(normalizedQuote), { onConflict: 'id' }).then(({ error }) => {
+            if (error) dataSourceMode = 'fallback';
+        });
+    }
+
+    return normalizedQuote;
+}
+
+function updateQuoteStatus(quoteId, nextStatus) {
+    if (!QUOTE_STATUS_OPTIONS.includes(nextStatus)) return null;
+
+    const quotes = getStoredQuotes();
+    let updatedQuote = null;
+    const updated = quotes.map((quote) => {
+        if (quote.id !== quoteId) return quote;
+        updatedQuote = {
+            ...quote,
+            status: nextStatus,
+        };
+        return updatedQuote;
+    });
+    saveStoredQuotes(updated);
+    return updatedQuote;
+}
+
+function getStoredInvoices() {
+    return cloneData(runtimeStore.invoices);
+}
+
+function saveStoredInvoices(invoices) {
+    runtimeStore.invoices = Array.isArray(invoices) ? cloneData(invoices) : [];
+    writeLocalJson(INVOICES_STORAGE_KEY, runtimeStore.invoices);
+
+    if (dataSourceMode === 'supabase') {
+        replaceTableSnapshot(TABLES.invoices, runtimeStore.invoices.map(invoiceToRow)).catch(() => {
+            dataSourceMode = 'fallback';
+        });
+    }
+}
+
+function addInvoiceRecord(invoice) {
+    const now = invoice.createdAt || new Date().toISOString();
+    const normalizedInvoice = {
+        status: 'unpaid',
+        ...invoice,
+        createdAt: now,
+    };
+
+    const existing = getStoredInvoices().filter((item) => item.id !== normalizedInvoice.id);
+    existing.unshift(normalizedInvoice);
+    saveStoredInvoices(existing);
+
+    if (dataSourceMode === 'supabase') {
+        _supabase.from(TABLES.invoices).upsert(invoiceToRow(normalizedInvoice), { onConflict: 'id' }).then(({ error }) => {
+            if (error) dataSourceMode = 'fallback';
+        });
+    }
+
+    return normalizedInvoice;
+}
+
+function updateInvoiceStatus(invoiceId, nextStatus) {
+    if (!INVOICE_STATUS_OPTIONS.includes(nextStatus)) return null;
+
+    const invoices = getStoredInvoices();
+    let updatedInvoice = null;
+    const updated = invoices.map((invoice) => {
+        if (invoice.id !== invoiceId) return invoice;
+        updatedInvoice = {
+            ...invoice,
+            status: nextStatus,
+        };
+        return updatedInvoice;
+    });
+    saveStoredInvoices(updated);
+    return updatedInvoice;
+}
+
+function getOrderById(orderId) {
+    return getStoredOrders().find((order) => order.id === orderId) || null;
+}
+
+function getQuoteById(quoteId) {
+    return getStoredQuotes().find((quote) => quote.id === quoteId) || null;
+}
+
+function getInvoiceById(invoiceId) {
+    return getStoredInvoices().find((invoice) => invoice.id === invoiceId) || null;
+}
+
+function getOrderService(order) {
+    const services = getStoredServices();
+    const serviceId = String(order?.serviceId || '').trim();
+    if (serviceId) {
+        const byId = services.find((service) => String(service.id || '').trim() === serviceId);
+        if (byId) return byId;
+    }
+
+    const orderServiceName = String(order?.serviceName || '').trim();
+    if (!orderServiceName) return null;
+
+    const normalizedName = orderServiceName.toLowerCase();
+    return services.find((service) => {
+        const localized = getLocalizedServiceContent(service);
+        const candidates = [
+            String(service?.titles?.ar || ''),
+            String(localized?.title || ''),
+            String(service?.title || ''),
+        ].map((value) => value.trim().toLowerCase()).filter(Boolean);
+        return candidates.includes(normalizedName);
+    }) || null;
+}
+
+function getNextDocumentNumber(kind, existingNumbers) {
+    const safeKind = kind === 'INV' ? 'INV' : 'DEV';
+    const year = String(new Date().getFullYear());
+    const regex = new RegExp(`^PXO-${safeKind}-${year}-(\\d{4})$`);
+    const used = new Set(Array.isArray(existingNumbers) ? existingNumbers.map((value) => String(value || '').trim()) : []);
+
+    let maxForYear = 0;
+    used.forEach((value) => {
+        const match = value.match(regex);
+        if (!match) return;
+        const sequence = Number.parseInt(match[1], 10);
+        if (Number.isFinite(sequence) && sequence > maxForYear) {
+            maxForYear = sequence;
+        }
+    });
+
+    let candidate = maxForYear + 1;
+    while (candidate < 10000) {
+        const formatted = `PXO-${safeKind}-${year}-${String(candidate).padStart(4, '0')}`;
+        if (!used.has(formatted)) return formatted;
+        candidate += 1;
+    }
+
+    return `PXO-${safeKind}-${year}-${String(Math.floor(Math.random() * 9000) + 1000)}`;
+}
+
+function resolveOrderFinancials(order, service) {
+    let subtotal = parsePrice(service?.price || '') ?? parsePrice(order?.finalPrice || '') ?? 0;
+    let total = parsePrice(order?.finalPrice || '');
+    let discountValue = 0;
+
+    if (total === null) {
+        const discountContext = getDiscountContextForUser(order?.userEmail || order?.email || '');
+        const bestRule = getBestDiscountRule(discountContext);
+        const applied = applyDiscount(subtotal, bestRule);
+        total = normalizeMoneyValue(applied.finalPrice);
+        discountValue = normalizeMoneyValue(applied.discountAmount);
+    } else {
+        total = normalizeMoneyValue(total);
+        discountValue = normalizeMoneyValue(Math.max(0, subtotal - total));
+    }
+
+    subtotal = normalizeMoneyValue(subtotal);
+
+    return {
+        subtotal,
+        discountValue,
+        total: normalizeMoneyValue(total),
+    };
+}
+
+async function createQuoteFromOrder(orderId, options = {}) {
+    const order = getOrderById(orderId);
+    if (!order) {
+        throw new Error('Order not found');
+    }
+
+    if (dataSourceMode === 'supabase') {
+        const { error } = await _supabase.from(TABLES.orders).upsert(orderToRow(order), { onConflict: 'id' });
+        if (error) {
+            dataSourceMode = 'fallback';
+        }
+    }
+
+    const existingQuote = getStoredQuotes().find((quote) => quote.orderId === orderId && quote.status !== 'converted');
+    if (existingQuote && !options.forceNew) {
+        return existingQuote;
+    }
+
+    const service = getOrderService(order);
+    const financials = resolveOrderFinancials(order, service);
+    const now = new Date();
+    const validUntil = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString();
+    const quoteNumber = getNextDocumentNumber(
+        'DEV',
+        getStoredQuotes().map((quote) => quote.quoteNumber),
+    );
+
+    const quote = addQuoteRecord({
+        id: generateUuid(),
+        orderId,
+        quoteNumber,
+        status: options.status || 'sent',
+        subtotal: financials.subtotal,
+        discountValue: financials.discountValue,
+        total: financials.total,
+        currency: 'MAD',
+        validUntil: options.validUntil || validUntil,
+        notes: options.notes || '',
+        createdAt: now.toISOString(),
+    });
+
+    const quoteDocumentLink = buildAppUrl('dashboard.html', {
+        docType: 'quote',
+        docId: quote.id,
+        docToken: issueDocumentToken('quote', quote.id, 12 * 60),
+    });
+
+    await sendAutomationEvent('quote_created', {
+        quoteNumber: quote.quoteNumber,
+        orderId,
+        quoteId: quote.id,
+        documentLink: quoteDocumentLink,
+        customerEmail: order.email || order.userEmail || '',
+        customerName: order.name || '',
+        total: quote.total,
+        currency: quote.currency,
+    });
+
+    return quote;
+}
+
+async function convertQuoteToInvoice(quoteId, options = {}) {
+    const quote = getQuoteById(quoteId);
+    if (!quote) {
+        throw new Error('Quote not found');
+    }
+
+    if (quote.status !== 'accepted') {
+        throw new Error('Quote must be accepted before invoice conversion');
+    }
+
+    const existingInvoice = getStoredInvoices().find((invoice) => invoice.quoteId === quoteId);
+    if (existingInvoice && !options.forceNew) {
+        return existingInvoice;
+    }
+
+    const order = getOrderById(quote.orderId);
+
+    if (dataSourceMode === 'supabase') {
+        if (order) {
+            const { error: orderError } = await _supabase.from(TABLES.orders).upsert(orderToRow(order), { onConflict: 'id' });
+            if (orderError) dataSourceMode = 'fallback';
+        }
+        const { error: quoteError } = await _supabase.from(TABLES.quotes).upsert(quoteToRow(quote), { onConflict: 'id' });
+        if (quoteError) dataSourceMode = 'fallback';
+    }
+
+    const now = new Date();
+    const dueDate = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString();
+    const invoiceNumber = getNextDocumentNumber(
+        'INV',
+        getStoredInvoices().map((invoice) => invoice.invoiceNumber),
+    );
+
+    const invoice = addInvoiceRecord({
+        id: generateUuid(),
+        orderId: quote.orderId,
+        quoteId,
+        invoiceNumber,
+        status: options.status || 'unpaid',
+        total: normalizeMoneyValue(quote.total),
+        issuedAt: options.issuedAt || now.toISOString(),
+        dueDate: options.dueDate || dueDate,
+        createdAt: now.toISOString(),
+    });
+
+    const invoiceDocumentLink = buildAppUrl('dashboard.html', {
+        docType: 'invoice',
+        docId: invoice.id,
+        docToken: issueDocumentToken('invoice', invoice.id, 12 * 60),
+    });
+
+    updateQuoteStatus(quoteId, 'converted');
+
+    await sendAutomationEvent('invoice_created', {
+        invoiceNumber: invoice.invoiceNumber,
+        invoiceId: invoice.id,
+        documentLink: invoiceDocumentLink,
+        quoteNumber: quote.quoteNumber,
+        quoteId,
+        orderId: quote.orderId,
+        customerEmail: order?.email || order?.userEmail || '',
+        customerName: order?.name || '',
+        total: invoice.total,
+        currency: quote.currency || 'MAD',
+    });
+
+    return invoice;
+}
+
+function getQuoteStatusLabel(status) {
+    const labels = {
+        draft: 'مسودة',
+        sent: 'مرسل',
+        accepted: 'مقبول',
+        rejected: 'مرفوض',
+        expired: 'منتهي',
+        converted: 'محوّل لفاتورة',
+    };
+    return labels[String(status || '').toLowerCase()] || status || 'draft';
+}
+
+function getInvoiceStatusLabel(status) {
+    const labels = {
+        unpaid: 'غير مدفوع',
+        paid: 'مدفوع',
+        cancelled: 'ملغى',
+    };
+    return labels[String(status || '').toLowerCase()] || status || 'unpaid';
+}
+
+function getQuoteStatusMeta(status) {
+    const key = String(status || '').toLowerCase();
+    if (key === 'accepted') return { className: 'border-emerald-400/40 bg-emerald-500/10 text-emerald-200' };
+    if (key === 'rejected') return { className: 'border-red-400/40 bg-red-500/10 text-red-200' };
+    if (key === 'converted') return { className: 'border-blue-400/40 bg-blue-500/10 text-blue-200' };
+    if (key === 'expired') return { className: 'border-orange-400/40 bg-orange-500/10 text-orange-200' };
+    if (key === 'sent') return { className: 'border-cyan-400/40 bg-cyan-500/10 text-cyan-200' };
+    return { className: 'border-amber-400/40 bg-amber-500/10 text-amber-200' };
+}
+
+function getInvoiceStatusMeta(status) {
+    const key = String(status || '').toLowerCase();
+    if (key === 'paid') return { className: 'border-emerald-400/40 bg-emerald-500/10 text-emerald-200' };
+    if (key === 'cancelled') return { className: 'border-red-400/40 bg-red-500/10 text-red-200' };
+    return { className: 'border-amber-400/40 bg-amber-500/10 text-amber-200' };
+}
+
+function encodeBase64Url(value) {
+    const utf8 = unescape(encodeURIComponent(String(value || '')));
+    return btoa(utf8).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+}
+
+function decodeBase64Url(value) {
+    const safe = String(value || '').replace(/-/g, '+').replace(/_/g, '/');
+    const padded = safe + '==='.slice((safe.length + 3) % 4);
+    const decoded = atob(padded);
+    return decodeURIComponent(escape(decoded));
+}
+
+function createSimpleTokenSignature(payload) {
+    const source = `${String(payload || '')}|${SUPABASE_URL}|${SUPABASE_KEY.slice(0, 12)}`;
+    let hash = 0;
+    for (let i = 0; i < source.length; i += 1) {
+        hash = ((hash << 5) - hash) + source.charCodeAt(i);
+        hash |= 0;
+    }
+    return Math.abs(hash).toString(36);
+}
+
+function issueDocumentToken(type, id, ttlMinutes = 12 * 60) {
+    const safeType = String(type || '').toLowerCase() === 'invoice' ? 'invoice' : 'quote';
+    const safeId = String(id || '').trim();
+    const expiresAt = Date.now() + Math.max(15, Number(ttlMinutes) || 60) * 60 * 1000;
+    const nonce = Math.random().toString(36).slice(2, 10);
+    const payload = `${safeType}|${safeId}|${expiresAt}|${nonce}`;
+    const encoded = encodeBase64Url(payload);
+    const signature = createSimpleTokenSignature(payload);
+    return `${encoded}.${signature}`;
+}
+
+function validateDocumentToken(type, id, token) {
+    const safeToken = String(token || '').trim();
+    if (!safeToken.includes('.')) return false;
+
+    try {
+        const [encoded, signature] = safeToken.split('.');
+        if (!encoded || !signature) return false;
+
+        const payload = decodeBase64Url(encoded);
+        if (createSimpleTokenSignature(payload) !== signature) return false;
+
+        const [tokenType, tokenId, tokenExpiry] = payload.split('|');
+        const expectedType = String(type || '').toLowerCase() === 'invoice' ? 'invoice' : 'quote';
+        const expectedId = String(id || '').trim();
+
+        return (
+            tokenType === expectedType
+            && tokenId === expectedId
+            && Number(tokenExpiry || 0) > Date.now()
+        );
+    } catch {
+        return false;
+    }
+}
+
+function getDocumentViewerPathForCurrentUser() {
+    return isAdminUser(currentSessionUser) ? 'admin-dashboard.html' : 'dashboard.html';
+}
+
+function buildSecureDocumentUrl(type, id) {
+    const safeType = String(type || '').toLowerCase() === 'invoice' ? 'invoice' : 'quote';
+    const safeId = String(id || '').trim();
+    if (!safeId) return '';
+
+    const token = issueDocumentToken(safeType, safeId, 12 * 60);
+    return buildAppUrl(getDocumentViewerPathForCurrentUser(), {
+        docType: safeType,
+        docId: safeId,
+        docToken: token,
+    });
+}
+
+function getDocumentRouteParams() {
+    const params = new URL(window.location.href).searchParams;
+    return {
+        docType: String(params.get('docType') || '').toLowerCase(),
+        docId: String(params.get('docId') || ''),
+        docToken: String(params.get('docToken') || ''),
+    };
+}
+
+function clearDocumentRouteParams() {
+    const nextUrl = new URL(window.location.href);
+    nextUrl.searchParams.delete('docType');
+    nextUrl.searchParams.delete('docId');
+    nextUrl.searchParams.delete('docToken');
+    history.replaceState({}, '', nextUrl.toString());
+}
+
+function canUserAccessOrder(user, order) {
+    if (!user || !order) return false;
+    if (isAdminUser(user)) return true;
+
+    const userEmail = normalizeEmail(user.email);
+    const orderEmail = normalizeEmail(order.userEmail || order.email);
+    return Boolean(userEmail && orderEmail && userEmail === orderEmail);
+}
+
+function resolveDocumentContext(type, id) {
+    const safeType = String(type || '').toLowerCase();
+    const safeId = String(id || '').trim();
+    if (!safeId) return null;
+
+    if (safeType === 'quote') {
+        const quote = getQuoteById(safeId);
+        if (!quote) return null;
+        const order = getOrderById(quote.orderId);
+        if (!order) return null;
+        const service = getOrderService(order);
+        return { type: 'quote', quote, order, service };
+    }
+
+    if (safeType === 'invoice') {
+        const invoice = getInvoiceById(safeId);
+        if (!invoice) return null;
+        const quote = invoice.quoteId ? getQuoteById(invoice.quoteId) : null;
+        const order = getOrderById(invoice.orderId);
+        if (!order) return null;
+        const service = getOrderService(order);
+        return { type: 'invoice', invoice, quote, order, service };
+    }
+
+    return null;
+}
+
+function ensureJsPdfLibrary() {
+    if (window.jspdf?.jsPDF) return Promise.resolve(window.jspdf.jsPDF);
+
+    return new Promise((resolve, reject) => {
+        const existing = document.querySelector('script[data-role="jspdf-loader"]');
+        if (existing) {
+            existing.addEventListener('load', () => {
+                if (window.jspdf?.jsPDF) resolve(window.jspdf.jsPDF);
+                else reject(new Error('jsPDF failed to load'));
+            }, { once: true });
+            existing.addEventListener('error', () => reject(new Error('jsPDF script error')), { once: true });
+            return;
+        }
+
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js';
+        script.defer = true;
+        script.dataset.role = 'jspdf-loader';
+        script.onload = () => {
+            if (window.jspdf?.jsPDF) resolve(window.jspdf.jsPDF);
+            else reject(new Error('jsPDF failed to load'));
+        };
+        script.onerror = () => reject(new Error('jsPDF script error'));
+        document.head.appendChild(script);
+    });
+}
+
+async function generateDocumentPDF(type, id, options = {}) {
+    const context = resolveDocumentContext(type, id);
+    if (!context) {
+        throw new Error('Document not found');
+    }
+
+    const user = options.user || (await _supabase.auth.getUser()).data?.user;
+    if (!canUserAccessOrder(user, context.order)) {
+        throw new Error('Access denied');
+    }
+
+    if (options.requireToken && !validateDocumentToken(type, id, options.token || '')) {
+        throw new Error('Invalid or expired secure token');
+    }
+
+    const jsPDFCtor = await ensureJsPdfLibrary();
+    const doc = new jsPDFCtor({ orientation: 'portrait', unit: 'pt', format: 'a4' });
+
+    const order = context.order;
+    const quote = context.quote || (context.type === 'invoice' ? getQuoteById(context.invoice.quoteId) : null);
+    const invoice = context.invoice || null;
+    const service = context.service;
+
+    const docTypeLabel = context.type === 'invoice' ? 'INVOICE' : 'DEVIS';
+    const docNumber = context.type === 'invoice' ? (invoice?.invoiceNumber || '-') : (quote?.quoteNumber || '-');
+    const subtotal = normalizeMoneyValue(quote?.subtotal || invoice?.total || order?.finalPrice || 0);
+    const discountValue = normalizeMoneyValue(quote?.discountValue || Math.max(0, subtotal - normalizeMoneyValue(quote?.total || invoice?.total || subtotal)));
+    const total = normalizeMoneyValue(context.type === 'invoice' ? invoice?.total : quote?.total);
+
+    const supportEmail = siteSettings.brand?.supportEmail || DEFAULT_SITE_SETTINGS.brand.supportEmail;
+    const supportPhone = siteSettings.contact?.whatsappNumber || DEFAULT_SITE_SETTINGS.contact.whatsappNumber;
+    const safeDescription = String(service?.descriptions?.ar || order?.serviceName || '').slice(0, 180);
+
+    const margin = 44;
+    let y = 52;
+
+    doc.setFillColor(220, 38, 38);
+    doc.circle(margin + 12, y - 5, 12, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(13);
+    doc.text('P', margin + 12, y, { align: 'center' });
+
+    doc.setTextColor(16, 16, 16);
+    doc.setFontSize(16);
+    doc.text('Pixel One Visuals', margin + 34, y);
+
+    doc.setFontSize(12);
+    doc.setTextColor(70, 70, 70);
+    doc.text(docTypeLabel, 420, y - 8, { align: 'right' });
+    doc.setFont('helvetica', 'normal');
+    doc.text(docNumber, 420, y + 12, { align: 'right' });
+
+    y += 32;
+    doc.setDrawColor(220, 220, 220);
+    doc.line(margin, y, 420, y);
+    y += 26;
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(40, 40, 40);
+    doc.text('Client Info', margin, y);
+    doc.setFont('helvetica', 'normal');
+    y += 16;
+
+    const clientRows = [
+        ['Name', order?.name || '-'],
+        ['Email', order?.email || order?.userEmail || '-'],
+        ['Phone', order?.phone || '-'],
+        ['Project', order?.projectName || '-'],
+    ];
+    clientRows.forEach(([label, value]) => {
+        doc.setFont('helvetica', 'bold');
+        doc.text(`${label}:`, margin, y);
+        doc.setFont('helvetica', 'normal');
+        doc.text(String(value || '-'), margin + 72, y);
+        y += 15;
+    });
+
+    y += 10;
+    doc.setFont('helvetica', 'bold');
+    doc.text('Service Summary', margin, y);
+    y += 16;
+
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Service: ${String(order?.serviceName || '-').slice(0, 72)}`, margin, y);
+    y += 15;
+    doc.text(`Description: ${safeDescription || '-'}`, margin, y, { maxWidth: 360 });
+    y += 32;
+
+    doc.setFillColor(250, 250, 250);
+    doc.rect(margin, y - 14, 376, 70, 'F');
+    doc.setDrawColor(235, 235, 235);
+    doc.rect(margin, y - 14, 376, 70);
+    doc.setTextColor(35, 35, 35);
+
+    const moneyRows = [
+        ['Subtotal', formatMoneyMAD(subtotal)],
+        ['Discount', `-${formatMoneyMAD(discountValue)}`],
+        ['Total', formatMoneyMAD(total)],
+    ];
+
+    let rowY = y + 4;
+    moneyRows.forEach(([label, value], index) => {
+        const isTotal = index === moneyRows.length - 1;
+        doc.setFont('helvetica', isTotal ? 'bold' : 'normal');
+        doc.text(label, margin + 12, rowY);
+        doc.text(value, margin + 360, rowY, { align: 'right' });
+        rowY += 20;
+    });
+
+    y += 88;
+    doc.setFont('helvetica', 'bold');
+    doc.text('Execution & Terms', margin, y);
+    y += 16;
+
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Execution time: ${service?.turnaround || 'As agreed after validation.'}`, margin, y, { maxWidth: 370 });
+    y += 14;
+    doc.text(`Revision policy: ${service?.revisions || 'Per selected service package.'}`, margin, y, { maxWidth: 370 });
+    y += 14;
+    doc.text('Terms: Work starts after confirmation and required assets delivery.', margin, y, { maxWidth: 370 });
+    y += 22;
+
+    doc.setFont('helvetica', 'bold');
+    doc.text('Contact', margin, y);
+    y += 14;
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Email: ${supportEmail}`, margin, y);
+    y += 14;
+    doc.text(`WhatsApp: +${supportPhone}`, margin, y);
+
+    const fileName = `${docNumber || `${context.type}-${id}`}.pdf`;
+    const blob = doc.output('blob');
+    const url = URL.createObjectURL(blob);
+
+    if (options.open === true) {
+        window.open(url, '_blank', 'noopener,noreferrer');
+    }
+
+    if (options.download !== false) {
+        doc.save(fileName);
+    }
+
+    return {
+        fileName,
+        blob,
+        url,
+    };
+}
+
+async function maybeOpenDocumentFromUrl(user) {
+    const route = getDocumentRouteParams();
+    if (!route.docType || !route.docId) return;
+
+    try {
+        await generateDocumentPDF(route.docType, route.docId, {
+            user,
+            requireToken: Boolean(route.docToken),
+            token: route.docToken,
+            open: true,
+            download: false,
+        });
+    } catch (error) {
+        showAuthMessage(`❌ ${error?.message || 'تعذر فتح المستند.'}`, 'error');
+    } finally {
+        clearDocumentRouteParams();
+    }
+}
+
+window.generateDocumentPDF = generateDocumentPDF;
+window.pixelOneQuoteInvoiceApi = {
+    createQuoteFromOrder,
+    convertQuoteToInvoice,
+    generateDocumentPDF,
+    buildSecureDocumentUrl,
+};
 
 function updateOrderStatus(orderId, newStatus) {
     if (!isAdminUser(currentSessionUser)) return;
@@ -1713,6 +2591,100 @@ function renderOffersForHome() {
     });
 }
 
+function getServiceQuoteFieldConfig(service) {
+    const id = String(service?.id || '').toLowerCase();
+    const type = String(service?.serviceType || '').toLowerCase();
+
+    if (id.includes('logo')) {
+        return {
+            type: 'logo',
+            fields: [
+                { key: 'brand_name', label: 'اسم العلامة التجارية', placeholder: 'مثال: Pixel One', as: 'input' },
+                { key: 'industry', label: 'المجال', placeholder: 'مثال: تصميم رقمي', as: 'input' },
+                { key: 'colors', label: 'الألوان المفضلة', placeholder: 'مثال: أحمر، أسود، أبيض', as: 'input' },
+                { key: 'references', label: 'مراجع أو روابط', placeholder: 'روابط أو ملاحظات مرجعية', as: 'textarea' },
+            ],
+        };
+    }
+
+    if (id.includes('video') || type.includes('فيديو') || type.includes('video')) {
+        return {
+            type: 'video',
+            fields: [
+                { key: 'duration', label: 'المدة المطلوبة', placeholder: 'مثال: 30 ثانية', as: 'input' },
+                { key: 'platform', label: 'المنصة', placeholder: 'مثال: Instagram Reels', as: 'input' },
+                { key: 'assets', label: 'الأصول المتوفرة', placeholder: 'صور، لقطات، نصوص...', as: 'textarea' },
+                { key: 'style', label: 'الأسلوب', placeholder: 'مثال: سريع، عصري، شبابي', as: 'input' },
+            ],
+        };
+    }
+
+    if (id.includes('social') || type.includes('سوشيال') || type.includes('social')) {
+        return {
+            type: 'social',
+            fields: [
+                { key: 'quantity', label: 'الكمية', placeholder: 'مثال: 10 تصاميم', as: 'input' },
+                { key: 'platform', label: 'المنصة', placeholder: 'مثال: Instagram / Facebook', as: 'input' },
+                { key: 'objective', label: 'الهدف', placeholder: 'وعي، مبيعات، إطلاق خدمة...', as: 'textarea' },
+            ],
+        };
+    }
+
+    return {
+        type: 'default',
+        fields: [],
+    };
+}
+
+function renderDynamicOrderFields(serviceId) {
+    const container = document.getElementById('orderDynamicFields');
+    if (!container) return;
+
+    const services = getStoredServices();
+    const service = services.find((item) => String(item.id || '') === String(serviceId || '')) || null;
+    const config = getServiceQuoteFieldConfig(service);
+
+    if (!config.fields.length) {
+        container.innerHTML = '';
+        return;
+    }
+
+    container.innerHTML = config.fields.map((field) => {
+        const isTextArea = field.as === 'textarea';
+        const safeKey = escapeHtml(field.key);
+        const safeLabel = escapeHtml(field.label);
+        const safePlaceholder = escapeHtml(field.placeholder || '');
+
+        if (isTextArea) {
+            return `
+                <div>
+                    <label for="orderDynamic_${safeKey}" class="form-label">${safeLabel} <span class="text-gray-500 font-normal">(اختياري)</span></label>
+                    <textarea id="orderDynamic_${safeKey}" data-dynamic-field="${safeKey}" rows="2" class="input-luxury focus:ring-2 focus:ring-brand-red/50" placeholder="${safePlaceholder}"></textarea>
+                </div>
+            `;
+        }
+
+        return `
+            <div>
+                <label for="orderDynamic_${safeKey}" class="form-label">${safeLabel} <span class="text-gray-500 font-normal">(اختياري)</span></label>
+                <input id="orderDynamic_${safeKey}" data-dynamic-field="${safeKey}" type="text" class="input-luxury focus:ring-2 focus:ring-brand-red/50" placeholder="${safePlaceholder}">
+            </div>
+        `;
+    }).join('');
+}
+
+function collectDynamicOrderFields() {
+    const nodes = Array.from(document.querySelectorAll('[data-dynamic-field]'));
+    return nodes.reduce((acc, node) => {
+        const key = String(node.getAttribute('data-dynamic-field') || '').trim();
+        if (!key) return acc;
+        const value = String(node.value || '').trim();
+        if (!value) return acc;
+        acc[key] = value;
+        return acc;
+    }, {});
+}
+
 function getLocalizedServiceContent(service) {
     const lang = getCurrentLanguage();
     const mapped = SERVICE_I18N[service.id]?.[lang] || null;
@@ -1817,6 +2789,7 @@ function renderServices(grid, services, discountContext) {
                     <a href="${safeServiceDetailUrl}" class="w-full py-4 rounded-lg font-black transition text-sm text-center border border-white/20 text-gray-200 hover:bg-white/10">${escapeHtml(moreLabel)}</a>
                     <button ${isSoon ? 'disabled' : ''}
                         data-action="open-order-modal"
+                        data-service-id="${escapeHtml(String(service.id || ''))}"
                         data-service-name="${safeServiceNameAttr}"
                         data-final-price="${hasDiscount ? escapeHtml(String(discountResult.finalPrice.toFixed(2))) : safePrice}"
                         data-discount-code="${hasDiscount ? escapeHtml(bestRule.code || '') : ''}"
@@ -1924,7 +2897,7 @@ function renderServiceDetailPage() {
                 </div>
 
                 <div class="mt-8 flex flex-col sm:flex-row gap-3">
-                    <button id="serviceDetailOrderBtn" type="button" data-action="open-order-modal" data-service-name="${serviceName}" data-final-price="${servicePrice}" class="btn-filled-red px-8 py-4 rounded-xl font-black ${isSoon ? 'btn-disabled' : ''}" ${isSoon ? 'disabled' : ''}>
+                    <button id="serviceDetailOrderBtn" type="button" data-action="open-order-modal" data-service-id="${escapeHtml(String(service.id || ''))}" data-service-name="${serviceName}" data-final-price="${servicePrice}" class="btn-filled-red px-8 py-4 rounded-xl font-black ${isSoon ? 'btn-disabled' : ''}" ${isSoon ? 'disabled' : ''}>
                         ${isSoon ? 'قريباً جداً' : 'اطلب الخدمة الآن'}
                     </button>
                     <a href="services.html" class="px-8 py-4 rounded-xl font-black border border-white/20 text-gray-200 hover:bg-white/10 text-center">كل الخدمات</a>
@@ -1998,19 +2971,7 @@ window.openOrderModal = async function(serviceName, meta = {}) {
     if (!modal || !selectedServiceText || !hiddenServiceName || !orderForm || !orderMsgBox) return;
 
     const { data: { user } } = await _supabase.auth.getUser();
-    if (!user) {
-        persistPendingOrderIntent({
-            serviceName,
-            finalPrice: meta.finalPrice || '',
-            discountCode: meta.discountCode || '',
-            lang: meta.lang || getCurrentLanguage(),
-        });
-        const loginUrl = buildLoginUrlWithReturnPath(getLoginRedirectTargetForCurrentPage());
-        window.location.href = loginUrl;
-        return;
-    }
-
-    currentSessionUser = user;
+    currentSessionUser = user || null;
 
     orderForm.reset();
     orderMsgBox.classList.remove('active');
@@ -2018,6 +2979,10 @@ window.openOrderModal = async function(serviceName, meta = {}) {
     const localizedServiceName = localizeCustomServiceName(serviceName);
     selectedServiceText.textContent = localizedServiceName;
     hiddenServiceName.value = localizedServiceName;
+
+    const hiddenServiceId = document.getElementById('hiddenServiceId');
+    if (hiddenServiceId) hiddenServiceId.value = meta.serviceId || '';
+    renderDynamicOrderFields(meta.serviceId || '');
 
     const hiddenPrice = document.getElementById('hiddenFinalPrice');
     const hiddenDiscountCode = document.getElementById('hiddenDiscountCode');
@@ -2029,7 +2994,7 @@ window.openOrderModal = async function(serviceName, meta = {}) {
         orderPriceTag.textContent = meta.finalPrice ? `- ${meta.finalPrice} MAD` : '';
     }
 
-    // Auto-fill email silently into hidden field
+    // Auto-fill email if user session is available
     const emailInput = document.getElementById('orderEmail');
     if (emailInput && currentSessionUser?.email) {
         emailInput.value = currentSessionUser.email;
@@ -2091,6 +3056,7 @@ function setupHomeCspSafeBindings() {
         if (action === 'mobile-open-order-modal') {
             actionEl.closest('details')?.removeAttribute('open');
             openOrderModal(actionEl.dataset.serviceName || 'طلب خدمة مخصص', {
+                serviceId: actionEl.dataset.serviceId || '',
                 finalPrice: actionEl.dataset.finalPrice || '',
                 discountCode: actionEl.dataset.discountCode || '',
                 lang: actionEl.dataset.serviceLang || '',
@@ -2100,6 +3066,7 @@ function setupHomeCspSafeBindings() {
 
         if (action === 'open-order-modal') {
             openOrderModal(actionEl.dataset.serviceName || 'طلب خدمة مخصص', {
+                serviceId: actionEl.dataset.serviceId || '',
                 finalPrice: actionEl.dataset.finalPrice || '',
                 discountCode: actionEl.dataset.discountCode || '',
                 lang: actionEl.dataset.serviceLang || '',
@@ -2146,6 +3113,7 @@ async function handleOrderSubmit(e) {
     const btn = document.getElementById('btnOrderSubmit');
     const msgBox = document.getElementById('orderMsgBox');
     const hiddenServiceName = document.getElementById('hiddenServiceName');
+    const hiddenServiceId = document.getElementById('hiddenServiceId');
     const hiddenPrice = document.getElementById('hiddenFinalPrice');
     const hiddenDiscountCode = document.getElementById('hiddenDiscountCode');
     const nameInput = document.getElementById('orderName');
@@ -2162,6 +3130,7 @@ async function handleOrderSubmit(e) {
     if (btnTextNode) btnTextNode.textContent = ' جاري الإرسال...';
 
     const serviceName = hiddenServiceName.value;
+    const serviceId = hiddenServiceId?.value || '';
     const finalPrice = hiddenPrice?.value || '';
     const discountCode = hiddenDiscountCode?.value || '';
     const name = nameInput.value;
@@ -2169,6 +3138,11 @@ async function handleOrderSubmit(e) {
     const phone = phoneInput.value;
     const email = emailInput?.value || '';
     const specs = specsInput?.value || '';
+    const dynamicFields = collectDynamicOrderFields();
+    const dynamicSpecs = Object.entries(dynamicFields)
+        .map(([key, value]) => `${key}: ${value}`)
+        .join('\n');
+    const mergedSpecs = [specs.trim(), dynamicSpecs.trim()].filter(Boolean).join('\n\n');
 
     // Validate phone is not empty
     if (!phone.trim()) {
@@ -2192,19 +3166,7 @@ async function handleOrderSubmit(e) {
     }
 
     const { data: { user } } = await _supabase.auth.getUser();
-    if (!user) {
-        persistPendingOrderIntent({
-            serviceName,
-            finalPrice,
-            discountCode,
-            lang: getCurrentLanguage(),
-        });
-        const loginUrl = buildLoginUrlWithReturnPath(getLoginRedirectTargetForCurrentPage());
-        window.location.href = loginUrl;
-        return;
-    }
-
-    currentSessionUser = user;
+    currentSessionUser = user || null;
     const effectiveEmail = email || currentSessionUser?.email || '';
 
     if (!normalizeEmail(effectiveEmail)) {
@@ -2223,12 +3185,13 @@ async function handleOrderSubmit(e) {
     addOrderRecord({
         id: orderId,
         trackingCode: orderId,
+        serviceId,
         serviceName,
         name,
         projectName,
         phone,
         email: effectiveEmail,
-        specs,
+        specs: mergedSpecs,
         status: orderStatus,
         supportEmail,
         createdAt: orderDateIso,
@@ -2239,30 +3202,37 @@ async function handleOrderSubmit(e) {
         discountCode,
     });
 
+    let createdQuote = null;
+    try {
+        createdQuote = await createQuoteFromOrder(orderId);
+    } catch {
+        createdQuote = null;
+    }
+
     // 3. 🚀 إرسال البيانات إلى نظام الأتمتة (Viasocket) في الخلفية
     try {
-        const webhookUrl = 'https://flow.sokt.io/func/scriekZWLgOh';
-        await fetch(webhookUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                orderId,
-                serviceName,
-                customerName: name,
-                projectName,
-                customerPhone: phone,
-                customerEmail: effectiveEmail,
-                specs,
-                finalPrice,
-                discountCode,
-                orderDate: orderDateIso,
-            }),
+        await sendAutomationEvent('order_created', {
+            orderId,
+            serviceName,
+            customerName: name,
+            projectName,
+            customerPhone: phone,
+            customerEmail: effectiveEmail,
+            specs: mergedSpecs,
+            finalPrice,
+            discountCode,
+            orderDate: orderDateIso,
+            quoteId: createdQuote?.id || null,
+            quoteNumber: createdQuote?.quoteNumber || null,
+            quoteDocumentLink: createdQuote
+                ? buildAppUrl('dashboard.html', {
+                    docType: 'quote',
+                    docId: createdQuote.id,
+                    docToken: issueDocumentToken('quote', createdQuote.id, 12 * 60),
+                })
+                : null,
         });
-        console.log('✅ تم إرسال البيانات إلى Viasocket بنجاح');
-    } catch (error) {
-        console.error('❌ خطأ في الاتصال بـ Viasocket:', error);
+    } catch {
         // ملاحظة معمارية: نحن لا نوقف عملية العميل إذا فشل الـ Webhook
     }
 
@@ -2270,7 +3240,7 @@ async function handleOrderSubmit(e) {
     const discountLine = discountCode ? `${t('waDiscountCode')} ${discountCode}\n` : '';
     const priceLine = finalPrice ? `${t('waFinalPrice')} ${finalPrice} MAD\n` : '';
     const projectLine = projectName ? `🏢 المشروع/الشركة: ${projectName}\n` : '';
-    const specsLine = specs.trim() ? `${t('waSpecs')}\n${specs}\n\n` : '';
+    const specsLine = mergedSpecs.trim() ? `${t('waSpecs')}\n${mergedSpecs}\n\n` : '';
 
     const message = `${t('waTitle')} 🔴\n\n`
         + `${t('waOrderId')} ${orderId}\n`
@@ -2292,7 +3262,31 @@ async function handleOrderSubmit(e) {
     window.open(whatsappUrl, '_blank');
 
     // 5. إظهار رسالة النجاح وتفريغ الاستمارة
-    msgBox.textContent = `✅ تم إرسال طلبك بنجاح! رمز التتبع: ${orderId} — سنتواصل معك عبر الواتساب.`;
+    if (createdQuote) {
+        msgBox.innerHTML = `
+            <div class="font-bold mb-2">✅ ${escapeHtml(t('quoteReadyTitle'))}</div>
+            <div class="text-sm text-white/90 mb-2">رقم التتبع: <span class="font-en">${escapeHtml(orderId)}</span></div>
+            <div class="text-sm text-white/90 mb-3">رقم عرض السعر: <span class="font-en">${escapeHtml(createdQuote.quoteNumber || '-')}</span></div>
+            <div class="flex flex-wrap gap-2">
+                <button type="button" id="quoteReadyDownloadBtn" class="px-3 py-2 rounded-lg border border-emerald-400/40 text-emerald-200 text-xs font-bold">${escapeHtml(t('quoteReadyDownload'))}</button>
+                <span class="text-xs text-gray-200 self-center">${escapeHtml(t('quoteReadyNotice'))}</span>
+            </div>
+        `;
+
+        const downloadBtn = document.getElementById('quoteReadyDownloadBtn');
+        if (downloadBtn) {
+            downloadBtn.addEventListener('click', async () => {
+                try {
+                    await generateDocumentPDF('quote', createdQuote.id);
+                } catch (error) {
+                    showInlineMessage(msgBox, `❌ ${error?.message || 'تعذر إنشاء PDF.'}`, 'error');
+                }
+            }, { once: true });
+        }
+    } else {
+        msgBox.textContent = `✅ تم إرسال طلبك بنجاح! رمز التتبع: ${orderId}.`;
+    }
+
     msgBox.className = 'msg-box msg-success active';
     if (btnTextNode) btnTextNode.textContent = ' تم الإرسال ✓';
 
@@ -3539,6 +4533,708 @@ function renderAdminOrdersSection() {
     }
 }
 
+function ensureAdminQuoteInvoiceSections() {
+    const root = document.querySelector('#view-admin-dashboard .dashboard-main .max-w-7xl');
+    if (!root) return;
+
+    if (!document.getElementById('adminManualOrderSection')) {
+        const section = document.createElement('section');
+        section.id = 'adminManualOrderSection';
+        section.className = 'bg-[#121212] border border-[#222] rounded-2xl p-6 md:p-8';
+        section.innerHTML = `
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-5">
+                <div>
+                    <h2 class="text-2xl font-black text-white">Create Manual Order</h2>
+                    <p class="text-sm text-gray-500">إنشاء طلب يدوي ثم توليد عرض السعر تلقائياً.</p>
+                </div>
+                <button id="adminCreateManualOrderBtn" type="button" class="btn-filled-red px-5 py-3 rounded-lg text-sm font-black">Create Manual Order</button>
+            </div>
+            <div id="adminManualOrderMsgBox" class="msg-box" aria-live="polite"></div>
+            <form id="adminManualOrderForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 hidden mt-4">
+                <select id="adminManualOrderService" class="input-luxury" required></select>
+                <input id="adminManualOrderName" class="input-luxury" placeholder="اسم العميل" required>
+                <input id="adminManualOrderEmail" type="email" class="input-luxury font-en text-left" dir="ltr" placeholder="client@email.com" required>
+                <input id="adminManualOrderPhone" class="input-luxury font-en text-left" dir="ltr" placeholder="+212..." required>
+                <input id="adminManualOrderProject" class="input-luxury md:col-span-2" placeholder="اسم المشروع (اختياري)">
+                <textarea id="adminManualOrderSpecs" class="input-luxury md:col-span-2" placeholder="ملاحظات سريعة (اختياري)"></textarea>
+                <button id="adminManualOrderSubmitBtn" type="submit" class="btn-filled-red py-3 rounded-lg font-black md:col-span-2">إنشاء الطلب + عرض السعر</button>
+            </form>
+        `;
+
+        const ordersSection = document.getElementById('adminOrdersTableBody')?.closest('section');
+        if (ordersSection && ordersSection.parentElement === root) {
+            root.insertBefore(section, ordersSection.nextSibling);
+        } else {
+            root.appendChild(section);
+        }
+    }
+
+    if (!document.getElementById('adminQuotesSection')) {
+        const section = document.createElement('section');
+        section.id = 'adminQuotesInvoicesSection';
+        section.className = 'grid grid-cols-1 xl:grid-cols-2 gap-6';
+        section.innerHTML = `
+            <article id="adminQuotesSection" class="bg-[#121212] border border-[#222] rounded-2xl p-6 md:p-8">
+                <div class="flex items-center justify-between gap-3 mb-5">
+                    <div>
+                        <h2 class="text-2xl font-black text-white">Quotes</h2>
+                        <p class="text-sm text-gray-500">متابعة عروض الأسعار وتحويلها لفواتير.</p>
+                    </div>
+                    <select id="adminQuotesStatusFilter" class="input-luxury !py-2 !px-3 !text-xs !w-[170px]">
+                        <option value="all">كل الحالات</option>
+                        <option value="draft">draft</option>
+                        <option value="sent">sent</option>
+                        <option value="accepted">accepted</option>
+                        <option value="rejected">rejected</option>
+                        <option value="expired">expired</option>
+                        <option value="converted">converted</option>
+                    </select>
+                </div>
+                <div id="adminQuotesMsgBox" class="msg-box" aria-live="polite"></div>
+                <div class="overflow-x-auto rounded-xl border border-white/10">
+                    <table class="w-full min-w-[980px] text-sm">
+                        <thead class="bg-black/50 text-gray-300">
+                            <tr>
+                                <th class="px-4 py-3 text-right">Quote #</th>
+                                <th class="px-4 py-3 text-right">Order #</th>
+                                <th class="px-4 py-3 text-right">Client</th>
+                                <th class="px-4 py-3 text-right">Total</th>
+                                <th class="px-4 py-3 text-right">Valid Until</th>
+                                <th class="px-4 py-3 text-right">Status</th>
+                                <th class="px-4 py-3 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminQuotesTableBody" class="divide-y divide-white/10 text-gray-200 bg-black/20">
+                            <tr><td colspan="7" class="px-4 py-6 text-center text-gray-500">لا توجد عروض أسعار حالياً.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+
+            <article id="adminInvoicesSection" class="bg-[#121212] border border-[#222] rounded-2xl p-6 md:p-8">
+                <div class="flex items-center justify-between gap-3 mb-5">
+                    <div>
+                        <h2 class="text-2xl font-black text-white">Invoices</h2>
+                        <p class="text-sm text-gray-500">إدارة الفواتير وحالة الدفع.</p>
+                    </div>
+                    <select id="adminInvoicesStatusFilter" class="input-luxury !py-2 !px-3 !text-xs !w-[170px]">
+                        <option value="all">كل الحالات</option>
+                        <option value="unpaid">unpaid</option>
+                        <option value="paid">paid</option>
+                        <option value="cancelled">cancelled</option>
+                    </select>
+                </div>
+                <div id="adminInvoicesMsgBox" class="msg-box" aria-live="polite"></div>
+                <div class="overflow-x-auto rounded-xl border border-white/10">
+                    <table class="w-full min-w-[980px] text-sm">
+                        <thead class="bg-black/50 text-gray-300">
+                            <tr>
+                                <th class="px-4 py-3 text-right">Invoice #</th>
+                                <th class="px-4 py-3 text-right">Order #</th>
+                                <th class="px-4 py-3 text-right">Quote #</th>
+                                <th class="px-4 py-3 text-right">Total</th>
+                                <th class="px-4 py-3 text-right">Issued</th>
+                                <th class="px-4 py-3 text-right">Status</th>
+                                <th class="px-4 py-3 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminInvoicesTableBody" class="divide-y divide-white/10 text-gray-200 bg-black/20">
+                            <tr><td colspan="7" class="px-4 py-6 text-center text-gray-500">لا توجد فواتير حالياً.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+        `;
+
+        const manualSection = document.getElementById('adminManualOrderSection');
+        if (manualSection && manualSection.parentElement === root) {
+            root.insertBefore(section, manualSection.nextSibling);
+        } else {
+            root.appendChild(section);
+        }
+    }
+}
+
+function renderAdminManualOrderServices() {
+    const select = document.getElementById('adminManualOrderService');
+    if (!select) return;
+
+    const services = getStoredServices().filter((service) => service.enabled !== false && !service.is_coming_soon);
+    if (services.length === 0) {
+        select.innerHTML = '<option value="">لا توجد خدمات متاحة</option>';
+        return;
+    }
+
+    select.innerHTML = services.map((service) => {
+        const title = escapeHtml(service.titles?.ar || service.title || service.id);
+        const price = escapeHtml(String(service.price || '0'));
+        return `<option value="${escapeHtml(String(service.id || ''))}">${title} (${price} MAD)</option>`;
+    }).join('');
+}
+
+function bindAdminManualOrderControls() {
+    const toggleBtn = document.getElementById('adminCreateManualOrderBtn');
+    const form = document.getElementById('adminManualOrderForm');
+    const msgBox = document.getElementById('adminManualOrderMsgBox');
+
+    if (toggleBtn && toggleBtn.dataset.bound !== 'true') {
+        toggleBtn.dataset.bound = 'true';
+        toggleBtn.addEventListener('click', () => {
+            if (!form) return;
+            form.classList.toggle('hidden');
+            renderAdminManualOrderServices();
+        });
+    }
+
+    if (!form || form.dataset.bound === 'true') return;
+
+    form.dataset.bound = 'true';
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const serviceId = String(document.getElementById('adminManualOrderService')?.value || '').trim();
+        const customerName = String(document.getElementById('adminManualOrderName')?.value || '').trim();
+        const customerEmail = normalizeEmail(document.getElementById('adminManualOrderEmail')?.value || '');
+        const customerPhone = String(document.getElementById('adminManualOrderPhone')?.value || '').trim();
+        const projectName = String(document.getElementById('adminManualOrderProject')?.value || '').trim();
+        const specs = String(document.getElementById('adminManualOrderSpecs')?.value || '').trim();
+
+        const service = getStoredServices().find((item) => String(item.id || '') === serviceId);
+        if (!service || !customerName || !customerEmail || !customerPhone) {
+            showInlineMessage(msgBox, '❌ يرجى تعبئة بيانات الطلب اليدوي بشكل صحيح.', 'error');
+            return;
+        }
+
+        const orderId = generateTrackingCode();
+        const nowIso = new Date().toISOString();
+        const financials = resolveOrderFinancials({ email: customerEmail, userEmail: customerEmail }, service);
+
+        addOrderRecord({
+            id: orderId,
+            trackingCode: orderId,
+            serviceId,
+            serviceName: service.titles?.ar || service.title || service.id,
+            name: customerName,
+            projectName,
+            phone: customerPhone,
+            email: customerEmail,
+            specs,
+            status: siteSettings.orders?.defaultStatus || DEFAULT_SITE_SETTINGS.orders.defaultStatus,
+            supportEmail: siteSettings.brand?.supportEmail || DEFAULT_SITE_SETTINGS.brand.supportEmail,
+            createdAt: nowIso,
+            lastUpdateAt: nowIso,
+            userId: null,
+            userEmail: customerEmail,
+            finalPrice: String(financials.total),
+            discountCode: '',
+        });
+
+        let quote = null;
+        try {
+            quote = await createQuoteFromOrder(orderId, { status: 'sent' });
+        } catch {
+            quote = null;
+        }
+
+        showInlineMessage(
+            msgBox,
+            quote
+                ? `✅ تم إنشاء الطلب (${orderId}) وعرض السعر (${quote.quoteNumber}).`
+                : `✅ تم إنشاء الطلب (${orderId}) بنجاح.`,
+            'success',
+        );
+
+        form.reset();
+        renderAdminManualOrderServices();
+        renderAdminOrdersSection();
+        renderAdminQuotesSection();
+        renderAdminInvoicesSection();
+        renderAdminStats();
+    });
+}
+
+function renderAdminQuotesSection() {
+    ensureAdminQuoteInvoiceSections();
+
+    const body = document.getElementById('adminQuotesTableBody');
+    const filterEl = document.getElementById('adminQuotesStatusFilter');
+    const msgBox = document.getElementById('adminQuotesMsgBox');
+    if (!body) return;
+
+    const filterValue = String(filterEl?.value || 'all').toLowerCase();
+    const allQuotes = getStoredQuotes().sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+    const quotes = filterValue === 'all'
+        ? allQuotes
+        : allQuotes.filter((quote) => String(quote.status || '').toLowerCase() === filterValue);
+
+    if (quotes.length === 0) {
+        body.innerHTML = '<tr><td colspan="7" class="px-4 py-6 text-center text-gray-500">لا توجد عروض أسعار حالياً.</td></tr>';
+    } else {
+        body.innerHTML = '';
+        quotes.forEach((quote) => {
+            const order = getOrderById(quote.orderId);
+            const statusMeta = getQuoteStatusMeta(quote.status);
+            const statusOptions = QUOTE_STATUS_OPTIONS.map((status) => {
+                const selected = status === quote.status ? 'selected' : '';
+                return `<option value="${escapeHtml(status)}" ${selected}>${escapeHtml(status)}</option>`;
+            }).join('');
+
+            body.insertAdjacentHTML('beforeend', `
+                <tr>
+                    <td class="px-4 py-3 font-en">${escapeHtml(quote.quoteNumber || '-')}</td>
+                    <td class="px-4 py-3 font-en">${escapeHtml(quote.orderId || '-')}</td>
+                    <td class="px-4 py-3 font-en">${escapeHtml(order?.email || order?.userEmail || '-')}</td>
+                    <td class="px-4 py-3 font-en">${escapeHtml(`${normalizeMoneyValue(quote.total)} MAD`)}</td>
+                    <td class="px-4 py-3 text-gray-300">${escapeHtml(formatArabicDateTime(quote.validUntil || quote.createdAt || ''))}</td>
+                    <td class="px-4 py-3">
+                        <div class="flex flex-col gap-2">
+                            <span class="text-xs px-2 py-1 rounded-full border ${statusMeta.className} w-fit">${escapeHtml(getQuoteStatusLabel(quote.status))}</span>
+                            <select class="admin-quote-status input-luxury !py-1 !px-2 !text-xs" data-quote-id="${escapeHtml(quote.id)}">
+                                ${statusOptions}
+                            </select>
+                        </div>
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="flex flex-wrap gap-2">
+                            <button type="button" class="admin-quote-details text-xs px-2 py-1 rounded border border-white/20 text-gray-200" data-quote-id="${escapeHtml(quote.id)}">تفاصيل</button>
+                            <button type="button" class="admin-quote-pdf text-xs px-2 py-1 rounded border border-emerald-400/40 text-emerald-200" data-quote-id="${escapeHtml(quote.id)}">PDF</button>
+                            <button type="button" class="admin-quote-link text-xs px-2 py-1 rounded border border-blue-400/40 text-blue-200" data-quote-id="${escapeHtml(quote.id)}">رابط</button>
+                            <button type="button" class="admin-quote-convert text-xs px-2 py-1 rounded border border-amber-400/40 text-amber-200 ${quote.status === 'accepted' ? '' : 'opacity-50 cursor-not-allowed'}" data-quote-id="${escapeHtml(quote.id)}" ${quote.status === 'accepted' ? '' : 'disabled'}>تحويل</button>
+                        </div>
+                    </td>
+                </tr>
+            `);
+        });
+    }
+
+    if (filterEl && filterEl.dataset.bound !== 'true') {
+        filterEl.dataset.bound = 'true';
+        filterEl.addEventListener('change', () => renderAdminQuotesSection());
+    }
+
+    document.querySelectorAll('.admin-quote-status').forEach((control) => {
+        if (control.dataset.bound === 'true') return;
+        control.dataset.bound = 'true';
+        control.addEventListener('change', () => {
+            const quoteId = control.getAttribute('data-quote-id') || '';
+            updateQuoteStatus(quoteId, control.value);
+            renderAdminQuotesSection();
+        });
+    });
+
+    document.querySelectorAll('.admin-quote-details').forEach((btn) => {
+        if (btn.dataset.bound === 'true') return;
+        btn.dataset.bound = 'true';
+        btn.addEventListener('click', () => {
+            const quote = getQuoteById(btn.getAttribute('data-quote-id') || '');
+            const order = quote ? getOrderById(quote.orderId) : null;
+            if (!quote) return;
+            const details = [
+                `Quote: ${quote.quoteNumber}`,
+                `Order: ${quote.orderId}`,
+                `Client: ${order?.name || '-'} (${order?.email || order?.userEmail || '-'})`,
+                `Service: ${order?.serviceName || '-'}`,
+                `Subtotal: ${formatMoneyMAD(normalizeMoneyValue(quote.subtotal))}`,
+                `Discount: ${formatMoneyMAD(normalizeMoneyValue(quote.discountValue))}`,
+                `Total: ${formatMoneyMAD(normalizeMoneyValue(quote.total))}`,
+                `Valid until: ${formatArabicDateTime(quote.validUntil || quote.createdAt || '')}`,
+            ].join('\n');
+            window.alert(details);
+        });
+    });
+
+    document.querySelectorAll('.admin-quote-pdf').forEach((btn) => {
+        if (btn.dataset.bound === 'true') return;
+        btn.dataset.bound = 'true';
+        btn.addEventListener('click', async () => {
+            try {
+                await generateDocumentPDF('quote', btn.getAttribute('data-quote-id') || '');
+                showInlineMessage(msgBox, '✅ تم إنشاء PDF بنجاح.', 'success');
+            } catch (error) {
+                showInlineMessage(msgBox, `❌ ${error?.message || 'تعذر توليد PDF.'}`, 'error');
+            }
+        });
+    });
+
+    document.querySelectorAll('.admin-quote-link').forEach((btn) => {
+        if (btn.dataset.bound === 'true') return;
+        btn.dataset.bound = 'true';
+        btn.addEventListener('click', async () => {
+            const quoteId = btn.getAttribute('data-quote-id') || '';
+            const link = buildSecureDocumentUrl('quote', quoteId);
+            if (!link) return;
+            try {
+                await copyText(link);
+                showInlineMessage(msgBox, '✅ تم نسخ الرابط الآمن.', 'success');
+            } catch {
+                showInlineMessage(msgBox, '❌ تعذر نسخ الرابط.', 'error');
+            }
+        });
+    });
+
+    document.querySelectorAll('.admin-quote-convert').forEach((btn) => {
+        if (btn.dataset.bound === 'true') return;
+        btn.dataset.bound = 'true';
+        btn.addEventListener('click', async () => {
+            const quoteId = btn.getAttribute('data-quote-id') || '';
+            try {
+                await convertQuoteToInvoice(quoteId);
+                showInlineMessage(msgBox, '✅ تم تحويل عرض السعر إلى فاتورة.', 'success');
+                renderAdminQuotesSection();
+                renderAdminInvoicesSection();
+            } catch (error) {
+                showInlineMessage(msgBox, `❌ ${error?.message || 'تعذر التحويل.'}`, 'error');
+            }
+        });
+    });
+}
+
+function renderAdminInvoicesSection() {
+    ensureAdminQuoteInvoiceSections();
+
+    const body = document.getElementById('adminInvoicesTableBody');
+    const filterEl = document.getElementById('adminInvoicesStatusFilter');
+    const msgBox = document.getElementById('adminInvoicesMsgBox');
+    if (!body) return;
+
+    const filterValue = String(filterEl?.value || 'all').toLowerCase();
+    const allInvoices = getStoredInvoices().sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+    const invoices = filterValue === 'all'
+        ? allInvoices
+        : allInvoices.filter((invoice) => String(invoice.status || '').toLowerCase() === filterValue);
+
+    if (invoices.length === 0) {
+        body.innerHTML = '<tr><td colspan="7" class="px-4 py-6 text-center text-gray-500">لا توجد فواتير حالياً.</td></tr>';
+    } else {
+        body.innerHTML = '';
+        invoices.forEach((invoice) => {
+            const quote = invoice.quoteId ? getQuoteById(invoice.quoteId) : null;
+            const statusMeta = getInvoiceStatusMeta(invoice.status);
+            const statusOptions = INVOICE_STATUS_OPTIONS.map((status) => {
+                const selected = status === invoice.status ? 'selected' : '';
+                return `<option value="${escapeHtml(status)}" ${selected}>${escapeHtml(status)}</option>`;
+            }).join('');
+
+            body.insertAdjacentHTML('beforeend', `
+                <tr>
+                    <td class="px-4 py-3 font-en">${escapeHtml(invoice.invoiceNumber || '-')}</td>
+                    <td class="px-4 py-3 font-en">${escapeHtml(invoice.orderId || '-')}</td>
+                    <td class="px-4 py-3 font-en">${escapeHtml(quote?.quoteNumber || '-')}</td>
+                    <td class="px-4 py-3 font-en">${escapeHtml(`${normalizeMoneyValue(invoice.total)} MAD`)}</td>
+                    <td class="px-4 py-3 text-gray-300">${escapeHtml(formatArabicDateTime(invoice.issuedAt || invoice.createdAt || ''))}</td>
+                    <td class="px-4 py-3">
+                        <div class="flex flex-col gap-2">
+                            <span class="text-xs px-2 py-1 rounded-full border ${statusMeta.className} w-fit">${escapeHtml(getInvoiceStatusLabel(invoice.status))}</span>
+                            <select class="admin-invoice-status input-luxury !py-1 !px-2 !text-xs" data-invoice-id="${escapeHtml(invoice.id)}">
+                                ${statusOptions}
+                            </select>
+                        </div>
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="flex flex-wrap gap-2">
+                            <button type="button" class="admin-invoice-pdf text-xs px-2 py-1 rounded border border-emerald-400/40 text-emerald-200" data-invoice-id="${escapeHtml(invoice.id)}">PDF</button>
+                            <button type="button" class="admin-invoice-link text-xs px-2 py-1 rounded border border-blue-400/40 text-blue-200" data-invoice-id="${escapeHtml(invoice.id)}">رابط</button>
+                            <button type="button" class="admin-invoice-resend text-xs px-2 py-1 rounded border border-white/20 text-gray-200" data-invoice-id="${escapeHtml(invoice.id)}">Resend PDF</button>
+                        </div>
+                    </td>
+                </tr>
+            `);
+        });
+    }
+
+    if (filterEl && filterEl.dataset.bound !== 'true') {
+        filterEl.dataset.bound = 'true';
+        filterEl.addEventListener('change', () => renderAdminInvoicesSection());
+    }
+
+    document.querySelectorAll('.admin-invoice-status').forEach((control) => {
+        if (control.dataset.bound === 'true') return;
+        control.dataset.bound = 'true';
+        control.addEventListener('change', () => {
+            const invoiceId = control.getAttribute('data-invoice-id') || '';
+            updateInvoiceStatus(invoiceId, control.value);
+            renderAdminInvoicesSection();
+        });
+    });
+
+    const bindInvoicePdfAction = (selector) => {
+        document.querySelectorAll(selector).forEach((btn) => {
+            if (btn.dataset.bound === 'true') return;
+            btn.dataset.bound = 'true';
+            btn.addEventListener('click', async () => {
+                try {
+                    await generateDocumentPDF('invoice', btn.getAttribute('data-invoice-id') || '');
+                    showInlineMessage(msgBox, '✅ تم إرسال/توليد الفاتورة PDF.', 'success');
+                } catch (error) {
+                    showInlineMessage(msgBox, `❌ ${error?.message || 'تعذر توليد PDF.'}`, 'error');
+                }
+            });
+        });
+    };
+
+    bindInvoicePdfAction('.admin-invoice-pdf');
+    bindInvoicePdfAction('.admin-invoice-resend');
+
+    document.querySelectorAll('.admin-invoice-link').forEach((btn) => {
+        if (btn.dataset.bound === 'true') return;
+        btn.dataset.bound = 'true';
+        btn.addEventListener('click', async () => {
+            const invoiceId = btn.getAttribute('data-invoice-id') || '';
+            const link = buildSecureDocumentUrl('invoice', invoiceId);
+            if (!link) return;
+            try {
+                await copyText(link);
+                showInlineMessage(msgBox, '✅ تم نسخ الرابط الآمن.', 'success');
+            } catch {
+                showInlineMessage(msgBox, '❌ تعذر نسخ الرابط.', 'error');
+            }
+        });
+    });
+}
+
+function ensureDashboardQuoteInvoiceSections() {
+    const root = document.querySelector('#view-dashboard .dashboard-main .max-w-6xl');
+    if (!root) return;
+
+    if (!document.getElementById('dashboardQuotesSection')) {
+        const section = document.createElement('div');
+        section.id = 'dashboardQuotesSection';
+        section.className = 'mt-12 bg-[#121212] border border-[#222] rounded-2xl p-6 md:p-8 animate-fade-up delay-220';
+        section.innerHTML = `
+            <div class="mb-6">
+                <h3 class="text-2xl font-black text-white">My Quotes</h3>
+                <p class="text-sm text-gray-500">عروض الأسعار الخاصة بك مع رابط آمن وPDF.</p>
+            </div>
+            <div id="dashboardQuotesList" class="space-y-4">
+                <article class="border border-white/10 rounded-xl p-4 bg-black/30 text-gray-400 text-sm text-center">${escapeHtml(t('dashboardNoQuotes'))}</article>
+            </div>
+        `;
+
+        const ordersSection = document.getElementById('dashboardOrdersSection');
+        if (ordersSection && ordersSection.parentElement === root) {
+            root.insertBefore(section, ordersSection.nextSibling);
+        } else {
+            root.appendChild(section);
+        }
+    }
+
+    if (!document.getElementById('dashboardInvoicesSection')) {
+        const section = document.createElement('div');
+        section.id = 'dashboardInvoicesSection';
+        section.className = 'mt-12 bg-[#121212] border border-[#222] rounded-2xl p-6 md:p-8 animate-fade-up delay-240';
+        section.innerHTML = `
+            <div class="mb-6">
+                <h3 class="text-2xl font-black text-white">My Invoices</h3>
+                <p class="text-sm text-gray-500">حالة الدفع والفواتير القابلة للتحميل.</p>
+            </div>
+            <div id="dashboardInvoicesList" class="space-y-4">
+                <article class="border border-white/10 rounded-xl p-4 bg-black/30 text-gray-400 text-sm text-center">${escapeHtml(t('dashboardNoInvoices'))}</article>
+            </div>
+        `;
+
+        const quotesSection = document.getElementById('dashboardQuotesSection');
+        if (quotesSection && quotesSection.parentElement === root) {
+            root.insertBefore(section, quotesSection.nextSibling);
+        } else {
+            root.appendChild(section);
+        }
+    }
+}
+
+function renderDashboardQuotes(user) {
+    ensureDashboardQuoteInvoiceSections();
+
+    const list = document.getElementById('dashboardQuotesList');
+    if (!list) return;
+
+    const userEmail = normalizeEmail(user?.email);
+    const quotes = getStoredQuotes()
+        .filter((quote) => {
+            const order = getOrderById(quote.orderId);
+            const linkedEmail = normalizeEmail(order?.userEmail || order?.email);
+            return Boolean(linkedEmail && linkedEmail === userEmail);
+        })
+        .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+
+    if (quotes.length === 0) {
+        list.innerHTML = `<article class="border border-white/10 rounded-xl p-4 bg-black/30 text-gray-400 text-sm text-center">${escapeHtml(t('dashboardNoQuotes'))}</article>`;
+        return;
+    }
+
+    list.innerHTML = '';
+    quotes.forEach((quote) => {
+        const order = getOrderById(quote.orderId);
+        const statusMeta = getQuoteStatusMeta(quote.status);
+        const safeNumber = escapeHtml(quote.quoteNumber || '-');
+        const safeService = escapeHtml(order?.serviceName || '-');
+        const safeTotal = escapeHtml(formatMoneyMAD(normalizeMoneyValue(quote.total)));
+        const safeValidUntil = escapeHtml(formatArabicDateTime(quote.validUntil || quote.createdAt || ''));
+        const safeStatus = escapeHtml(getQuoteStatusLabel(quote.status));
+
+        list.insertAdjacentHTML('beforeend', `
+            <article class="border border-white/10 rounded-xl p-4 bg-black/30">
+                <div class="flex flex-wrap items-start justify-between gap-3 mb-3">
+                    <div>
+                        <h4 class="text-white font-bold text-sm font-en">${safeNumber}</h4>
+                        <p class="text-xs text-gray-400 mt-1">${safeService}</p>
+                    </div>
+                    <span class="text-[11px] px-2 py-1 rounded-full border ${statusMeta.className}">${safeStatus}</span>
+                </div>
+                <p class="text-xs text-gray-300">الإجمالي: <span class="font-en">${safeTotal}</span></p>
+                <p class="text-xs text-gray-500 mt-1">صالح حتى: <span class="font-en">${safeValidUntil}</span></p>
+                <div class="mt-3 flex flex-wrap gap-2">
+                    <button type="button" class="dashboard-quote-details text-xs px-2 py-1 rounded border border-white/20 text-gray-200" data-quote-id="${escapeHtml(quote.id)}">تفاصيل</button>
+                    <button type="button" class="dashboard-quote-pdf text-xs px-2 py-1 rounded border border-emerald-400/40 text-emerald-200" data-quote-id="${escapeHtml(quote.id)}">تحميل PDF</button>
+                    <button type="button" class="dashboard-quote-link text-xs px-2 py-1 rounded border border-blue-400/40 text-blue-200" data-quote-id="${escapeHtml(quote.id)}">رابط آمن</button>
+                </div>
+            </article>
+        `);
+    });
+
+    document.querySelectorAll('.dashboard-quote-details').forEach((btn) => {
+        if (btn.dataset.bound === 'true') return;
+        btn.dataset.bound = 'true';
+        btn.addEventListener('click', () => {
+            const quote = getQuoteById(btn.getAttribute('data-quote-id') || '');
+            const order = quote ? getOrderById(quote.orderId) : null;
+            if (!quote) return;
+            const details = [
+                `Quote: ${quote.quoteNumber}`,
+                `Service: ${order?.serviceName || '-'}`,
+                `Project: ${order?.projectName || '-'}`,
+                `Total: ${formatMoneyMAD(normalizeMoneyValue(quote.total))}`,
+                `Status: ${getQuoteStatusLabel(quote.status)}`,
+            ].join('\n');
+            window.alert(details);
+        });
+    });
+
+    document.querySelectorAll('.dashboard-quote-pdf').forEach((btn) => {
+        if (btn.dataset.bound === 'true') return;
+        btn.dataset.bound = 'true';
+        btn.addEventListener('click', async () => {
+            try {
+                await generateDocumentPDF('quote', btn.getAttribute('data-quote-id') || '');
+            } catch (error) {
+                showAuthMessage(`❌ ${error?.message || 'تعذر تحميل PDF.'}`, 'error');
+            }
+        });
+    });
+
+    document.querySelectorAll('.dashboard-quote-link').forEach((btn) => {
+        if (btn.dataset.bound === 'true') return;
+        btn.dataset.bound = 'true';
+        btn.addEventListener('click', async () => {
+            const link = buildSecureDocumentUrl('quote', btn.getAttribute('data-quote-id') || '');
+            if (!link) return;
+            try {
+                await copyText(link);
+                showAuthMessage('✅ تم نسخ الرابط الآمن.', 'success');
+            } catch {
+                showAuthMessage('❌ تعذر نسخ الرابط.', 'error');
+            }
+        });
+    });
+}
+
+function renderDashboardInvoices(user) {
+    ensureDashboardQuoteInvoiceSections();
+
+    const list = document.getElementById('dashboardInvoicesList');
+    if (!list) return;
+
+    const userEmail = normalizeEmail(user?.email);
+    const invoices = getStoredInvoices()
+        .filter((invoice) => {
+            const order = getOrderById(invoice.orderId);
+            const linkedEmail = normalizeEmail(order?.userEmail || order?.email);
+            return Boolean(linkedEmail && linkedEmail === userEmail);
+        })
+        .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+
+    if (invoices.length === 0) {
+        list.innerHTML = `<article class="border border-white/10 rounded-xl p-4 bg-black/30 text-gray-400 text-sm text-center">${escapeHtml(t('dashboardNoInvoices'))}</article>`;
+        return;
+    }
+
+    list.innerHTML = '';
+    invoices.forEach((invoice) => {
+        const quote = invoice.quoteId ? getQuoteById(invoice.quoteId) : null;
+        const statusMeta = getInvoiceStatusMeta(invoice.status);
+        const safeNumber = escapeHtml(invoice.invoiceNumber || '-');
+        const safeQuote = escapeHtml(quote?.quoteNumber || '-');
+        const safeTotal = escapeHtml(formatMoneyMAD(normalizeMoneyValue(invoice.total)));
+        const safeIssuedAt = escapeHtml(formatArabicDateTime(invoice.issuedAt || invoice.createdAt || ''));
+        const safeStatus = escapeHtml(getInvoiceStatusLabel(invoice.status));
+
+        list.insertAdjacentHTML('beforeend', `
+            <article class="border border-white/10 rounded-xl p-4 bg-black/30">
+                <div class="flex flex-wrap items-start justify-between gap-3 mb-3">
+                    <div>
+                        <h4 class="text-white font-bold text-sm font-en">${safeNumber}</h4>
+                        <p class="text-xs text-gray-400 mt-1">Quote: <span class="font-en">${safeQuote}</span></p>
+                    </div>
+                    <span class="text-[11px] px-2 py-1 rounded-full border ${statusMeta.className}">${safeStatus}</span>
+                </div>
+                <p class="text-xs text-gray-300">الإجمالي: <span class="font-en">${safeTotal}</span></p>
+                <p class="text-xs text-gray-500 mt-1">تاريخ الإصدار: <span class="font-en">${safeIssuedAt}</span></p>
+                <div class="mt-3 flex flex-wrap gap-2">
+                    <button type="button" class="dashboard-invoice-details text-xs px-2 py-1 rounded border border-white/20 text-gray-200" data-invoice-id="${escapeHtml(invoice.id)}">تفاصيل</button>
+                    <button type="button" class="dashboard-invoice-pdf text-xs px-2 py-1 rounded border border-emerald-400/40 text-emerald-200" data-invoice-id="${escapeHtml(invoice.id)}">تحميل PDF</button>
+                    <button type="button" class="dashboard-invoice-link text-xs px-2 py-1 rounded border border-blue-400/40 text-blue-200" data-invoice-id="${escapeHtml(invoice.id)}">رابط آمن</button>
+                </div>
+            </article>
+        `);
+    });
+
+    document.querySelectorAll('.dashboard-invoice-details').forEach((btn) => {
+        if (btn.dataset.bound === 'true') return;
+        btn.dataset.bound = 'true';
+        btn.addEventListener('click', () => {
+            const invoice = getInvoiceById(btn.getAttribute('data-invoice-id') || '');
+            const quote = invoice?.quoteId ? getQuoteById(invoice.quoteId) : null;
+            const order = invoice ? getOrderById(invoice.orderId) : null;
+            if (!invoice) return;
+            const details = [
+                `Invoice: ${invoice.invoiceNumber || '-'}`,
+                `Quote: ${quote?.quoteNumber || '-'}`,
+                `Service: ${order?.serviceName || '-'}`,
+                `Project: ${order?.projectName || '-'}`,
+                `Total: ${formatMoneyMAD(normalizeMoneyValue(invoice.total))}`,
+                `Status: ${getInvoiceStatusLabel(invoice.status)}`,
+            ].join('\n');
+            window.alert(details);
+        });
+    });
+
+    document.querySelectorAll('.dashboard-invoice-pdf').forEach((btn) => {
+        if (btn.dataset.bound === 'true') return;
+        btn.dataset.bound = 'true';
+        btn.addEventListener('click', async () => {
+            try {
+                await generateDocumentPDF('invoice', btn.getAttribute('data-invoice-id') || '');
+            } catch (error) {
+                showAuthMessage(`❌ ${error?.message || 'تعذر تحميل PDF.'}`, 'error');
+            }
+        });
+    });
+
+    document.querySelectorAll('.dashboard-invoice-link').forEach((btn) => {
+        if (btn.dataset.bound === 'true') return;
+        btn.dataset.bound = 'true';
+        btn.addEventListener('click', async () => {
+            const link = buildSecureDocumentUrl('invoice', btn.getAttribute('data-invoice-id') || '');
+            if (!link) return;
+            try {
+                await copyText(link);
+                showAuthMessage('✅ تم نسخ الرابط الآمن.', 'success');
+            } catch {
+                showAuthMessage('❌ تعذر نسخ الرابط.', 'error');
+            }
+        });
+    });
+}
+
 function renderDisputesSection() {
     const list = document.getElementById('disputesList');
     if (!list) return;
@@ -4408,8 +6104,12 @@ function bindAdminForms() {
 }
 
 async function initializeAdminDashboard() {
+    ensureAdminQuoteInvoiceSections();
     renderAdminStats();
     renderAdminOrdersSection();
+    renderAdminManualOrderServices();
+    renderAdminQuotesSection();
+    renderAdminInvoicesSection();
     renderDisputesSection();
     renderOffersAdminSection();
     renderServicesAdminSection();
@@ -4420,6 +6120,7 @@ async function initializeAdminDashboard() {
     resetServiceForm();
     setupAdminInviteUser();
     bindAdminForms();
+    bindAdminManualOrderControls();
     setupAdminI18nManager();
 }
 
@@ -4433,6 +6134,7 @@ async function reopenPendingOrderIntentIfAvailable() {
     currentSessionUser = user;
     clearPendingOrderIntent();
     await openOrderModal(pendingIntent.serviceName || t('customServiceName'), {
+        serviceId: pendingIntent.serviceId || '',
         finalPrice: pendingIntent.finalPrice || '',
         discountCode: pendingIntent.discountCode || '',
         lang: pendingIntent.lang || '',
@@ -4623,6 +6325,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (user) {
                 await hydrateDataStores();
                 renderDashboardOrders(user);
+                renderDashboardQuotes(user);
+                renderDashboardInvoices(user);
+                await maybeOpenDocumentFromUrl(user);
                 setupDashboardSecurity(user);
             }
             setupLogout();
@@ -4634,6 +6339,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (user) {
                 await hydrateDataStores();
                 await initializeAdminDashboard();
+                await maybeOpenDocumentFromUrl(user);
             }
             setupLogout();
         }

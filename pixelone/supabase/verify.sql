@@ -3,6 +3,8 @@
 select 'table_exists_pixel_services' as check_name, to_regclass('public.pixel_services') is not null as ok;
 select 'table_exists_pixel_offers' as check_name, to_regclass('public.pixel_offers') is not null as ok;
 select 'table_exists_pixel_orders' as check_name, to_regclass('public.pixel_orders') is not null as ok;
+select 'table_exists_pixel_quotes' as check_name, to_regclass('public.pixel_quotes') is not null as ok;
+select 'table_exists_pixel_invoices' as check_name, to_regclass('public.pixel_invoices') is not null as ok;
 select 'table_exists_pixel_disputes' as check_name, to_regclass('public.pixel_disputes') is not null as ok;
 select 'table_exists_pixel_discounts_global' as check_name, to_regclass('public.pixel_discounts_global') is not null as ok;
 select 'table_exists_pixel_discounts_customer' as check_name, to_regclass('public.pixel_discounts_customer') is not null as ok;
@@ -32,6 +34,14 @@ where schemaname = 'public' and tablename = 'pixel_offers';
 select 'policy_count_pixel_orders' as check_name, count(*) >= 2 as ok
 from pg_policies
 where schemaname = 'public' and tablename = 'pixel_orders';
+
+select 'policy_count_pixel_quotes' as check_name, count(*) >= 2 as ok
+from pg_policies
+where schemaname = 'public' and tablename = 'pixel_quotes';
+
+select 'policy_count_pixel_invoices' as check_name, count(*) >= 2 as ok
+from pg_policies
+where schemaname = 'public' and tablename = 'pixel_invoices';
 
 select 'policy_count_pixel_invite_audit' as check_name, count(*) >= 2 as ok
 from pg_policies
