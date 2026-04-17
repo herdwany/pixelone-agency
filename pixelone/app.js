@@ -1931,6 +1931,287 @@ function ensureJsPdfLibrary() {
     });
 }
 
+function scoreReadableScript(value) {
+    const text = String(value || '');
+    const arabicCount = (text.match(/[\u0600-\u06FF]/g) || []).length;
+    const latinCount = (text.match(/[A-Za-z\u00C0-\u024F]/g) || []).length;
+    const mojibakeCount = (text.match(/[ÃØÙÐÑÒÓÔÕÖ×ø]/g) || []).length;
+    return (arabicCount + latinCount) - (mojibakeCount * 2);
+}
+
+function repairPotentialMojibake(value) {
+    const source = String(value || '');
+    if (!source) return '';
+
+    try {
+        const recovered = decodeURIComponent(escape(source));
+        return scoreReadableScript(recovered) > scoreReadableScript(source) ? recovered : source;
+    } catch {
+        return source;
+    }
+}
+
+function normalizePdfTextValue(value) {
+    const repaired = repairPotentialMojibake(value);
+    return String(repaired || '')
+        .replace(/\r\n/g, '\n')
+        .replace(/\u00a0/g, ' ')
+        .replace(/[ \t]+/g, ' ')
+        .trim();
+}
+
+function detectDocumentLanguageFromContent(parts) {
+    const source = parts
+        .map((part) => normalizePdfTextValue(part))
+        .filter(Boolean)
+        .join(' ');
+
+    const currentLang = String(getCurrentLanguage() || 'ar').toLowerCase();
+    if (!source) {
+        if (['ar', 'en', 'fr'].includes(currentLang)) return currentLang;
+        return 'ar';
+    }
+
+    const arabicCount = (source.match(/[\u0600-\u06FF]/g) || []).length;
+    const latinCount = (source.match(/[A-Za-z\u00C0-\u024F]/g) || []).length;
+    const frenchAccent = /[àâçéèêëîïôûùüÿœæ]/i.test(source);
+    const frenchWords = /\b(bonjour|facture|devis|client|projet|service|montant|description|coordonnees)\b/i.test(source);
+
+    if (arabicCount >= Math.max(8, latinCount * 0.45)) return 'ar';
+    if (frenchAccent || frenchWords) return 'fr';
+    return 'en';
+}
+
+function getDocumentLocalePack(language, type) {
+    const safeType = String(type || '').toLowerCase() === 'invoice' ? 'invoice' : 'quote';
+
+    const packs = {
+        ar: {
+            dir: 'rtl',
+            locale: 'ar-MA',
+            quoteTitle: 'عرض سعر',
+            invoiceTitle: 'فاتورة',
+            clientInfo: 'بيانات العميل',
+            name: 'الاسم',
+            email: 'البريد الإلكتروني',
+            phone: 'الهاتف',
+            project: 'المشروع',
+            serviceSummary: 'ملخص الخدمة',
+            service: 'الخدمة',
+            description: 'الوصف المختصر',
+            financialSummary: 'الملخص المالي',
+            subtotal: 'المجموع قبل الخصم',
+            discount: 'الخصم',
+            total: 'الإجمالي',
+            validUntil: 'صالح حتى',
+            issuedAt: 'تاريخ الإصدار',
+            dueDate: 'تاريخ الاستحقاق',
+            status: 'الحالة',
+            executionTerms: 'التنفيذ والشروط',
+            executionTime: 'مدة التنفيذ',
+            revisionPolicy: 'سياسة المراجعات',
+            simpleTerms: 'الشروط',
+            executionFallback: 'حسب الاتفاق بعد مراجعة الطلب.',
+            revisionFallback: 'بحسب الباقة المختارة.',
+            termsFallback: 'يبدأ التنفيذ بعد التأكيد واستلام الأصول المطلوبة.',
+            contact: 'التواصل',
+            whatsapp: 'واتساب',
+            notAvailable: 'غير متوفر',
+        },
+        fr: {
+            dir: 'ltr',
+            locale: 'fr-FR',
+            quoteTitle: 'DEVIS',
+            invoiceTitle: 'FACTURE',
+            clientInfo: 'Informations client',
+            name: 'Nom',
+            email: 'Email',
+            phone: 'Telephone',
+            project: 'Projet',
+            serviceSummary: 'Resume du service',
+            service: 'Service',
+            description: 'Description',
+            financialSummary: 'Resume financier',
+            subtotal: 'Sous-total',
+            discount: 'Remise',
+            total: 'Total',
+            validUntil: 'Valide jusqu au',
+            issuedAt: 'Date emission',
+            dueDate: 'Date echeance',
+            status: 'Statut',
+            executionTerms: 'Execution et conditions',
+            executionTime: 'Delai execution',
+            revisionPolicy: 'Politique revisions',
+            simpleTerms: 'Conditions',
+            executionFallback: 'Selon accord apres validation.',
+            revisionFallback: 'Selon le package choisi.',
+            termsFallback: 'Execution apres confirmation et reception des elements requis.',
+            contact: 'Contact',
+            whatsapp: 'WhatsApp',
+            notAvailable: 'Non disponible',
+        },
+        en: {
+            dir: 'ltr',
+            locale: 'en-US',
+            quoteTitle: 'QUOTE',
+            invoiceTitle: 'INVOICE',
+            clientInfo: 'Client Info',
+            name: 'Name',
+            email: 'Email',
+            phone: 'Phone',
+            project: 'Project',
+            serviceSummary: 'Service Summary',
+            service: 'Service',
+            description: 'Description',
+            financialSummary: 'Financial Summary',
+            subtotal: 'Subtotal',
+            discount: 'Discount',
+            total: 'Total',
+            validUntil: 'Valid Until',
+            issuedAt: 'Issued At',
+            dueDate: 'Due Date',
+            status: 'Status',
+            executionTerms: 'Execution and Terms',
+            executionTime: 'Execution Time',
+            revisionPolicy: 'Revision Policy',
+            simpleTerms: 'Terms',
+            executionFallback: 'As agreed after validation.',
+            revisionFallback: 'Based on selected service package.',
+            termsFallback: 'Execution starts after confirmation and required assets delivery.',
+            contact: 'Contact',
+            whatsapp: 'WhatsApp',
+            notAvailable: 'Not available',
+        },
+    };
+
+    const lang = ['ar', 'en', 'fr'].includes(String(language || '').toLowerCase())
+        ? String(language).toLowerCase()
+        : 'en';
+
+    const pack = packs[lang] || packs.en;
+    return {
+        ...pack,
+        documentTitle: safeType === 'invoice' ? pack.invoiceTitle : pack.quoteTitle,
+        language: lang,
+    };
+}
+
+function formatMoneyForDocumentLanguage(value, language, currency = 'MAD') {
+    const numeric = normalizeMoneyValue(value);
+    const localeMap = {
+        ar: 'ar-MA',
+        fr: 'fr-FR',
+        en: 'en-US',
+    };
+    const locale = localeMap[language] || localeMap.en;
+
+    try {
+        return new Intl.NumberFormat(locale, {
+            style: 'currency',
+            currency,
+            maximumFractionDigits: 2,
+        }).format(numeric);
+    } catch {
+        return `${numeric} ${currency}`;
+    }
+}
+
+function formatDateForDocumentLanguage(isoString, language) {
+    if (!isoString) return '';
+
+    const localeMap = {
+        ar: 'ar-MA',
+        fr: 'fr-FR',
+        en: 'en-US',
+    };
+    const locale = localeMap[language] || localeMap.en;
+
+    try {
+        return new Date(isoString).toLocaleDateString(locale, {
+            year: 'numeric',
+            month: 'short',
+            day: '2-digit',
+        });
+    } catch {
+        return String(isoString);
+    }
+}
+
+function splitCanvasTextLines(ctx, text, maxWidth) {
+    const normalized = String(text || '').replace(/\r/g, '');
+    const paragraphs = normalized.split('\n');
+    const lines = [];
+
+    const pushWordWrapped = (paragraph) => {
+        const words = paragraph.split(/\s+/).filter(Boolean);
+        if (words.length === 0) {
+            lines.push('');
+            return;
+        }
+
+        let current = '';
+        words.forEach((word) => {
+            const probe = current ? `${current} ${word}` : word;
+            if (ctx.measureText(probe).width <= maxWidth) {
+                current = probe;
+                return;
+            }
+
+            if (current) {
+                lines.push(current);
+                current = '';
+            }
+
+            if (ctx.measureText(word).width <= maxWidth) {
+                current = word;
+                return;
+            }
+
+            let chunk = '';
+            Array.from(word).forEach((char) => {
+                const charProbe = `${chunk}${char}`;
+                if (ctx.measureText(charProbe).width <= maxWidth) {
+                    chunk = charProbe;
+                } else {
+                    if (chunk) lines.push(chunk);
+                    chunk = char;
+                }
+            });
+            current = chunk;
+        });
+
+        if (current) lines.push(current);
+    };
+
+    paragraphs.forEach((paragraph, index) => {
+        pushWordWrapped(paragraph);
+        if (index < paragraphs.length - 1) {
+            lines.push('');
+        }
+    });
+
+    return lines;
+}
+
+function drawCanvasWrappedText(ctx, text, x, y, maxWidth, lineHeight) {
+    const lines = splitCanvasTextLines(ctx, text, maxWidth);
+    lines.forEach((line) => {
+        ctx.fillText(line || ' ', x, y);
+        y += lineHeight;
+    });
+    return y;
+}
+
+function getSafeServiceDescription(service, order, language) {
+    const fromService = service?.descriptions?.[language]
+        || service?.descriptions?.ar
+        || service?.descriptions?.en
+        || service?.descriptions?.fr
+        || '';
+    const fromOrder = order?.specs || order?.serviceName || '';
+    return normalizePdfTextValue(fromService || fromOrder);
+}
+
 async function generateDocumentPDF(type, id, options = {}) {
     const context = resolveDocumentContext(type, id);
     if (!context) {
@@ -1946,15 +2227,27 @@ async function generateDocumentPDF(type, id, options = {}) {
         throw new Error('Invalid or expired secure token');
     }
 
-    const jsPDFCtor = await ensureJsPdfLibrary();
-    const doc = new jsPDFCtor({ orientation: 'portrait', unit: 'pt', format: 'a4' });
-
     const order = context.order;
     const quote = context.quote || (context.type === 'invoice' ? getQuoteById(context.invoice.quoteId) : null);
     const invoice = context.invoice || null;
     const service = context.service;
 
-    const docTypeLabel = context.type === 'invoice' ? 'INVOICE' : 'DEVIS';
+    const explicitLanguage = String(options.language || '').trim().toLowerCase();
+    const detectedLanguage = detectDocumentLanguageFromContent([
+        order?.name,
+        order?.projectName,
+        order?.serviceName,
+        order?.specs,
+        service?.descriptions?.ar,
+        quote?.notes,
+    ]);
+    const pdfLanguage = ['ar', 'en', 'fr'].includes(explicitLanguage) ? explicitLanguage : detectedLanguage;
+    const localePack = getDocumentLocalePack(pdfLanguage, context.type);
+    const isRTL = localePack.dir === 'rtl';
+
+    const jsPDFCtor = await ensureJsPdfLibrary();
+    const doc = new jsPDFCtor({ orientation: 'portrait', unit: 'pt', format: 'a4' });
+
     const docNumber = context.type === 'invoice' ? (invoice?.invoiceNumber || '-') : (quote?.quoteNumber || '-');
     const subtotal = normalizeMoneyValue(quote?.subtotal || invoice?.total || order?.finalPrice || 0);
     const discountValue = normalizeMoneyValue(quote?.discountValue || Math.max(0, subtotal - normalizeMoneyValue(quote?.total || invoice?.total || subtotal)));
@@ -1962,106 +2255,257 @@ async function generateDocumentPDF(type, id, options = {}) {
 
     const supportEmail = siteSettings.brand?.supportEmail || DEFAULT_SITE_SETTINGS.brand.supportEmail;
     const supportPhone = siteSettings.contact?.whatsappNumber || DEFAULT_SITE_SETTINGS.contact.whatsappNumber;
-    const safeDescription = String(service?.descriptions?.ar || order?.serviceName || '').slice(0, 180);
+    const safeServiceName = normalizePdfTextValue(order?.serviceName || localePack.notAvailable);
+    const safeDescription = getSafeServiceDescription(service, order, pdfLanguage) || localePack.notAvailable;
+    const safeExecution = normalizePdfTextValue(service?.turnaround || localePack.executionFallback) || localePack.executionFallback;
+    const safeRevision = normalizePdfTextValue(service?.revisions || localePack.revisionFallback) || localePack.revisionFallback;
+    const safeTerms = normalizePdfTextValue(localePack.termsFallback);
 
-    const margin = 44;
-    let y = 52;
+    const canvasWidth = 1240;
+    const canvasHeight = 1754;
+    const canvas = document.createElement('canvas');
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
 
-    doc.setFillColor(220, 38, 38);
-    doc.circle(margin + 12, y - 5, 12, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(13);
-    doc.text('P', margin + 12, y, { align: 'center' });
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+        throw new Error('Unable to initialize PDF canvas');
+    }
 
-    doc.setTextColor(16, 16, 16);
-    doc.setFontSize(16);
-    doc.text('Pixel One Visuals', margin + 34, y);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-    doc.setFontSize(12);
-    doc.setTextColor(70, 70, 70);
-    doc.text(docTypeLabel, 420, y - 8, { align: 'right' });
-    doc.setFont('helvetica', 'normal');
-    doc.text(docNumber, 420, y + 12, { align: 'right' });
+    const margin = 84;
+    const contentWidth = canvasWidth - (margin * 2);
+    const startX = isRTL ? canvasWidth - margin : margin;
+    const endX = isRTL ? margin : canvasWidth - margin;
+    const baseFontFamily = isRTL
+        ? '"Noto Sans Arabic", "Tajawal", "Segoe UI", Arial, sans-serif'
+        : '"Segoe UI", "Helvetica Neue", Arial, sans-serif';
 
-    y += 32;
-    doc.setDrawColor(220, 220, 220);
-    doc.line(margin, y, 420, y);
-    y += 26;
+    const setStartAlignment = () => {
+        ctx.direction = isRTL ? 'rtl' : 'ltr';
+        ctx.textAlign = isRTL ? 'right' : 'left';
+    };
 
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
-    doc.setTextColor(40, 40, 40);
-    doc.text('Client Info', margin, y);
-    doc.setFont('helvetica', 'normal');
+    const setEndAlignment = () => {
+        ctx.direction = isRTL ? 'rtl' : 'ltr';
+        ctx.textAlign = isRTL ? 'left' : 'right';
+    };
+
+    const applyFont = (weight, size) => {
+        ctx.font = `${weight} ${size}px ${baseFontFamily}`;
+        ctx.textBaseline = 'top';
+    };
+
+    let y = 68;
+
+    const brandAnchor = startX;
+    const logoCenterX = isRTL ? brandAnchor - 18 : brandAnchor + 18;
+    ctx.fillStyle = '#dc2626';
+    ctx.beginPath();
+    ctx.arc(logoCenterX, y + 18, 18, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#ffffff';
+    applyFont('700', 22);
+    ctx.textAlign = 'center';
+    ctx.direction = 'ltr';
+    ctx.fillText('P', logoCenterX, y + 5);
+
+    ctx.fillStyle = '#111827';
+    applyFont('700', 44);
+    setStartAlignment();
+    const brandTextX = isRTL ? brandAnchor - 52 : brandAnchor + 52;
+    ctx.fillText('Pixel One Visuals', brandTextX, y);
+
+    applyFont('700', 40);
+    setEndAlignment();
+    ctx.fillStyle = '#374151';
+    ctx.fillText(localePack.documentTitle, endX, y + 2);
+
+    applyFont('500', 32);
+    ctx.fillStyle = '#6b7280';
+    ctx.fillText(normalizePdfTextValue(docNumber) || '-', endX, y + 52);
+
+    y += 106;
+    ctx.strokeStyle = '#e5e7eb';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(margin, y);
+    ctx.lineTo(canvasWidth - margin, y);
+    ctx.stroke();
+
+    y += 38;
+    applyFont('700', 36);
+    setStartAlignment();
+    ctx.fillStyle = '#111827';
+    ctx.fillText(localePack.clientInfo, startX, y);
+    y += 48;
+
+    const infoLabelWidth = 200;
+    const infoGap = 24;
+    const infoValueWidth = contentWidth - infoLabelWidth - infoGap;
+    const labelX = startX;
+    const valueX = isRTL
+        ? startX - infoLabelWidth - infoGap
+        : startX + infoLabelWidth + infoGap;
+
+    const drawInfoRow = (label, rawValue) => {
+        const value = normalizePdfTextValue(rawValue) || localePack.notAvailable;
+        const rowStartY = y;
+
+        applyFont('700', 30);
+        setStartAlignment();
+        ctx.fillStyle = '#374151';
+        ctx.fillText(`${label}:`, labelX, rowStartY);
+
+        applyFont('500', 30);
+        setStartAlignment();
+        ctx.fillStyle = '#111827';
+        y = drawCanvasWrappedText(ctx, value, valueX, rowStartY, infoValueWidth, 40);
+        y = Math.max(y, rowStartY + 40);
+        y += 10;
+    };
+
+    drawInfoRow(localePack.name, order?.name);
+    drawInfoRow(localePack.email, order?.email || order?.userEmail);
+    drawInfoRow(localePack.phone, order?.phone);
+    drawInfoRow(localePack.project, order?.projectName);
+
     y += 16;
+    applyFont('700', 36);
+    setStartAlignment();
+    ctx.fillStyle = '#111827';
+    ctx.fillText(localePack.serviceSummary, startX, y);
+    y += 48;
 
-    const clientRows = [
-        ['Name', order?.name || '-'],
-        ['Email', order?.email || order?.userEmail || '-'],
-        ['Phone', order?.phone || '-'],
-        ['Project', order?.projectName || '-'],
-    ];
-    clientRows.forEach(([label, value]) => {
-        doc.setFont('helvetica', 'bold');
-        doc.text(`${label}:`, margin, y);
-        doc.setFont('helvetica', 'normal');
-        doc.text(String(value || '-'), margin + 72, y);
-        y += 15;
-    });
+    applyFont('700', 30);
+    setStartAlignment();
+    ctx.fillStyle = '#374151';
+    ctx.fillText(`${localePack.service}:`, startX, y);
+    applyFont('500', 30);
+    y = drawCanvasWrappedText(ctx, safeServiceName, valueX, y, infoValueWidth, 40);
 
-    y += 10;
-    doc.setFont('helvetica', 'bold');
-    doc.text('Service Summary', margin, y);
-    y += 16;
+    y += 8;
+    applyFont('700', 30);
+    setStartAlignment();
+    ctx.fillStyle = '#374151';
+    ctx.fillText(`${localePack.description}:`, startX, y);
+    applyFont('500', 28);
+    y = drawCanvasWrappedText(ctx, safeDescription, valueX, y, infoValueWidth, 38);
 
-    doc.setFont('helvetica', 'normal');
-    doc.text(`Service: ${String(order?.serviceName || '-').slice(0, 72)}`, margin, y);
-    y += 15;
-    doc.text(`Description: ${safeDescription || '-'}`, margin, y, { maxWidth: 360 });
-    y += 32;
+    y += 28;
+    const cardX = margin;
+    const cardY = y;
+    const cardWidth = contentWidth;
+    const cardHeight = 176;
 
-    doc.setFillColor(250, 250, 250);
-    doc.rect(margin, y - 14, 376, 70, 'F');
-    doc.setDrawColor(235, 235, 235);
-    doc.rect(margin, y - 14, 376, 70);
-    doc.setTextColor(35, 35, 35);
+    ctx.fillStyle = '#f9fafb';
+    ctx.fillRect(cardX, cardY, cardWidth, cardHeight);
+    ctx.strokeStyle = '#e5e7eb';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(cardX, cardY, cardWidth, cardHeight);
+
+    applyFont('700', 30);
+    setStartAlignment();
+    ctx.fillStyle = '#111827';
+    ctx.fillText(localePack.financialSummary, isRTL ? cardX + cardWidth - 20 : cardX + 20, cardY + 14);
 
     const moneyRows = [
-        ['Subtotal', formatMoneyMAD(subtotal)],
-        ['Discount', `-${formatMoneyMAD(discountValue)}`],
-        ['Total', formatMoneyMAD(total)],
+        [localePack.subtotal, formatMoneyForDocumentLanguage(subtotal, pdfLanguage)],
+        [localePack.discount, `- ${formatMoneyForDocumentLanguage(discountValue, pdfLanguage)}`],
+        [localePack.total, formatMoneyForDocumentLanguage(total, pdfLanguage)],
     ];
 
-    let rowY = y + 4;
+    let moneyY = cardY + 62;
     moneyRows.forEach(([label, value], index) => {
-        const isTotal = index === moneyRows.length - 1;
-        doc.setFont('helvetica', isTotal ? 'bold' : 'normal');
-        doc.text(label, margin + 12, rowY);
-        doc.text(value, margin + 360, rowY, { align: 'right' });
-        rowY += 20;
+        const isTotalRow = index === moneyRows.length - 1;
+        applyFont(isTotalRow ? '700' : '500', isTotalRow ? 34 : 30);
+
+        if (isRTL) {
+            ctx.direction = 'rtl';
+            ctx.textAlign = 'right';
+            ctx.fillStyle = '#374151';
+            ctx.fillText(label, cardX + cardWidth - 24, moneyY);
+            ctx.direction = 'ltr';
+            ctx.textAlign = 'left';
+            ctx.fillStyle = '#111827';
+            ctx.fillText(value, cardX + 24, moneyY);
+        } else {
+            ctx.direction = 'ltr';
+            ctx.textAlign = 'left';
+            ctx.fillStyle = '#374151';
+            ctx.fillText(label, cardX + 24, moneyY);
+            ctx.textAlign = 'right';
+            ctx.fillStyle = '#111827';
+            ctx.fillText(value, cardX + cardWidth - 24, moneyY);
+        }
+
+        moneyY += 38;
     });
 
-    y += 88;
-    doc.setFont('helvetica', 'bold');
-    doc.text('Execution & Terms', margin, y);
-    y += 16;
+    y = cardY + cardHeight + 24;
 
-    doc.setFont('helvetica', 'normal');
-    doc.text(`Execution time: ${service?.turnaround || 'As agreed after validation.'}`, margin, y, { maxWidth: 370 });
-    y += 14;
-    doc.text(`Revision policy: ${service?.revisions || 'Per selected service package.'}`, margin, y, { maxWidth: 370 });
-    y += 14;
-    doc.text('Terms: Work starts after confirmation and required assets delivery.', margin, y, { maxWidth: 370 });
-    y += 22;
+    const metadataRows = context.type === 'quote'
+        ? [[localePack.validUntil, formatDateForDocumentLanguage(quote?.validUntil, pdfLanguage) || localePack.notAvailable]]
+        : [
+            [localePack.issuedAt, formatDateForDocumentLanguage(invoice?.issuedAt || invoice?.createdAt, pdfLanguage) || localePack.notAvailable],
+            [localePack.dueDate, formatDateForDocumentLanguage(invoice?.dueDate, pdfLanguage) || localePack.notAvailable],
+            [localePack.status, context.type === 'invoice' ? getInvoiceStatusLabel(invoice?.status) : getQuoteStatusLabel(quote?.status)],
+        ];
 
-    doc.setFont('helvetica', 'bold');
-    doc.text('Contact', margin, y);
+    metadataRows.forEach(([label, value]) => {
+        applyFont('700', 27);
+        setStartAlignment();
+        ctx.fillStyle = '#374151';
+        ctx.fillText(`${label}:`, startX, y);
+        applyFont('500', 27);
+        y = drawCanvasWrappedText(ctx, normalizePdfTextValue(value) || localePack.notAvailable, valueX, y, infoValueWidth, 34);
+        y += 6;
+    });
+
     y += 14;
-    doc.setFont('helvetica', 'normal');
-    doc.text(`Email: ${supportEmail}`, margin, y);
-    y += 14;
-    doc.text(`WhatsApp: +${supportPhone}`, margin, y);
+    applyFont('700', 34);
+    setStartAlignment();
+    ctx.fillStyle = '#111827';
+    ctx.fillText(localePack.executionTerms, startX, y);
+    y += 42;
+
+    const termsRows = [
+        [localePack.executionTime, safeExecution],
+        [localePack.revisionPolicy, safeRevision],
+        [localePack.simpleTerms, safeTerms],
+    ];
+
+    termsRows.forEach(([label, value]) => {
+        applyFont('700', 27);
+        setStartAlignment();
+        ctx.fillStyle = '#374151';
+        ctx.fillText(`${label}:`, startX, y);
+        applyFont('500', 27);
+        ctx.fillStyle = '#111827';
+        y = drawCanvasWrappedText(ctx, normalizePdfTextValue(value) || localePack.notAvailable, valueX, y, infoValueWidth, 34);
+        y += 6;
+    });
+
+    y += 12;
+    applyFont('700', 34);
+    setStartAlignment();
+    ctx.fillStyle = '#111827';
+    ctx.fillText(localePack.contact, startX, y);
+    y += 40;
+
+    applyFont('500', 28);
+    setStartAlignment();
+    ctx.fillStyle = '#111827';
+    y = drawCanvasWrappedText(ctx, `${localePack.email}: ${normalizePdfTextValue(supportEmail) || '-'}`, startX, y, contentWidth, 34);
+    y = drawCanvasWrappedText(ctx, `${localePack.whatsapp}: +${normalizePdfTextValue(supportPhone) || '-'}`, startX, y, contentWidth, 34);
+
+    const imgData = canvas.toDataURL('image/png', 1.0);
+    const pdfWidth = doc.internal.pageSize.getWidth();
+    const pdfHeight = doc.internal.pageSize.getHeight();
+    doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
 
     const fileName = `${docNumber || `${context.type}-${id}`}.pdf`;
     const blob = doc.output('blob');
