@@ -140,6 +140,8 @@ const OFFERS_STORAGE_KEY = 'pixelone_offers_v1';
 const SERVICES_STORAGE_KEY = 'pixelone_services_v2';
 const DISPUTES_STORAGE_KEY = 'pixelone_disputes_v1';
 const DISCOUNTS_STORAGE_KEY = 'pixelone_discounts_v1';
+const DOCUMENT_LANGUAGE_STORAGE_KEY = 'pixelone_document_lang_v1';
+const DOCUMENT_LANGUAGE_OPTIONS = ['auto', 'ar', 'en', 'fr'];
 const AUTOMATION_WEBHOOK_URL = 'https://flow.sokt.io/func/scriekZWLgOh';
 
 const DEFAULT_SITE_SETTINGS = {
@@ -724,6 +726,74 @@ function getCurrentLanguage() {
 function t(key) {
     const lang = getCurrentLanguage();
     return UI_TEXT[lang]?.[key] || UI_TEXT.ar?.[key] || key;
+}
+
+function normalizeDocumentLanguage(value) {
+    const safeValue = String(value || '').trim().toLowerCase();
+    return DOCUMENT_LANGUAGE_OPTIONS.includes(safeValue) ? safeValue : 'auto';
+}
+
+function getDocumentLanguagePreference() {
+    return normalizeDocumentLanguage(safeStorageGet(DOCUMENT_LANGUAGE_STORAGE_KEY) || 'auto');
+}
+
+function setDocumentLanguagePreference(value) {
+    safeStorageSet(DOCUMENT_LANGUAGE_STORAGE_KEY, normalizeDocumentLanguage(value));
+}
+
+function getDocumentLanguageOptionLabel(option) {
+    const safeOption = normalizeDocumentLanguage(option);
+    const labels = {
+        auto: 'تلقائي',
+        ar: 'العربية',
+        en: 'English',
+        fr: 'Francais',
+    };
+    return labels[safeOption] || labels.auto;
+}
+
+function getDocumentLanguageSelectMarkup(selectId, compact = false) {
+    const selected = getDocumentLanguagePreference();
+    const options = DOCUMENT_LANGUAGE_OPTIONS.map((option) => {
+        const isSelected = option === selected ? 'selected' : '';
+        return `<option value="${escapeHtml(option)}" ${isSelected}>${escapeHtml(getDocumentLanguageOptionLabel(option))}</option>`;
+    }).join('');
+
+    const wrapperClass = compact
+        ? 'flex items-center gap-2 rounded-lg border border-white/10 bg-black/30 px-3 py-2'
+        : 'flex items-center gap-2 rounded-lg border border-white/10 bg-black/30 px-3 py-2 min-w-[220px]';
+
+    return `
+        <div class="${wrapperClass}">
+            <span class="text-xs text-gray-400">لغة التفاصيل/PDF</span>
+            <select id="${escapeHtml(selectId)}" class="document-language-select input-luxury !py-1 !px-2 !text-xs !w-[130px]" data-role="document-language-select">
+                ${options}
+            </select>
+        </div>
+    `;
+}
+
+function bindDocumentLanguageSelect(selectId, onChange) {
+    const select = document.getElementById(selectId);
+    if (!select) return;
+
+    const preferred = getDocumentLanguagePreference();
+    if (select.value !== preferred) {
+        select.value = preferred;
+    }
+
+    if (select.dataset.bound === 'true') return;
+    select.dataset.bound = 'true';
+    select.addEventListener('change', () => {
+        setDocumentLanguagePreference(select.value || 'auto');
+        if (typeof onChange === 'function') onChange();
+    });
+}
+
+function getDocumentLanguageForRender(selectId = '') {
+    const fromSelect = selectId ? (document.getElementById(selectId)?.value || '') : '';
+    const normalized = normalizeDocumentLanguage(fromSelect || getDocumentLanguagePreference());
+    return normalized === 'auto' ? '' : normalized;
 }
 
 function normalizePageSlug(slug) {
@@ -1960,6 +2030,12 @@ function normalizePdfTextValue(value) {
         .trim();
 }
 
+function isolateLtrToken(value) {
+    const text = String(value || '');
+    if (!text) return '';
+    return `\u2066${text}\u2069`;
+}
+
 function detectDocumentLanguageFromContent(parts) {
     const source = parts
         .map((part) => normalizePdfTextValue(part))
@@ -2260,6 +2336,18 @@ async function generateDocumentPDF(type, id, options = {}) {
     const safeExecution = normalizePdfTextValue(service?.turnaround || localePack.executionFallback) || localePack.executionFallback;
     const safeRevision = normalizePdfTextValue(service?.revisions || localePack.revisionFallback) || localePack.revisionFallback;
     const safeTerms = normalizePdfTextValue(localePack.termsFallback);
+    const financialSectionTitle = context.type === 'invoice'
+        ? (pdfLanguage === 'ar' ? 'ملخص الفاتورة' : pdfLanguage === 'fr' ? 'Resume facture' : 'Invoice Summary')
+        : localePack.financialSummary;
+    const termsSectionTitle = context.type === 'invoice'
+        ? (pdfLanguage === 'ar' ? 'الفوترة وشروط الدفع' : pdfLanguage === 'fr' ? 'Facturation et conditions' : 'Billing and Payment Terms')
+        : localePack.executionTerms;
+    const quoteReferenceLabel = pdfLanguage === 'ar' ? 'مرجع عرض السعر' : pdfLanguage === 'fr' ? 'Devis reference' : 'Quote Reference';
+    const theme = context.type === 'invoice'
+        ? { accent: '#b91c1c', accentSoft: '#fee2e2' }
+        : { accent: '#1d4ed8', accentSoft: '#dbeafe' };
+    const safeSupportEmail = normalizePdfTextValue(supportEmail) || '-';
+    const safeSupportWhatsapp = `+${normalizePdfTextValue(supportPhone) || '-'}`;
 
     const canvasWidth = 1240;
     const canvasHeight = 1754;
@@ -2274,6 +2362,10 @@ async function generateDocumentPDF(type, id, options = {}) {
 
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillRect(0, 0, canvasWidth, 120);
+    ctx.fillStyle = theme.accent;
+    ctx.fillRect(0, 0, canvasWidth, 7);
 
     const margin = 84;
     const contentWidth = canvasWidth - (margin * 2);
@@ -2321,15 +2413,17 @@ async function generateDocumentPDF(type, id, options = {}) {
 
     applyFont('700', 40);
     setEndAlignment();
-    ctx.fillStyle = '#374151';
+    ctx.fillStyle = theme.accent;
     ctx.fillText(localePack.documentTitle, endX, y + 2);
 
     applyFont('500', 32);
     ctx.fillStyle = '#6b7280';
-    ctx.fillText(normalizePdfTextValue(docNumber) || '-', endX, y + 52);
+    ctx.direction = 'ltr';
+    ctx.textAlign = isRTL ? 'left' : 'right';
+    ctx.fillText(isolateLtrToken(normalizePdfTextValue(docNumber) || '-'), endX, y + 52);
 
     y += 106;
-    ctx.strokeStyle = '#e5e7eb';
+    ctx.strokeStyle = '#dbe3ee';
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(margin, y);
@@ -2339,7 +2433,7 @@ async function generateDocumentPDF(type, id, options = {}) {
     y += 38;
     applyFont('700', 36);
     setStartAlignment();
-    ctx.fillStyle = '#111827';
+    ctx.fillStyle = theme.accent;
     ctx.fillText(localePack.clientInfo, startX, y);
     y += 48;
 
@@ -2351,7 +2445,7 @@ async function generateDocumentPDF(type, id, options = {}) {
         ? startX - infoLabelWidth - infoGap
         : startX + infoLabelWidth + infoGap;
 
-    const drawInfoRow = (label, rawValue) => {
+    const drawInfoRow = (label, rawValue, options = {}) => {
         const value = normalizePdfTextValue(rawValue) || localePack.notAvailable;
         const rowStartY = y;
 
@@ -2361,16 +2455,22 @@ async function generateDocumentPDF(type, id, options = {}) {
         ctx.fillText(`${label}:`, labelX, rowStartY);
 
         applyFont('500', 30);
-        setStartAlignment();
+        if (options.forceLtr === true) {
+            ctx.direction = 'ltr';
+            ctx.textAlign = isRTL ? 'right' : 'left';
+        } else {
+            setStartAlignment();
+        }
         ctx.fillStyle = '#111827';
-        y = drawCanvasWrappedText(ctx, value, valueX, rowStartY, infoValueWidth, 40);
+        const displayValue = options.forceLtr === true ? isolateLtrToken(value) : value;
+        y = drawCanvasWrappedText(ctx, displayValue, valueX, rowStartY, infoValueWidth, 40);
         y = Math.max(y, rowStartY + 40);
         y += 10;
     };
 
     drawInfoRow(localePack.name, order?.name);
-    drawInfoRow(localePack.email, order?.email || order?.userEmail);
-    drawInfoRow(localePack.phone, order?.phone);
+    drawInfoRow(localePack.email, order?.email || order?.userEmail, { forceLtr: true });
+    drawInfoRow(localePack.phone, order?.phone, { forceLtr: true });
     drawInfoRow(localePack.project, order?.projectName);
 
     y += 16;
@@ -2403,14 +2503,14 @@ async function generateDocumentPDF(type, id, options = {}) {
 
     ctx.fillStyle = '#f9fafb';
     ctx.fillRect(cardX, cardY, cardWidth, cardHeight);
-    ctx.strokeStyle = '#e5e7eb';
+    ctx.strokeStyle = theme.accentSoft;
     ctx.lineWidth = 2;
     ctx.strokeRect(cardX, cardY, cardWidth, cardHeight);
 
     applyFont('700', 30);
     setStartAlignment();
     ctx.fillStyle = '#111827';
-    ctx.fillText(localePack.financialSummary, isRTL ? cardX + cardWidth - 20 : cardX + 20, cardY + 14);
+    ctx.fillText(financialSectionTitle, isRTL ? cardX + cardWidth - 20 : cardX + 20, cardY + 14);
 
     const moneyRows = [
         [localePack.subtotal, formatMoneyForDocumentLanguage(subtotal, pdfLanguage)],
@@ -2431,7 +2531,7 @@ async function generateDocumentPDF(type, id, options = {}) {
             ctx.direction = 'ltr';
             ctx.textAlign = 'left';
             ctx.fillStyle = '#111827';
-            ctx.fillText(value, cardX + 24, moneyY);
+            ctx.fillText(isolateLtrToken(value), cardX + 24, moneyY);
         } else {
             ctx.direction = 'ltr';
             ctx.textAlign = 'left';
@@ -2448,11 +2548,14 @@ async function generateDocumentPDF(type, id, options = {}) {
     y = cardY + cardHeight + 24;
 
     const metadataRows = context.type === 'quote'
-        ? [[localePack.validUntil, formatDateForDocumentLanguage(quote?.validUntil, pdfLanguage) || localePack.notAvailable]]
+        ? [
+            [localePack.validUntil, formatDateForDocumentLanguage(quote?.validUntil, pdfLanguage) || localePack.notAvailable],
+            [localePack.status, getQuoteStatusLabelForLanguage(quote?.status, pdfLanguage) || localePack.notAvailable],
+        ]
         : [
             [localePack.issuedAt, formatDateForDocumentLanguage(invoice?.issuedAt || invoice?.createdAt, pdfLanguage) || localePack.notAvailable],
             [localePack.dueDate, formatDateForDocumentLanguage(invoice?.dueDate, pdfLanguage) || localePack.notAvailable],
-            [localePack.status, context.type === 'invoice' ? getInvoiceStatusLabel(invoice?.status) : getQuoteStatusLabel(quote?.status)],
+            [localePack.status, context.type === 'invoice' ? getInvoiceStatusLabelForLanguage(invoice?.status, pdfLanguage) : getQuoteStatusLabelForLanguage(quote?.status, pdfLanguage)],
         ];
 
     metadataRows.forEach(([label, value]) => {
@@ -2468,15 +2571,20 @@ async function generateDocumentPDF(type, id, options = {}) {
     y += 14;
     applyFont('700', 34);
     setStartAlignment();
-    ctx.fillStyle = '#111827';
-    ctx.fillText(localePack.executionTerms, startX, y);
+    ctx.fillStyle = theme.accent;
+    ctx.fillText(termsSectionTitle, startX, y);
     y += 42;
 
-    const termsRows = [
-        [localePack.executionTime, safeExecution],
-        [localePack.revisionPolicy, safeRevision],
-        [localePack.simpleTerms, safeTerms],
-    ];
+    const termsRows = context.type === 'invoice'
+        ? [
+            [quoteReferenceLabel, isolateLtrToken(quote?.quoteNumber || localePack.notAvailable)],
+            [localePack.simpleTerms, safeTerms],
+        ]
+        : [
+            [localePack.executionTime, safeExecution],
+            [localePack.revisionPolicy, safeRevision],
+            [localePack.simpleTerms, safeTerms],
+        ];
 
     termsRows.forEach(([label, value]) => {
         applyFont('700', 27);
@@ -2492,15 +2600,29 @@ async function generateDocumentPDF(type, id, options = {}) {
     y += 12;
     applyFont('700', 34);
     setStartAlignment();
-    ctx.fillStyle = '#111827';
+    ctx.fillStyle = theme.accent;
     ctx.fillText(localePack.contact, startX, y);
     y += 40;
 
-    applyFont('500', 28);
+    applyFont('700', 27);
     setStartAlignment();
+    ctx.fillStyle = '#374151';
+    ctx.fillText(`${localePack.email}:`, startX, y);
+    applyFont('500', 27);
+    ctx.direction = 'ltr';
+    ctx.textAlign = isRTL ? 'right' : 'left';
     ctx.fillStyle = '#111827';
-    y = drawCanvasWrappedText(ctx, `${localePack.email}: ${normalizePdfTextValue(supportEmail) || '-'}`, startX, y, contentWidth, 34);
-    y = drawCanvasWrappedText(ctx, `${localePack.whatsapp}: +${normalizePdfTextValue(supportPhone) || '-'}`, startX, y, contentWidth, 34);
+    y = drawCanvasWrappedText(ctx, isolateLtrToken(safeSupportEmail), valueX, y, infoValueWidth, 34);
+
+    applyFont('700', 27);
+    setStartAlignment();
+    ctx.fillStyle = '#374151';
+    ctx.fillText(`${localePack.whatsapp}:`, startX, y);
+    applyFont('500', 27);
+    ctx.direction = 'ltr';
+    ctx.textAlign = isRTL ? 'right' : 'left';
+    ctx.fillStyle = '#111827';
+    y = drawCanvasWrappedText(ctx, isolateLtrToken(safeSupportWhatsapp), valueX, y, infoValueWidth, 34);
 
     const imgData = canvas.toDataURL('image/png', 1.0);
     const pdfWidth = doc.internal.pageSize.getWidth();
@@ -2531,7 +2653,7 @@ async function maybeOpenDocumentFromUrl(user) {
     if (!route.docType || !route.docId) return;
 
     try {
-        await generateDocumentPDF(route.docType, route.docId, {
+        await generateDocumentPDFWithUiLanguage(route.docType, route.docId, '', {
             user,
             requireToken: Boolean(route.docToken),
             token: route.docToken,
@@ -3721,7 +3843,7 @@ async function handleOrderSubmit(e) {
         if (downloadBtn) {
             downloadBtn.addEventListener('click', async () => {
                 try {
-                    await generateDocumentPDF('quote', createdQuote.id);
+                    await generateDocumentPDFWithUiLanguage('quote', createdQuote.id);
                 } catch (error) {
                     showInlineMessage(msgBox, `❌ ${error?.message || 'تعذر إنشاء PDF.'}`, 'error');
                 }
@@ -4435,6 +4557,512 @@ function copyText(value) {
     });
 }
 
+function formatDateTimeForDocumentLanguage(isoString, language) {
+    if (!isoString) return '';
+
+    const localeMap = {
+        ar: 'ar-MA',
+        fr: 'fr-FR',
+        en: 'en-US',
+    };
+    const locale = localeMap[language] || localeMap.en;
+
+    try {
+        return new Date(isoString).toLocaleString(locale, {
+            year: 'numeric',
+            month: 'short',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+        });
+    } catch {
+        return String(isoString);
+    }
+}
+
+function resolveDocumentLanguageForContext(context, selectId = '') {
+    const preferred = getDocumentLanguageForRender(selectId);
+    if (preferred) return preferred;
+
+    if (!context) return 'ar';
+
+    const order = context.order || null;
+    const quote = context.quote || null;
+    const invoice = context.invoice || null;
+    const service = context.service || null;
+
+    return detectDocumentLanguageFromContent([
+        order?.name,
+        order?.projectName,
+        order?.serviceName,
+        order?.specs,
+        quote?.notes,
+        invoice?.invoiceNumber,
+        service?.descriptions?.ar,
+        service?.descriptions?.en,
+        service?.descriptions?.fr,
+    ]);
+}
+
+function getDocumentDetailsLocalePack(language) {
+    const lang = ['ar', 'en', 'fr'].includes(String(language || '').toLowerCase())
+        ? String(language).toLowerCase()
+        : 'ar';
+
+    const packs = {
+        ar: {
+            dir: 'rtl',
+            close: 'إغلاق',
+            noData: 'غير متوفر',
+            orderDetailsTitle: 'تفاصيل الطلب',
+            quoteDetailsTitle: 'تفاصيل عرض السعر',
+            invoiceDetailsTitle: 'تفاصيل الفاتورة',
+            clientSection: 'بيانات العميل',
+            requestSection: 'تفاصيل الطلب',
+            quoteSection: 'ملخص عرض السعر',
+            invoiceSection: 'ملخص الفاتورة',
+            timelineSection: 'الجدول الزمني',
+            supportSection: 'الدعم والتنفيذ',
+            referenceSection: 'المرجع',
+            orderNumber: 'رقم الطلب',
+            quoteNumber: 'رقم عرض السعر',
+            invoiceNumber: 'رقم الفاتورة',
+            name: 'الاسم',
+            email: 'البريد الإلكتروني',
+            phone: 'الهاتف',
+            project: 'المشروع',
+            service: 'الخدمة',
+            specs: 'ملاحظات الطلب',
+            status: 'الحالة',
+            subtotal: 'المجموع قبل الخصم',
+            discount: 'الخصم',
+            total: 'الإجمالي',
+            currency: 'العملة',
+            validUntil: 'صالح حتى',
+            issuedAt: 'تاريخ الإصدار',
+            dueDate: 'تاريخ الاستحقاق',
+            createdAt: 'تاريخ الإنشاء',
+            lastUpdate: 'آخر تحديث',
+            supportEmail: 'بريد الدعم',
+            supportWhatsapp: 'واتساب الدعم',
+            linkedQuote: 'عرض السعر المرجعي',
+            linkedOrder: 'الطلب المرجعي',
+            quoteTypeTag: 'وثيقة عرض سعر',
+            invoiceTypeTag: 'وثيقة فاتورة',
+            orderTypeTag: 'سجل طلب',
+        },
+        fr: {
+            dir: 'ltr',
+            close: 'Fermer',
+            noData: 'Non disponible',
+            orderDetailsTitle: 'Details commande',
+            quoteDetailsTitle: 'Details devis',
+            invoiceDetailsTitle: 'Details facture',
+            clientSection: 'Infos client',
+            requestSection: 'Contexte commande',
+            quoteSection: 'Resume devis',
+            invoiceSection: 'Resume facture',
+            timelineSection: 'Chronologie',
+            supportSection: 'Support et execution',
+            referenceSection: 'Reference',
+            orderNumber: 'Numero commande',
+            quoteNumber: 'Numero devis',
+            invoiceNumber: 'Numero facture',
+            name: 'Nom',
+            email: 'Email',
+            phone: 'Telephone',
+            project: 'Projet',
+            service: 'Service',
+            specs: 'Notes commande',
+            status: 'Statut',
+            subtotal: 'Sous-total',
+            discount: 'Remise',
+            total: 'Total',
+            currency: 'Devise',
+            validUntil: 'Valide jusqu au',
+            issuedAt: 'Date emission',
+            dueDate: 'Date echeance',
+            createdAt: 'Date creation',
+            lastUpdate: 'Derniere mise a jour',
+            supportEmail: 'Email support',
+            supportWhatsapp: 'WhatsApp support',
+            linkedQuote: 'Devis reference',
+            linkedOrder: 'Commande reference',
+            quoteTypeTag: 'Document devis',
+            invoiceTypeTag: 'Document facture',
+            orderTypeTag: 'Fiche commande',
+        },
+        en: {
+            dir: 'ltr',
+            close: 'Close',
+            noData: 'Not available',
+            orderDetailsTitle: 'Order Details',
+            quoteDetailsTitle: 'Quote Details',
+            invoiceDetailsTitle: 'Invoice Details',
+            clientSection: 'Client Snapshot',
+            requestSection: 'Order Context',
+            quoteSection: 'Quote Summary',
+            invoiceSection: 'Invoice Summary',
+            timelineSection: 'Timeline',
+            supportSection: 'Support and Delivery',
+            referenceSection: 'References',
+            orderNumber: 'Order Number',
+            quoteNumber: 'Quote Number',
+            invoiceNumber: 'Invoice Number',
+            name: 'Name',
+            email: 'Email',
+            phone: 'Phone',
+            project: 'Project',
+            service: 'Service',
+            specs: 'Order Notes',
+            status: 'Status',
+            subtotal: 'Subtotal',
+            discount: 'Discount',
+            total: 'Total',
+            currency: 'Currency',
+            validUntil: 'Valid Until',
+            issuedAt: 'Issued At',
+            dueDate: 'Due Date',
+            createdAt: 'Created At',
+            lastUpdate: 'Last Update',
+            supportEmail: 'Support Email',
+            supportWhatsapp: 'Support WhatsApp',
+            linkedQuote: 'Linked Quote',
+            linkedOrder: 'Linked Order',
+            quoteTypeTag: 'Quote Document',
+            invoiceTypeTag: 'Invoice Document',
+            orderTypeTag: 'Order Record',
+        },
+    };
+
+    return {
+        ...(packs[lang] || packs.ar),
+        language: lang,
+    };
+}
+
+function getQuoteStatusLabelForLanguage(status, language) {
+    const key = String(status || '').toLowerCase();
+    if (language === 'ar') return getQuoteStatusLabel(key);
+
+    const labelsByLang = {
+        en: {
+            draft: 'Draft',
+            sent: 'Sent',
+            accepted: 'Accepted',
+            rejected: 'Rejected',
+            expired: 'Expired',
+            converted: 'Converted to Invoice',
+        },
+        fr: {
+            draft: 'Brouillon',
+            sent: 'Envoye',
+            accepted: 'Accepte',
+            rejected: 'Refuse',
+            expired: 'Expire',
+            converted: 'Converti en facture',
+        },
+    };
+
+    return labelsByLang[language]?.[key] || key || '-';
+}
+
+function getInvoiceStatusLabelForLanguage(status, language) {
+    const key = String(status || '').toLowerCase();
+    if (language === 'ar') return getInvoiceStatusLabel(key);
+
+    const labelsByLang = {
+        en: {
+            unpaid: 'Unpaid',
+            paid: 'Paid',
+            cancelled: 'Cancelled',
+        },
+        fr: {
+            unpaid: 'Non payee',
+            paid: 'Payee',
+            cancelled: 'Annulee',
+        },
+    };
+
+    return labelsByLang[language]?.[key] || key || '-';
+}
+
+function ensureDocumentDetailsModal() {
+    let overlay = document.getElementById('documentDetailsModal');
+    if (overlay) return overlay;
+
+    overlay = document.createElement('div');
+    overlay.id = 'documentDetailsModal';
+    overlay.setAttribute('aria-hidden', 'true');
+    overlay.style.cssText = [
+        'position: fixed',
+        'inset: 0',
+        'display: none',
+        'align-items: center',
+        'justify-content: center',
+        'padding: 20px',
+        'background: rgba(0, 0, 0, 0.72)',
+        'z-index: 99999',
+    ].join(';');
+
+    overlay.innerHTML = `
+        <div id="documentDetailsCard" style="width:min(960px,100%);max-height:90vh;overflow:auto;background:#0f1117;border:1px solid rgba(255,255,255,0.12);border-radius:18px;box-shadow:0 26px 80px rgba(0,0,0,0.45);color:#e5e7eb;">
+            <div id="documentDetailsHeader" style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:18px 22px;border-bottom:1px solid rgba(255,255,255,0.08);">
+                <div>
+                    <h3 id="documentDetailsTitle" style="font-size:22px;line-height:1.25;font-weight:900;margin:0;color:#f8fafc;"></h3>
+                    <p id="documentDetailsSubtitle" style="margin:8px 0 0;color:#9ca3af;font-size:12px;"></p>
+                </div>
+                <button id="documentDetailsClose" type="button" style="background:transparent;border:1px solid rgba(255,255,255,0.16);color:#e5e7eb;padding:6px 12px;border-radius:10px;cursor:pointer;font-weight:700;">Close</button>
+            </div>
+            <div id="documentDetailsBody" style="padding:18px 22px 22px;"></div>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    overlay.addEventListener('click', (event) => {
+        if (event.target === overlay) {
+            overlay.style.display = 'none';
+            overlay.setAttribute('aria-hidden', 'true');
+        }
+    });
+
+    const closeBtn = document.getElementById('documentDetailsClose');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            overlay.style.display = 'none';
+            overlay.setAttribute('aria-hidden', 'true');
+        });
+    }
+
+    if (document.body.dataset.docDetailsEscBound !== 'true') {
+        document.body.dataset.docDetailsEscBound = 'true';
+        document.addEventListener('keydown', (event) => {
+            if (event.key !== 'Escape') return;
+            const modal = document.getElementById('documentDetailsModal');
+            if (!modal || modal.style.display === 'none') return;
+            modal.style.display = 'none';
+            modal.setAttribute('aria-hidden', 'true');
+        });
+    }
+
+    return overlay;
+}
+
+function showStructuredDocumentDetails(payload) {
+    const overlay = ensureDocumentDetailsModal();
+    const titleEl = document.getElementById('documentDetailsTitle');
+    const subtitleEl = document.getElementById('documentDetailsSubtitle');
+    const closeEl = document.getElementById('documentDetailsClose');
+    const bodyEl = document.getElementById('documentDetailsBody');
+    const cardEl = document.getElementById('documentDetailsCard');
+
+    if (!titleEl || !subtitleEl || !closeEl || !bodyEl || !cardEl) return;
+
+    const dir = payload.dir === 'ltr' ? 'ltr' : 'rtl';
+    const accent = String(payload.accent || '#2563eb');
+    const sections = Array.isArray(payload.sections) ? payload.sections : [];
+
+    cardEl.style.direction = dir;
+    titleEl.textContent = String(payload.title || 'Details');
+    subtitleEl.textContent = String(payload.subtitle || '');
+    closeEl.textContent = String(payload.closeText || 'Close');
+    closeEl.style.borderColor = `${accent}55`;
+    closeEl.style.color = '#f8fafc';
+
+    bodyEl.innerHTML = sections.map((section) => {
+        const rows = Array.isArray(section.rows) ? section.rows : [];
+        const rowHtml = rows.map((row) => {
+            const safeLabel = escapeHtml(row.label || '-');
+            const safeValue = escapeHtml(row.value || '-');
+            const valueDir = row.valueDir === 'ltr' ? 'ltr' : row.valueDir === 'rtl' ? 'rtl' : 'inherit';
+            const monoFont = row.mono === true ? 'font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;' : '';
+            return `
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:18px;padding:10px 0;border-bottom:1px dashed rgba(255,255,255,0.09);">
+                    <span style="font-size:12px;color:#93a0b2;font-weight:700;white-space:nowrap;">${safeLabel}</span>
+                    <span style="font-size:13px;color:#f1f5f9;max-width:72%;white-space:pre-wrap;word-break:break-word;text-align:${dir === 'rtl' ? 'left' : 'right'};direction:${valueDir};${monoFont}">${safeValue}</span>
+                </div>
+            `;
+        }).join('');
+
+        return `
+            <section style="border:1px solid rgba(255,255,255,0.09);border-radius:14px;background:rgba(17,24,39,0.42);padding:14px 14px 8px;margin-bottom:12px;">
+                <h4 style="margin:0 0 8px;font-size:14px;font-weight:900;color:${accent};">${escapeHtml(section.title || '')}</h4>
+                ${rowHtml}
+            </section>
+        `;
+    }).join('');
+
+    overlay.style.display = 'flex';
+    overlay.setAttribute('aria-hidden', 'false');
+}
+
+function showOrderDetailsModal(orderId, options = {}) {
+    const order = getOrderById(orderId);
+    if (!order) return;
+
+    const service = getOrderService(order);
+    const context = { type: 'order', order, service, quote: null, invoice: null };
+    const language = resolveDocumentLanguageForContext(context, options.selectId || '');
+    const locale = getDocumentDetailsLocalePack(language);
+
+    showStructuredDocumentDetails({
+        dir: locale.dir,
+        accent: '#0ea5e9',
+        closeText: locale.close,
+        title: locale.orderDetailsTitle,
+        subtitle: `${locale.orderTypeTag} • ${order.id || '-'}`,
+        sections: [
+            {
+                title: locale.clientSection,
+                rows: [
+                    { label: locale.name, value: normalizePdfTextValue(order.name) || locale.noData },
+                    { label: locale.email, value: normalizePdfTextValue(order.userEmail || order.email) || locale.noData, valueDir: 'ltr' },
+                    { label: locale.phone, value: normalizePdfTextValue(order.phone) || locale.noData, valueDir: 'ltr' },
+                    { label: locale.project, value: normalizePdfTextValue(order.projectName) || locale.noData },
+                ],
+            },
+            {
+                title: locale.requestSection,
+                rows: [
+                    { label: locale.orderNumber, value: String(order.id || '-'), valueDir: 'ltr', mono: true },
+                    { label: locale.service, value: normalizePdfTextValue(order.serviceName) || locale.noData },
+                    { label: locale.specs, value: normalizePdfTextValue(order.specs) || locale.noData },
+                    { label: locale.status, value: normalizePdfTextValue(getLocalizedOrderStatus(order.status || '')) || locale.noData },
+                ],
+            },
+            {
+                title: locale.timelineSection,
+                rows: [
+                    { label: locale.createdAt, value: formatDateTimeForDocumentLanguage(order.createdAt || '', language) || locale.noData },
+                    { label: locale.lastUpdate, value: formatDateTimeForDocumentLanguage(order.lastUpdateAt || order.createdAt || '', language) || locale.noData },
+                    { label: locale.total, value: formatMoneyForDocumentLanguage(order.finalPrice || 0, language), valueDir: 'ltr', mono: true },
+                ],
+            },
+        ],
+    });
+}
+
+function showQuoteDetailsModal(quoteId, options = {}) {
+    const context = resolveDocumentContext('quote', quoteId);
+    if (!context) return;
+
+    const language = resolveDocumentLanguageForContext(context, options.selectId || '');
+    const locale = getDocumentDetailsLocalePack(language);
+    const order = context.order;
+    const quote = context.quote;
+
+    showStructuredDocumentDetails({
+        dir: locale.dir,
+        accent: '#2563eb',
+        closeText: locale.close,
+        title: locale.quoteDetailsTitle,
+        subtitle: `${locale.quoteTypeTag} • ${quote?.quoteNumber || '-'}`,
+        sections: [
+            {
+                title: locale.clientSection,
+                rows: [
+                    { label: locale.name, value: normalizePdfTextValue(order?.name) || locale.noData },
+                    { label: locale.email, value: normalizePdfTextValue(order?.userEmail || order?.email) || locale.noData, valueDir: 'ltr' },
+                    { label: locale.phone, value: normalizePdfTextValue(order?.phone) || locale.noData, valueDir: 'ltr' },
+                    { label: locale.project, value: normalizePdfTextValue(order?.projectName) || locale.noData },
+                ],
+            },
+            {
+                title: locale.requestSection,
+                rows: [
+                    { label: locale.orderNumber, value: String(order?.id || quote?.orderId || '-'), valueDir: 'ltr', mono: true },
+                    { label: locale.quoteNumber, value: String(quote?.quoteNumber || '-'), valueDir: 'ltr', mono: true },
+                    { label: locale.service, value: normalizePdfTextValue(order?.serviceName) || locale.noData },
+                    { label: locale.specs, value: normalizePdfTextValue(order?.specs) || locale.noData },
+                ],
+            },
+            {
+                title: locale.quoteSection,
+                rows: [
+                    { label: locale.status, value: getQuoteStatusLabelForLanguage(quote?.status, language) || locale.noData },
+                    { label: locale.subtotal, value: formatMoneyForDocumentLanguage(quote?.subtotal || 0, language), valueDir: 'ltr', mono: true },
+                    { label: locale.discount, value: formatMoneyForDocumentLanguage(quote?.discountValue || 0, language), valueDir: 'ltr', mono: true },
+                    { label: locale.total, value: formatMoneyForDocumentLanguage(quote?.total || 0, language), valueDir: 'ltr', mono: true },
+                    { label: locale.currency, value: String(quote?.currency || 'MAD'), valueDir: 'ltr', mono: true },
+                ],
+            },
+            {
+                title: locale.timelineSection,
+                rows: [
+                    { label: locale.validUntil, value: formatDateTimeForDocumentLanguage(quote?.validUntil || '', language) || locale.noData },
+                    { label: locale.createdAt, value: formatDateTimeForDocumentLanguage(quote?.createdAt || '', language) || locale.noData },
+                ],
+            },
+        ],
+    });
+}
+
+function showInvoiceDetailsModal(invoiceId, options = {}) {
+    const context = resolveDocumentContext('invoice', invoiceId);
+    if (!context) return;
+
+    const language = resolveDocumentLanguageForContext(context, options.selectId || '');
+    const locale = getDocumentDetailsLocalePack(language);
+    const invoice = context.invoice;
+    const quote = context.quote;
+    const order = context.order;
+
+    showStructuredDocumentDetails({
+        dir: locale.dir,
+        accent: '#dc2626',
+        closeText: locale.close,
+        title: locale.invoiceDetailsTitle,
+        subtitle: `${locale.invoiceTypeTag} • ${invoice?.invoiceNumber || '-'}`,
+        sections: [
+            {
+                title: locale.invoiceSection,
+                rows: [
+                    { label: locale.invoiceNumber, value: String(invoice?.invoiceNumber || '-'), valueDir: 'ltr', mono: true },
+                    { label: locale.status, value: getInvoiceStatusLabelForLanguage(invoice?.status, language) || locale.noData },
+                    { label: locale.total, value: formatMoneyForDocumentLanguage(invoice?.total || 0, language), valueDir: 'ltr', mono: true },
+                    { label: locale.currency, value: String(quote?.currency || 'MAD'), valueDir: 'ltr', mono: true },
+                ],
+            },
+            {
+                title: locale.referenceSection,
+                rows: [
+                    { label: locale.linkedOrder, value: String(invoice?.orderId || order?.id || '-'), valueDir: 'ltr', mono: true },
+                    { label: locale.linkedQuote, value: String(quote?.quoteNumber || '-'), valueDir: 'ltr', mono: true },
+                    { label: locale.service, value: normalizePdfTextValue(order?.serviceName) || locale.noData },
+                    { label: locale.project, value: normalizePdfTextValue(order?.projectName) || locale.noData },
+                ],
+            },
+            {
+                title: locale.timelineSection,
+                rows: [
+                    { label: locale.issuedAt, value: formatDateTimeForDocumentLanguage(invoice?.issuedAt || invoice?.createdAt || '', language) || locale.noData },
+                    { label: locale.dueDate, value: formatDateTimeForDocumentLanguage(invoice?.dueDate || '', language) || locale.noData },
+                    { label: locale.createdAt, value: formatDateTimeForDocumentLanguage(invoice?.createdAt || '', language) || locale.noData },
+                ],
+            },
+            {
+                title: locale.supportSection,
+                rows: [
+                    { label: locale.name, value: normalizePdfTextValue(order?.name) || locale.noData },
+                    { label: locale.email, value: normalizePdfTextValue(order?.userEmail || order?.email) || locale.noData, valueDir: 'ltr' },
+                    { label: locale.supportEmail, value: normalizePdfTextValue(siteSettings.brand?.supportEmail || DEFAULT_SITE_SETTINGS.brand.supportEmail) || locale.noData, valueDir: 'ltr' },
+                    { label: locale.supportWhatsapp, value: `+${normalizePdfTextValue(siteSettings.contact?.whatsappNumber || DEFAULT_SITE_SETTINGS.contact.whatsappNumber) || '-'}`, valueDir: 'ltr', mono: true },
+                ],
+            },
+        ],
+    });
+}
+
+async function generateDocumentPDFWithUiLanguage(type, id, selectId = '', options = {}) {
+    const context = resolveDocumentContext(type, id);
+    const language = resolveDocumentLanguageForContext(context, selectId);
+    return generateDocumentPDF(type, id, {
+        ...options,
+        language,
+    });
+}
+
 function renderDashboardOrders(user) {
     const tableBody = document.getElementById('ordersTableBody');
     const mobileList = document.getElementById('ordersMobileList');
@@ -4853,6 +5481,12 @@ function renderAdminOrdersSection() {
     const searchBtn = document.getElementById('adminOrdersSearchBtn');
     const clearBtn = document.getElementById('adminOrdersSearchClearBtn');
 
+    const searchRow = searchInput?.parentElement;
+    if (searchRow && !document.getElementById('adminOrderDetailsLangSelect')) {
+        searchRow.insertAdjacentHTML('beforeend', getDocumentLanguageSelectMarkup('adminOrderDetailsLangSelect', true));
+    }
+    bindDocumentLanguageSelect('adminOrderDetailsLangSelect');
+
     const allOrders = getStoredOrders();
     const searchTerm = String(searchInput?.value || '').trim().toLowerCase();
     const orders = !searchTerm
@@ -4893,7 +5527,10 @@ function renderAdminOrdersSection() {
                 <td class="px-4 py-3">${escapeHtml(order.projectName || '-')}</td>
                 <td class="px-4 py-3 font-en">${escapeHtml(order.phone || '-')}</td>
                 <td class="px-4 py-3">${escapeHtml(formatArabicDateTime(order.createdAt || ''))}</td>
-                <td class="px-4 py-3 text-gray-300 max-w-[260px]"><div class="max-h-16 overflow-y-auto break-words">${safeSpecs}</div></td>
+                <td class="px-4 py-3 text-gray-300 max-w-[260px]">
+                    <div class="max-h-16 overflow-y-auto break-words mb-2">${safeSpecs}</div>
+                    <button type="button" class="admin-order-details text-[11px] px-2 py-1 rounded border border-sky-400/40 text-sky-200" data-order-id="${escapeHtml(order.id || '')}">تفاصيل الطلب</button>
+                </td>
                 <td class="px-4 py-3 font-en">${escapeHtml(order.finalPrice ? order.finalPrice + ' MAD' : '-')}</td>
                 <td class="px-4 py-3">
                     <select class="order-status-select input-luxury !py-2 !px-3 !text-xs" data-order-id="${escapeHtml(order.id || '')}">
@@ -4919,7 +5556,10 @@ function renderAdminOrdersSection() {
                 <td class="px-4 py-3">${escapeHtml(order.projectName || '-')}</td>
                 <td class="px-4 py-3 font-en">${escapeHtml(order.phone || '-')}</td>
                 <td class="px-4 py-3">${escapeHtml(formatArabicDateTime(order.createdAt || ''))}</td>
-                <td class="px-4 py-3 text-gray-300 max-w-[260px]"><div class="max-h-16 overflow-y-auto break-words">${safeSpecs}</div></td>
+                <td class="px-4 py-3 text-gray-300 max-w-[260px]">
+                    <div class="max-h-16 overflow-y-auto break-words mb-2">${safeSpecs}</div>
+                    <button type="button" class="admin-order-details text-[11px] px-2 py-1 rounded border border-sky-400/40 text-sky-200" data-order-id="${escapeHtml(order.id || '')}">تفاصيل الطلب</button>
+                </td>
                 <td class="px-4 py-3">
                     <button class="delete-completed-order px-3 py-2 rounded-lg border border-red-400/40 text-red-300 hover:bg-red-500/20 text-xs font-bold" data-order-id="${escapeHtml(order.id || '')}">حذف</button>
                 </td>
@@ -4937,6 +5577,17 @@ function renderAdminOrdersSection() {
             updateOrderStatus(orderId, newStatus);
             renderAdminOrdersSection();
             renderAdminStats();
+        });
+    });
+
+    const detailsButtons = document.querySelectorAll('.admin-order-details');
+    detailsButtons.forEach((btn) => {
+        if (btn.dataset.bound === 'true') return;
+        btn.dataset.bound = 'true';
+        btn.addEventListener('click', () => {
+            const orderId = btn.getAttribute('data-order-id') || '';
+            if (!orderId) return;
+            showOrderDetailsModal(orderId, { selectId: 'adminOrderDetailsLangSelect' });
         });
     });
 
@@ -5018,6 +5669,10 @@ function ensureAdminQuoteInvoiceSections() {
         section.id = 'adminQuotesInvoicesSection';
         section.className = 'grid grid-cols-1 xl:grid-cols-2 gap-6';
         section.innerHTML = `
+            <div class="xl:col-span-2 flex justify-end">
+                ${getDocumentLanguageSelectMarkup('adminDocsLanguageSelect')}
+            </div>
+
             <article id="adminQuotesSection" class="bg-[#121212] border border-[#222] rounded-2xl p-6 md:p-8">
                 <div class="flex items-center justify-between gap-3 mb-5">
                     <div>
@@ -5200,6 +5855,11 @@ function bindAdminManualOrderControls() {
 function renderAdminQuotesSection() {
     ensureAdminQuoteInvoiceSections();
 
+    bindDocumentLanguageSelect('adminDocsLanguageSelect', () => {
+        renderAdminQuotesSection();
+        renderAdminInvoicesSection();
+    });
+
     const body = document.getElementById('adminQuotesTableBody');
     const filterEl = document.getElementById('adminQuotesStatusFilter');
     const msgBox = document.getElementById('adminQuotesMsgBox');
@@ -5270,20 +5930,9 @@ function renderAdminQuotesSection() {
         if (btn.dataset.bound === 'true') return;
         btn.dataset.bound = 'true';
         btn.addEventListener('click', () => {
-            const quote = getQuoteById(btn.getAttribute('data-quote-id') || '');
-            const order = quote ? getOrderById(quote.orderId) : null;
-            if (!quote) return;
-            const details = [
-                `Quote: ${quote.quoteNumber}`,
-                `Order: ${quote.orderId}`,
-                `Client: ${order?.name || '-'} (${order?.email || order?.userEmail || '-'})`,
-                `Service: ${order?.serviceName || '-'}`,
-                `Subtotal: ${formatMoneyMAD(normalizeMoneyValue(quote.subtotal))}`,
-                `Discount: ${formatMoneyMAD(normalizeMoneyValue(quote.discountValue))}`,
-                `Total: ${formatMoneyMAD(normalizeMoneyValue(quote.total))}`,
-                `Valid until: ${formatArabicDateTime(quote.validUntil || quote.createdAt || '')}`,
-            ].join('\n');
-            window.alert(details);
+            const quoteId = btn.getAttribute('data-quote-id') || '';
+            if (!quoteId) return;
+            showQuoteDetailsModal(quoteId, { selectId: 'adminDocsLanguageSelect' });
         });
     });
 
@@ -5292,7 +5941,7 @@ function renderAdminQuotesSection() {
         btn.dataset.bound = 'true';
         btn.addEventListener('click', async () => {
             try {
-                await generateDocumentPDF('quote', btn.getAttribute('data-quote-id') || '');
+                await generateDocumentPDFWithUiLanguage('quote', btn.getAttribute('data-quote-id') || '', 'adminDocsLanguageSelect');
                 showInlineMessage(msgBox, '✅ تم إنشاء PDF بنجاح.', 'success');
             } catch (error) {
                 showInlineMessage(msgBox, `❌ ${error?.message || 'تعذر توليد PDF.'}`, 'error');
@@ -5336,6 +5985,11 @@ function renderAdminQuotesSection() {
 function renderAdminInvoicesSection() {
     ensureAdminQuoteInvoiceSections();
 
+    bindDocumentLanguageSelect('adminDocsLanguageSelect', () => {
+        renderAdminQuotesSection();
+        renderAdminInvoicesSection();
+    });
+
     const body = document.getElementById('adminInvoicesTableBody');
     const filterEl = document.getElementById('adminInvoicesStatusFilter');
     const msgBox = document.getElementById('adminInvoicesMsgBox');
@@ -5376,6 +6030,7 @@ function renderAdminInvoicesSection() {
                     </td>
                     <td class="px-4 py-3">
                         <div class="flex flex-wrap gap-2">
+                            <button type="button" class="admin-invoice-details text-xs px-2 py-1 rounded border border-white/20 text-gray-200" data-invoice-id="${escapeHtml(invoice.id)}">تفاصيل</button>
                             <button type="button" class="admin-invoice-pdf text-xs px-2 py-1 rounded border border-emerald-400/40 text-emerald-200" data-invoice-id="${escapeHtml(invoice.id)}">PDF</button>
                             <button type="button" class="admin-invoice-link text-xs px-2 py-1 rounded border border-blue-400/40 text-blue-200" data-invoice-id="${escapeHtml(invoice.id)}">رابط</button>
                             <button type="button" class="admin-invoice-resend text-xs px-2 py-1 rounded border border-white/20 text-gray-200" data-invoice-id="${escapeHtml(invoice.id)}">Resend PDF</button>
@@ -5401,13 +6056,23 @@ function renderAdminInvoicesSection() {
         });
     });
 
+    document.querySelectorAll('.admin-invoice-details').forEach((btn) => {
+        if (btn.dataset.bound === 'true') return;
+        btn.dataset.bound = 'true';
+        btn.addEventListener('click', () => {
+            const invoiceId = btn.getAttribute('data-invoice-id') || '';
+            if (!invoiceId) return;
+            showInvoiceDetailsModal(invoiceId, { selectId: 'adminDocsLanguageSelect' });
+        });
+    });
+
     const bindInvoicePdfAction = (selector) => {
         document.querySelectorAll(selector).forEach((btn) => {
             if (btn.dataset.bound === 'true') return;
             btn.dataset.bound = 'true';
             btn.addEventListener('click', async () => {
                 try {
-                    await generateDocumentPDF('invoice', btn.getAttribute('data-invoice-id') || '');
+                    await generateDocumentPDFWithUiLanguage('invoice', btn.getAttribute('data-invoice-id') || '', 'adminDocsLanguageSelect');
                     showInlineMessage(msgBox, '✅ تم إرسال/توليد الفاتورة PDF.', 'success');
                 } catch (error) {
                     showInlineMessage(msgBox, `❌ ${error?.message || 'تعذر توليد PDF.'}`, 'error');
@@ -5445,9 +6110,12 @@ function ensureDashboardQuoteInvoiceSections() {
         section.id = 'dashboardQuotesSection';
         section.className = 'mt-12 bg-[#121212] border border-[#222] rounded-2xl p-6 md:p-8 animate-fade-up delay-220';
         section.innerHTML = `
-            <div class="mb-6">
-                <h3 class="text-2xl font-black text-white">My Quotes</h3>
-                <p class="text-sm text-gray-500">عروض الأسعار الخاصة بك مع رابط آمن وPDF.</p>
+            <div class="mb-6 flex flex-col md:flex-row md:items-start md:justify-between gap-3">
+                <div>
+                    <h3 class="text-2xl font-black text-white">My Quotes</h3>
+                    <p class="text-sm text-gray-500">عروض الأسعار الخاصة بك مع رابط آمن وPDF.</p>
+                </div>
+                ${getDocumentLanguageSelectMarkup('dashboardDocsLanguageSelect', true)}
             </div>
             <div id="dashboardQuotesList" class="space-y-4">
                 <article class="border border-white/10 rounded-xl p-4 bg-black/30 text-gray-400 text-sm text-center">${escapeHtml(t('dashboardNoQuotes'))}</article>
@@ -5487,6 +6155,11 @@ function ensureDashboardQuoteInvoiceSections() {
 
 function renderDashboardQuotes(user) {
     ensureDashboardQuoteInvoiceSections();
+
+    bindDocumentLanguageSelect('dashboardDocsLanguageSelect', () => {
+        renderDashboardQuotes(user);
+        renderDashboardInvoices(user);
+    });
 
     const list = document.getElementById('dashboardQuotesList');
     if (!list) return;
@@ -5539,17 +6212,9 @@ function renderDashboardQuotes(user) {
         if (btn.dataset.bound === 'true') return;
         btn.dataset.bound = 'true';
         btn.addEventListener('click', () => {
-            const quote = getQuoteById(btn.getAttribute('data-quote-id') || '');
-            const order = quote ? getOrderById(quote.orderId) : null;
-            if (!quote) return;
-            const details = [
-                `Quote: ${quote.quoteNumber}`,
-                `Service: ${order?.serviceName || '-'}`,
-                `Project: ${order?.projectName || '-'}`,
-                `Total: ${formatMoneyMAD(normalizeMoneyValue(quote.total))}`,
-                `Status: ${getQuoteStatusLabel(quote.status)}`,
-            ].join('\n');
-            window.alert(details);
+            const quoteId = btn.getAttribute('data-quote-id') || '';
+            if (!quoteId) return;
+            showQuoteDetailsModal(quoteId, { selectId: 'dashboardDocsLanguageSelect' });
         });
     });
 
@@ -5558,7 +6223,7 @@ function renderDashboardQuotes(user) {
         btn.dataset.bound = 'true';
         btn.addEventListener('click', async () => {
             try {
-                await generateDocumentPDF('quote', btn.getAttribute('data-quote-id') || '');
+                await generateDocumentPDFWithUiLanguage('quote', btn.getAttribute('data-quote-id') || '', 'dashboardDocsLanguageSelect');
             } catch (error) {
                 showAuthMessage(`❌ ${error?.message || 'تعذر تحميل PDF.'}`, 'error');
             }
@@ -5583,6 +6248,11 @@ function renderDashboardQuotes(user) {
 
 function renderDashboardInvoices(user) {
     ensureDashboardQuoteInvoiceSections();
+
+    bindDocumentLanguageSelect('dashboardDocsLanguageSelect', () => {
+        renderDashboardQuotes(user);
+        renderDashboardInvoices(user);
+    });
 
     const list = document.getElementById('dashboardInvoicesList');
     if (!list) return;
@@ -5635,19 +6305,9 @@ function renderDashboardInvoices(user) {
         if (btn.dataset.bound === 'true') return;
         btn.dataset.bound = 'true';
         btn.addEventListener('click', () => {
-            const invoice = getInvoiceById(btn.getAttribute('data-invoice-id') || '');
-            const quote = invoice?.quoteId ? getQuoteById(invoice.quoteId) : null;
-            const order = invoice ? getOrderById(invoice.orderId) : null;
-            if (!invoice) return;
-            const details = [
-                `Invoice: ${invoice.invoiceNumber || '-'}`,
-                `Quote: ${quote?.quoteNumber || '-'}`,
-                `Service: ${order?.serviceName || '-'}`,
-                `Project: ${order?.projectName || '-'}`,
-                `Total: ${formatMoneyMAD(normalizeMoneyValue(invoice.total))}`,
-                `Status: ${getInvoiceStatusLabel(invoice.status)}`,
-            ].join('\n');
-            window.alert(details);
+            const invoiceId = btn.getAttribute('data-invoice-id') || '';
+            if (!invoiceId) return;
+            showInvoiceDetailsModal(invoiceId, { selectId: 'dashboardDocsLanguageSelect' });
         });
     });
 
@@ -5656,7 +6316,7 @@ function renderDashboardInvoices(user) {
         btn.dataset.bound = 'true';
         btn.addEventListener('click', async () => {
             try {
-                await generateDocumentPDF('invoice', btn.getAttribute('data-invoice-id') || '');
+                await generateDocumentPDFWithUiLanguage('invoice', btn.getAttribute('data-invoice-id') || '', 'dashboardDocsLanguageSelect');
             } catch (error) {
                 showAuthMessage(`❌ ${error?.message || 'تعذر تحميل PDF.'}`, 'error');
             }
