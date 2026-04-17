@@ -112,6 +112,19 @@ const SERVICE_OG_IMAGE_MAP = {
     'svc-brand-identity': 'https://www.pixelonevisuals.tech/og/brand-identity-1200x630.png',
 };
 
+const SERVICE_OG_IMAGE_LOCAL_MAP = {
+    'svc-social-media-designs': 'og/social-media-designs-1200x630.png',
+    'svc-logo-design': 'og/logo-design-1200x630.png',
+    'svc-digital-banners': 'og/digital-banners-1200x630.png',
+    'svc-pitch-deck': 'og/pitch-deck-1200x630.png',
+    'svc-short-video': 'og/short-video-1200x630.png',
+    'svc-professional-design': 'og/professional-design-1200x630.png',
+    'svc-short-videos-premium': 'og/short-videos-premium-1200x630.png',
+    'svc-advanced-promo-video': 'og/advanced-promo-video-1200x630.png',
+    'svc-web-landing-page': 'og/web-landing-page-1200x630.png',
+    'svc-brand-identity': 'og/brand-identity-1200x630.png',
+};
+
 // This object is now obsolete as content is managed in the database.
 // const SERVICE_DETAIL_CONTENT = { ... };
 
@@ -1475,12 +1488,39 @@ function getServiceOgImage(serviceId) {
     return SERVICE_OG_IMAGE_MAP[resolvedId] || 'https://www.pixelonevisuals.tech/og/professional-design-1200x630.png';
 }
 
+function getServiceOgImageLocal(serviceId) {
+    const resolvedId = resolveServiceDetailId(serviceId);
+    return SERVICE_OG_IMAGE_LOCAL_MAP[resolvedId] || 'og/professional-design-1200x630.png';
+}
+
+function normalizeServiceImageUrl(imageUrl) {
+    const raw = String(imageUrl || '').trim();
+    if (!raw) return '';
+
+    const lowered = raw.toLowerCase();
+    if (['null', 'undefined', 'false', 'nan', 'about:blank', '#'].includes(lowered)) {
+        return '';
+    }
+
+    const normalized = raw.replace(/\\/g, '/');
+
+    if (/^https?:\/\//i.test(normalized)) return normalized;
+    if (/^\/\//.test(normalized)) return `https:${normalized}`;
+    if (/^data:image\//i.test(normalized)) return normalized;
+    if (/^(\.\/|\.\.\/|\/)/.test(normalized)) return normalized;
+
+    const looksLikeRelativePath = /[\/]/.test(normalized) && /\.[a-z0-9]{2,5}(?:[?#].*)?$/i.test(normalized);
+    if (looksLikeRelativePath) return normalized;
+
+    return '';
+}
+
 function getDefaultServiceDetailContent(service) {
     const serviceName = String(service?.titles?.ar || service?.title || '').trim();
     const safeName = serviceName || 'الخدمة';
 
     return {
-        image: getServiceOgImage(service?.id),
+        image: getServiceOgImageLocal(service?.id),
         imageAlt: `صورة توضيحية لخدمة ${safeName}`,
         deliverables: ['تنفيذ احترافي حسب نطاق الطلب المتفق عليه.', 'تسليم منظم وجاهز للاستخدام.'],
         requirements: ['فكرة المشروع والهدف الأساسي.', 'المحتوى والمواد المتاحة لديك.'],
@@ -1533,10 +1573,12 @@ function getServiceDetailContent(service) {
     const deliverables = normalizeStringList(service.deliverables);
     const requirements = normalizeStringList(service.requirements);
     const workflow = normalizeStringList(service.workflow);
+    const customImage = normalizeServiceImageUrl(service.imageUrl || service.image || service.image_url);
+    const customImageAlt = String(service.imageAlt || service.image_alt_ar || '').trim();
 
     return {
-        image: service.imageUrl || defaults.image,
-        imageAlt: service.imageAlt || defaults.imageAlt,
+        image: customImage || defaults.image,
+        imageAlt: customImageAlt || defaults.imageAlt,
         deliverables: deliverables.length > 0 ? deliverables : defaults.deliverables,
         requirements: requirements.length > 0 ? requirements : defaults.requirements,
         workflow: workflow.length > 0 ? workflow : defaults.workflow,
@@ -1831,10 +1873,11 @@ function renderServiceDetailPage() {
     const shareUrl = `https://www.pixelonevisuals.tech/${detailPath}`;
     const shareTitle = `${localized.title || 'تفاصيل الخدمة'} | Pixel One Visuals`;
     const shareText = `${localized.description || 'تفاصيل الخدمة والمخرجات والمتطلبات.'} \n🔥 اطلب الآن من Pixel One Visuals واحصل على تنفيذ احترافي!`;
+    const fallbackImage = getServiceOgImageLocal(service.id);
 
     root.innerHTML = `
         <article class="water-card rounded-3xl overflow-hidden">
-            <img src="${escapeHtml(details.image)}" alt="${escapeHtml(details.imageAlt)}" class="w-full h-[260px] md:h-[360px] object-cover" loading="eager" referrerpolicy="no-referrer">
+            <img src="${escapeHtml(details.image)}" alt="${escapeHtml(details.imageAlt)}" class="w-full h-[260px] md:h-[360px] object-cover" loading="eager" referrerpolicy="no-referrer" data-role="service-hero-image" data-fallback-image="${escapeHtml(fallbackImage)}">
             <div class="p-7 md:p-10">
                 <div class="flex flex-wrap items-center gap-2 mb-4">
                     <span class="text-[11px] px-3 py-1 rounded-full border ${statusClass}">${statusLabel}</span>
@@ -1919,6 +1962,18 @@ function renderServiceDetailPage() {
             </div>
         </article>
     `;
+
+    const heroImage = root.querySelector('[data-role="service-hero-image"]');
+    if (heroImage) {
+        const fallbackSrc = heroImage.getAttribute('data-fallback-image') || '';
+        if (fallbackSrc) {
+            heroImage.addEventListener('error', () => {
+                if (heroImage.dataset.fallbackApplied === '1') return;
+                heroImage.dataset.fallbackApplied = '1';
+                heroImage.setAttribute('src', fallbackSrc);
+            }, { once: true });
+        }
+    }
 }
 
 async function loadServices() {
