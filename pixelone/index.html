@@ -95,22 +95,19 @@
     <!-- ربط ملف التنسيقات الخارجي -->
     <link rel="stylesheet" href="style.css">
     <style id="portfolio-inline-style">
-    :root {
+    #portfolio.portfolio-section {
         --portfolio-navy-950: #050b18;
         --portfolio-navy-900: #0b1a36;
-        --portfolio-navy-800: #122748;
-        --portfolio-gold: #c7a34a;
-        --portfolio-gold-soft: #f1d78a;
+        --portfolio-navy-800: #152949;
+        --portfolio-gold: #c8a24f;
+        --portfolio-gold-soft: #efd594;
         --portfolio-white: #f8f9fc;
-        --portfolio-muted: #b8c0d4;
-    }
-
-    #portfolio.portfolio-section {
+        --portfolio-muted: #bcc6d8;
         position: relative;
-        padding: 6.5rem 1.5rem;
+        padding: 6rem 1.5rem;
         background:
-            radial-gradient(1200px 550px at 85% -10%, rgba(199, 163, 74, 0.2), transparent 60%),
-            linear-gradient(165deg, rgba(5, 11, 24, 0.96), rgba(9, 20, 42, 0.94));
+            radial-gradient(1200px 520px at 88% -8%, rgba(200, 162, 79, 0.16), transparent 62%),
+            linear-gradient(164deg, rgba(5, 11, 24, 0.96), rgba(9, 21, 41, 0.95));
         border-top: 1px solid rgba(241, 215, 138, 0.18);
         border-bottom: 1px solid rgba(241, 215, 138, 0.18);
         overflow: hidden;
@@ -123,63 +120,100 @@
 
     #portfolio .portfolio-head {
         text-align: center;
-        max-width: 760px;
-        margin: 0 auto 2.7rem;
+        max-width: 820px;
+        margin: 0 auto 2.1rem;
     }
 
     #portfolio .portfolio-kicker {
         display: inline-block;
-        padding: 0.42rem 0.92rem;
-        margin-bottom: 1rem;
+        padding: 0.4rem 0.88rem;
+        margin-bottom: 0.92rem;
         border-radius: 999px;
         border: 1px solid rgba(241, 215, 138, 0.35);
         color: var(--portfolio-gold-soft);
         background: rgba(199, 163, 74, 0.12);
-        font-size: 0.76rem;
+        font-size: 0.74rem;
         letter-spacing: 0.14em;
-        font-weight: 700;
+        font-weight: 800;
     }
 
     #portfolio .portfolio-title {
-        font-size: clamp(1.95rem, 3.4vw, 3.1rem);
+        font-size: clamp(1.9rem, 3.4vw, 2.95rem);
         font-weight: 900;
         color: var(--portfolio-white);
-        margin-bottom: 0.95rem;
-        line-height: 1.25;
+        margin-bottom: 0.82rem;
+        line-height: 1.28;
     }
 
     #portfolio .portfolio-intro {
         color: var(--portfolio-muted);
-        font-size: clamp(0.95rem, 1.6vw, 1.1rem);
-        line-height: 1.9;
+        font-size: clamp(0.94rem, 1.6vw, 1.08rem);
+        line-height: 1.88;
+    }
+
+    #portfolio .portfolio-filters {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.62rem;
+        margin-bottom: 1.65rem;
+    }
+
+    #portfolio .portfolio-filter-btn {
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.03);
+        color: #e6ecf7;
+        border-radius: 999px;
+        padding: 0.55rem 1rem;
+        font-size: 0.87rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 220ms ease, color 220ms ease, border-color 220ms ease, background 220ms ease;
+    }
+
+    #portfolio .portfolio-filter-btn:hover,
+    #portfolio .portfolio-filter-btn:focus-visible {
+        border-color: rgba(239, 213, 148, 0.65);
+        color: var(--portfolio-white);
+        transform: translateY(-1px);
+        outline: none;
+    }
+
+    #portfolio .portfolio-filter-btn.is-active {
+        background: linear-gradient(140deg, rgba(200, 162, 79, 0.3), rgba(200, 162, 79, 0.18));
+        border-color: rgba(239, 213, 148, 0.76);
+        color: #fff9e8;
+        box-shadow: 0 10px 22px rgba(3, 8, 20, 0.35);
     }
 
     #portfolio .portfolio-grid {
         display: grid;
         grid-template-columns: 1fr;
-        gap: 1.35rem;
+        gap: 1.2rem;
     }
 
     #portfolio .portfolio-card {
         background: linear-gradient(180deg, rgba(18, 39, 72, 0.78), rgba(8, 18, 36, 0.92));
         border: 1px solid rgba(241, 215, 138, 0.2);
-        border-radius: 1.35rem;
+        border-radius: 1.2rem;
         overflow: hidden;
         box-shadow: 0 18px 45px rgba(3, 8, 20, 0.38);
         transition: transform 280ms ease, box-shadow 280ms ease, border-color 280ms ease;
         isolation: isolate;
+        display: flex;
+        flex-direction: column;
     }
 
     #portfolio .portfolio-card:hover,
     #portfolio .portfolio-card:focus-within {
-        transform: translateY(-9px);
+        transform: translateY(-7px);
         border-color: rgba(241, 215, 138, 0.55);
-        box-shadow: 0 26px 58px rgba(0, 0, 0, 0.48);
+        box-shadow: 0 24px 54px rgba(0, 0, 0, 0.46);
     }
 
     #portfolio .portfolio-media {
         position: relative;
-        aspect-ratio: 16 / 10;
+        aspect-ratio: 16 / 9.6;
         overflow: hidden;
         background: #0c1a33;
     }
@@ -188,7 +222,7 @@
         content: "";
         position: absolute;
         inset: 0;
-        background: linear-gradient(180deg, rgba(5, 11, 24, 0.03) 0%, rgba(5, 11, 24, 0.42) 62%, rgba(5, 11, 24, 0.78) 100%);
+        background: linear-gradient(180deg, rgba(5, 11, 24, 0.04) 0%, rgba(5, 11, 24, 0.4) 62%, rgba(5, 11, 24, 0.78) 100%);
         pointer-events: none;
     }
 
@@ -197,7 +231,7 @@
         height: 100%;
         object-fit: cover;
         transform: scale(1.001);
-        transition: transform 420ms ease;
+        transition: transform 380ms ease;
     }
 
     #portfolio .portfolio-card:hover .portfolio-media img,
@@ -205,50 +239,140 @@
         transform: scale(1.065);
     }
 
+    #portfolio .portfolio-media-placeholder {
+        width: 100%;
+        height: 100%;
+        background:
+            radial-gradient(circle at 85% 14%, rgba(239, 213, 148, 0.2), transparent 44%),
+            linear-gradient(150deg, rgba(14, 32, 58, 0.96), rgba(7, 16, 32, 0.98));
+        color: #f4f7ff;
+        display: grid;
+        place-items: center;
+        text-align: center;
+        padding: 1rem;
+    }
+
+    #portfolio .portfolio-media-placeholder span {
+        border: 1px solid rgba(239, 213, 148, 0.4);
+        border-radius: 999px;
+        padding: 0.4rem 0.74rem;
+        font-size: 0.78rem;
+        color: #f7e8be;
+        background: rgba(200, 162, 79, 0.16);
+        font-weight: 700;
+    }
+
     #portfolio .portfolio-body {
-        padding: 1.3rem 1.25rem 1.4rem;
+        padding: 1.15rem 1.1rem 1.22rem;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
     }
 
     #portfolio .portfolio-card h3 {
         color: var(--portfolio-white);
-        font-size: 1.34rem;
+        font-size: 1.2rem;
         font-weight: 800;
-        margin-bottom: 0.6rem;
+        margin-bottom: 0.52rem;
     }
 
     #portfolio .portfolio-card p {
         color: #d6deec;
-        font-size: 0.95rem;
-        line-height: 1.78;
-        margin-bottom: 1.1rem;
-        min-height: 4.9rem;
+        font-size: 0.9rem;
+        line-height: 1.75;
+        margin-bottom: 1rem;
+        min-height: 4.2rem;
     }
 
-    #portfolio .portfolio-cta {
+    #portfolio .portfolio-link-btn,
+    #portfolio .portfolio-secondary-btn {
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        border: 1px solid rgba(241, 215, 138, 0.45);
-        border-radius: 0.75rem;
-        padding: 0.56rem 1.05rem;
+        justify-content: center;
+        border-radius: 0.72rem;
+        padding: 0.56rem 0.95rem;
+        width: 100%;
         font-weight: 700;
-        color: #050b18;
-        background: linear-gradient(140deg, #f1d78a, #c7a34a);
         text-decoration: none;
-        transition: transform 220ms ease, box-shadow 220ms ease, filter 220ms ease;
+        transition: transform 220ms ease, box-shadow 220ms ease, filter 220ms ease, border-color 220ms ease;
     }
 
-    #portfolio .portfolio-cta:hover,
-    #portfolio .portfolio-cta:focus-visible {
+    #portfolio .portfolio-link-btn {
+        border: 1px solid rgba(241, 215, 138, 0.45);
+        color: #050b18;
+        background: linear-gradient(140deg, #f1d78a, #c7a34a);
+    }
+
+    #portfolio .portfolio-link-btn:hover,
+    #portfolio .portfolio-link-btn:focus-visible {
         transform: translateY(-2px);
         box-shadow: 0 11px 24px rgba(199, 163, 74, 0.38);
         filter: brightness(1.03);
         outline: none;
     }
 
-    #portfolio .portfolio-cta:focus-visible {
+    #portfolio .portfolio-secondary-btn {
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #e8eef9;
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    #portfolio .portfolio-secondary-btn:hover,
+    #portfolio .portfolio-secondary-btn:focus-visible {
+        border-color: rgba(239, 213, 148, 0.5);
+        color: #fffdf6;
+        transform: translateY(-2px);
+        outline: none;
+    }
+
+    #portfolio .portfolio-link-btn:focus-visible,
+    #portfolio .portfolio-secondary-btn:focus-visible {
         outline: 2px solid rgba(241, 215, 138, 0.72);
         outline-offset: 2px;
+    }
+
+    #portfolio .portfolio-cta-card {
+        background:
+            radial-gradient(circle at 85% 10%, rgba(239, 213, 148, 0.26), transparent 43%),
+            linear-gradient(155deg, rgba(8, 19, 36, 0.98), rgba(15, 36, 63, 0.96));
+        border-color: rgba(239, 213, 148, 0.48);
+        justify-content: center;
+    }
+
+    #portfolio .portfolio-cta-card .portfolio-body {
+        justify-content: center;
+        text-align: center;
+        padding: 1.4rem 1.2rem;
+    }
+
+    #portfolio .portfolio-cta-card h3 {
+        color: #fff9e8;
+        font-size: 1.45rem;
+        line-height: 1.45;
+    }
+
+    #portfolio .portfolio-cta-card p {
+        color: #e6ddca;
+        min-height: 0;
+    }
+
+    #portfolio .portfolio-cta-action {
+        border: 1px solid rgba(239, 213, 148, 0.55);
+        border-radius: 0.75rem;
+        padding: 0.64rem 1rem;
+        background: linear-gradient(140deg, #f1d78a, #c8a24f);
+        color: #061226;
+        font-weight: 900;
+        text-decoration: none;
+        transition: transform 220ms ease, box-shadow 220ms ease;
+    }
+
+    #portfolio .portfolio-cta-action:hover,
+    #portfolio .portfolio-cta-action:focus-visible {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 28px rgba(200, 162, 79, 0.33);
+        outline: none;
     }
 
     #portfolio .portfolio-visually-hidden {
@@ -275,13 +399,47 @@
         transform: translateY(0);
     }
 
+    #portfolio .portfolio-item[hidden] {
+        display: none !important;
+    }
+
+    #portfolio .portfolio-item.is-fade-in {
+        animation: portfolioFadeIn 360ms ease both;
+    }
+
+    @keyframes portfolioFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(12px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
     @media (min-width: 1024px) {
         #portfolio .portfolio-grid {
             grid-template-columns: repeat(3, minmax(0, 1fr));
         }
 
         #portfolio .portfolio-body {
-            padding: 1.4rem;
+            padding: 1.22rem;
+        }
+
+        #portfolio .portfolio-cta-card {
+            grid-column: span 1;
+        }
+    }
+
+    @media (max-width: 640px) {
+        #portfolio.portfolio-section {
+            padding: 5rem 1rem;
+        }
+
+        #portfolio .portfolio-filter-btn {
+            flex: 1 1 calc(50% - 0.62rem);
+            min-width: 150px;
         }
     }
 
@@ -294,8 +452,15 @@
 
         #portfolio .portfolio-card,
         #portfolio .portfolio-media img,
-        #portfolio .portfolio-cta {
+        #portfolio .portfolio-link-btn,
+        #portfolio .portfolio-secondary-btn,
+        #portfolio .portfolio-cta-action,
+        #portfolio .portfolio-filter-btn {
             transition: none;
+        }
+
+        #portfolio .portfolio-item.is-fade-in {
+            animation: none;
         }
     }
     </style>
@@ -331,7 +496,7 @@
 
             <div class="site-nav-links hidden md:flex items-center gap-8">
                 <a href="#services" class="nav-link text-sm font-bold text-gray-300 transition hover:text-white">خدماتنا</a>
-                <a href="#portfolio" class="nav-link text-sm font-bold text-gray-300 transition hover:text-white">أعمالنا</a>
+                <a href="#portfolio" data-i18n-skip class="nav-link text-sm font-bold text-gray-300 transition hover:text-white">أعمالنا</a>
                 <a href="#about" class="nav-link text-sm font-bold text-gray-300 transition hover:text-white">من نحن</a>
                 <a href="#workflow" class="nav-link text-sm font-bold text-gray-300 transition hover:text-white">كيف نعمل</a>
             </div>
@@ -353,7 +518,7 @@
 
                 <div class="absolute left-0 top-[calc(100%+0.55rem)] grid w-[85vw] max-w-[320px] gap-2 rounded-xl border border-white/10 bg-[#090909]/95 p-3 shadow-2xl">
                     <a href="#services" data-action="close-mobile-menu" class="rounded-lg px-3 py-2 text-sm font-bold text-gray-200 transition hover:bg-white/5">خدماتنا</a>
-                    <a href="#portfolio" data-action="close-mobile-menu" class="rounded-lg px-3 py-2 text-sm font-bold text-gray-200 transition hover:bg-white/5">أعمالنا</a>
+                    <a href="#portfolio" data-i18n-skip data-action="close-mobile-menu" class="rounded-lg px-3 py-2 text-sm font-bold text-gray-200 transition hover:bg-white/5">أعمالنا</a>
                     <a href="#about" data-action="close-mobile-menu" class="rounded-lg px-3 py-2 text-sm font-bold text-gray-200 transition hover:bg-white/5">من نحن</a>
                     <a href="#workflow" data-action="close-mobile-menu" class="rounded-lg px-3 py-2 text-sm font-bold text-gray-200 transition hover:bg-white/5">كيف نعمل</a>
                     <a id="loginNavLinkMobile" data-role="client-auth-link" href="client-login.html" data-action="close-mobile-menu" class="rounded-lg border border-gray-600 px-3 py-2 text-center text-sm font-bold text-gray-100 transition hover:border-gray-400">دخول العملاء VIP</a>
@@ -547,54 +712,131 @@
     <!-- ==================================================================
          قسم معرض الأعمال (Portfolio)
          ================================================================== -->
-    <section id="portfolio" class="portfolio-section relative z-10" aria-labelledby="portfolioTitle">
+    <section id="portfolio" class="portfolio-section relative z-10" aria-labelledby="portfolioTitle" data-i18n-skip>
         <div class="portfolio-shell">
             <header class="portfolio-head portfolio-reveal">
                 <p class="portfolio-kicker">PORTFOLIO SHOWCASE</p>
-                <h2 id="portfolioTitle" class="portfolio-title">معرض أعمال يعكس الجودة التي سيحصل عليها مشروعك</h2>
-                <p class="portfolio-intro">هذه نماذج ديمو كاملة تم تطويرها لقطاعات مختلفة، مع تركيز على تجربة مستخدم قوية وهوية بصرية راقية وسرعة أداء عملية.</p>
+                <h2 id="portfolioTitle" class="portfolio-title">معرض أعمال منظم يعرض قدرات Pixel One بدون تشتيت</h2>
+                <p class="portfolio-intro">اختر المجال المناسب لترى نماذج متخصصة في البرمجة، التصميم، والمونتاج. كل بطاقة مصممة لتوضح القيمة التجارية والهوية البصرية الاحترافية.</p>
             </header>
 
-            <div class="portfolio-grid" role="list" aria-label="مشاريع Pixel One التجريبية">
-                <article class="portfolio-card portfolio-reveal" role="listitem">
+            <div class="portfolio-filters portfolio-reveal" role="tablist" aria-label="فلترة معرض الأعمال">
+                <button type="button" class="portfolio-filter-btn is-active" role="tab" data-filter="all" aria-selected="true" aria-pressed="true">الكل</button>
+                <button type="button" class="portfolio-filter-btn" role="tab" data-filter="web" aria-selected="false" aria-pressed="false">مواقع وصفحات هبوط</button>
+                <button type="button" class="portfolio-filter-btn" role="tab" data-filter="design" aria-selected="false" aria-pressed="false">تصميم جرافيك وشعارات</button>
+                <button type="button" class="portfolio-filter-btn" role="tab" data-filter="video" aria-selected="false" aria-pressed="false">مونتاج فيديوهات</button>
+            </div>
+
+            <div class="portfolio-grid" role="list" aria-label="مشاريع Pixel One التجريبية" aria-live="polite">
+                <article class="portfolio-card portfolio-item portfolio-reveal" role="listitem" data-category="web">
                     <figure class="portfolio-media">
                         <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1400&q=80" alt="واجهة مشروع وكالة سيارات فاخرة مع عرض سيارات رياضية وتصميم عصري" width="1200" height="750" loading="lazy" decoding="async">
                     </figure>
                     <div class="portfolio-body">
                         <h3>وكالة سيارات (Car Agency)</h3>
                         <p>تجربة رقمية فاخرة لعرض السيارات المميزة مع تنظيم بصري أنيق، مسارات تحويل واضحة، وأسلوب عرض يرفع ثقة العميل من اللحظة الأولى.</p>
-                        <a href="/car" target="_blank" rel="noopener noreferrer" class="portfolio-cta" aria-label="معاينة حية لمشروع وكالة سيارات في علامة تبويب جديدة">
+                        <a href="/car" target="_blank" rel="noopener noreferrer" class="portfolio-link-btn" aria-label="معاينة حية لمشروع وكالة سيارات في علامة تبويب جديدة">
                             معاينة حية <span aria-hidden="true">↗</span>
                             <span class="portfolio-visually-hidden">يفتح في علامة تبويب جديدة</span>
                         </a>
                     </div>
                 </article>
 
-                <article class="portfolio-card portfolio-reveal" role="listitem">
+                <article class="portfolio-card portfolio-item portfolio-reveal" role="listitem" data-category="web">
                     <figure class="portfolio-media">
                         <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1400&q=80" alt="واجهة مشروع مطعم راق مع أطباق فاخرة وتصميم دافئ عالي الجودة" width="1200" height="750" loading="lazy" decoding="async">
                     </figure>
                     <div class="portfolio-body">
                         <h3>مطعم سدرة (Premium Restaurant)</h3>
                         <p>تصميم يقدم تجربة ضيافة رقمية راقية، يبرز قوائم الطعام والصور بأسلوب يرفع الرغبة بالزيارة والحجز ويعكس هوية مطعم فاخر.</p>
-                        <a href="/food" target="_blank" rel="noopener noreferrer" class="portfolio-cta" aria-label="معاينة حية لمشروع مطعم سدرة في علامة تبويب جديدة">
+                        <a href="/food" target="_blank" rel="noopener noreferrer" class="portfolio-link-btn" aria-label="معاينة حية لمشروع مطعم سدرة في علامة تبويب جديدة">
                             معاينة حية <span aria-hidden="true">↗</span>
                             <span class="portfolio-visually-hidden">يفتح في علامة تبويب جديدة</span>
                         </a>
                     </div>
                 </article>
 
-                <article class="portfolio-card portfolio-reveal" role="listitem">
+                <article class="portfolio-card portfolio-item portfolio-reveal" role="listitem" data-category="web">
                     <figure class="portfolio-media">
                         <img src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?auto=format&fit=crop&w=1400&q=80" alt="واجهة مشروع صالون حلاقة حديث مع ألوان داكنة ولمسات احترافية" width="1200" height="750" loading="lazy" decoding="async">
                     </figure>
                     <div class="portfolio-body">
                         <h3>صالون حلاقة (Barbershop Demo)</h3>
                         <p>واجهة قوية لعلامة حلاقة عصرية، تجمع بين جمالية التفاصيل وسهولة التصفح لتقديم الخدمات والحجوزات بشكل مباشر واحترافي.</p>
-                        <a href="/barbershop" target="_blank" rel="noopener noreferrer" class="portfolio-cta" aria-label="معاينة حية لمشروع صالون الحلاقة في علامة تبويب جديدة">
+                        <a href="/barbershop" target="_blank" rel="noopener noreferrer" class="portfolio-link-btn" aria-label="معاينة حية لمشروع صالون الحلاقة في علامة تبويب جديدة">
                             معاينة حية <span aria-hidden="true">↗</span>
                             <span class="portfolio-visually-hidden">يفتح في علامة تبويب جديدة</span>
                         </a>
+                    </div>
+                </article>
+
+                <article class="portfolio-card portfolio-item portfolio-reveal" role="listitem" data-category="design">
+                    <figure class="portfolio-media">
+                        <div class="portfolio-media-placeholder" aria-hidden="true">
+                            <span>Design Preview</span>
+                        </div>
+                    </figure>
+                    <div class="portfolio-body">
+                        <h3>هوية بصرية فاخرة</h3>
+                        <p>نموذج لهوية متكاملة يشمل الشعار، الألوان، وأنماط المنشورات لضمان حضور بصري متناسق وقابل للتوسع.</p>
+                        <a href="service-brand-identity.html" class="portfolio-secondary-btn" aria-label="عرض نموذج الهوية البصرية">
+                            تكبير الصورة
+                        </a>
+                    </div>
+                </article>
+
+                <article class="portfolio-card portfolio-item portfolio-reveal" role="listitem" data-category="design">
+                    <figure class="portfolio-media">
+                        <div class="portfolio-media-placeholder" aria-hidden="true">
+                            <span>Logo & Social Kit</span>
+                        </div>
+                    </figure>
+                    <div class="portfolio-body">
+                        <h3>تصميم جرافيك وشعارات</h3>
+                        <p>عينات لأعمال شعار وبوستات سوشيال تستهدف رفع وضوح العلامة وبناء صورة احترافية موحدة عبر المنصات.</p>
+                        <a href="service-logo-design.html" class="portfolio-secondary-btn" aria-label="عرض نموذج تصميم الشعار والجرافيك">
+                            تكبير الصورة
+                        </a>
+                    </div>
+                </article>
+
+                <article class="portfolio-card portfolio-item portfolio-reveal" role="listitem" data-category="video">
+                    <figure class="portfolio-media">
+                        <div class="portfolio-media-placeholder" aria-hidden="true">
+                            <span>Reels Motion Sample</span>
+                        </div>
+                    </figure>
+                    <div class="portfolio-body">
+                        <h3>مونتاج Reels تسويقي</h3>
+                        <p>بطاقة نائبة لعرض فيديوهات قصيرة بإيقاع سريع، نصوص متحركة، وهوية صوتية تساعد على رفع التفاعل.</p>
+                        <a href="service-short-video.html" class="portfolio-secondary-btn" aria-label="مشاهدة نموذج فيديو ريلز">
+                            مشاهدة الفيديو
+                        </a>
+                    </div>
+                </article>
+
+                <article class="portfolio-card portfolio-item portfolio-reveal" role="listitem" data-category="video">
+                    <figure class="portfolio-media">
+                        <div class="portfolio-media-placeholder" aria-hidden="true">
+                            <span>Premium Editing Reel</span>
+                        </div>
+                    </figure>
+                    <div class="portfolio-body">
+                        <h3>مونتاج فيديوهات احترافي</h3>
+                        <p>نموذج لمونتاج مخصص للإعلانات القصيرة على TikTok وInstagram مع إخراج بصري يركز على الرسالة البيعية.</p>
+                        <a href="service-short-videos-premium.html" class="portfolio-secondary-btn" aria-label="مشاهدة نموذج فيديو احترافي">
+                            مشاهدة الفيديو
+                        </a>
+                    </div>
+                </article>
+
+                <article class="portfolio-card portfolio-item portfolio-cta-card portfolio-reveal" role="listitem" data-static-card="true">
+                    <div class="portfolio-body">
+                        <h3>هل مشروعك هو التالي؟ دعنا نبني لك واجهة تخطف الأنظار!</h3>
+                        <p>نحوّل فكرتك إلى تجربة رقمية متكاملة تجمع الأداء، الجمال، والوضوح البيعي من أول زيارة.</p>
+                        <button type="button" data-action="open-order-modal" data-service-name="طلب موقع أو هوية بصرية" class="portfolio-cta-action" aria-label="التواصل معنا لبدء مشروع جديد">
+                            تواصل معنا
+                        </button>
                     </div>
                 </article>
             </div>
@@ -808,7 +1050,84 @@
             return;
         }
 
+        const filterButtons = portfolioSection.querySelectorAll('.portfolio-filter-btn');
+        const portfolioItems = Array.from(portfolioSection.querySelectorAll('.portfolio-item'));
+        const staticItems = portfolioItems.filter(function (item) {
+            return item.hasAttribute('data-static-card');
+        });
+        const filteredItems = portfolioItems.filter(function (item) {
+            return !item.hasAttribute('data-static-card');
+        });
+
         const shouldReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // Keep tab-like filter buttons accessible and visually synchronized.
+        function setActiveFilter(button) {
+            filterButtons.forEach(function (btn) {
+                const isActive = btn === button;
+                btn.classList.toggle('is-active', isActive);
+                btn.setAttribute('aria-pressed', String(isActive));
+                btn.setAttribute('aria-selected', String(isActive));
+                btn.setAttribute('tabindex', isActive ? '0' : '-1');
+            });
+        }
+
+        function showCard(card, animate) {
+            card.hidden = false;
+            card.setAttribute('aria-hidden', 'false');
+
+            if (!animate || shouldReduceMotion) {
+                card.classList.remove('is-fade-in');
+                return;
+            }
+
+            card.classList.remove('is-fade-in');
+            void card.offsetWidth;
+            card.classList.add('is-fade-in');
+        }
+
+        function hideCard(card) {
+            card.hidden = true;
+            card.setAttribute('aria-hidden', 'true');
+            card.classList.remove('is-fade-in');
+        }
+
+        // Apply category filter while keeping the CTA card visible in every state.
+        function applyFilter(filterKey) {
+            filteredItems.forEach(function (card) {
+                const category = card.getAttribute('data-category') || '';
+                const matches = filterKey === 'all' || category === filterKey;
+
+                if (matches) {
+                    showCard(card, true);
+                } else {
+                    hideCard(card);
+                }
+            });
+
+            staticItems.forEach(function (card) {
+                showCard(card, false);
+            });
+        }
+
+        // Wire category tabs with smooth fade-in card transitions.
+        if (filterButtons.length && filteredItems.length) {
+            filterButtons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    const filterValue = button.getAttribute('data-filter') || 'all';
+                    setActiveFilter(button);
+                    applyFilter(filterValue);
+                });
+            });
+
+            // Progressive reveal on scroll using Intersection Observer.
+            const initialButton = portfolioSection.querySelector('.portfolio-filter-btn.is-active') || filterButtons[0];
+            if (initialButton) {
+                setActiveFilter(initialButton);
+                applyFilter(initialButton.getAttribute('data-filter') || 'all');
+            }
+        }
+
         if (shouldReduceMotion || !('IntersectionObserver' in window)) {
             revealItems.forEach(function (item) {
                 item.classList.add('is-visible');

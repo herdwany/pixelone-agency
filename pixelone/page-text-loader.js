@@ -106,6 +106,10 @@
             acceptNode: function (node) {
                 if (!node || !node.parentElement) return NodeFilter.FILTER_REJECT;
 
+                if (node.parentElement.closest('[data-i18n-skip]')) {
+                    return NodeFilter.FILTER_REJECT;
+                }
+
                 var parentTag = node.parentElement.tagName;
                 if (parentTag === 'SCRIPT' || parentTag === 'STYLE' || parentTag === 'NOSCRIPT') {
                     return NodeFilter.FILTER_REJECT;

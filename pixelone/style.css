@@ -1288,7 +1288,7 @@ textarea.input-luxury {
 
 @media (max-width: 768px) {
     html {
-        font-size: 14px;
+        font-size: 15px;
     }
 
     .navbar-glass {
@@ -1323,8 +1323,8 @@ textarea.input-luxury {
     }
     
     .hero-title {
-        font-size: 3rem !important;
-        line-height: 1.2;
+        font-size: clamp(2.1rem, 8.6vw, 2.75rem) !important;
+        line-height: 1.25;
     }
 
     .hero-v2-actions {
@@ -1400,7 +1400,7 @@ textarea.input-luxury {
 
 @media (max-width: 480px) {
     .hero-title {
-        font-size: 2.5rem !important;
+        font-size: clamp(1.9rem, 9.2vw, 2.3rem) !important;
     }
     
     .modal-content {
