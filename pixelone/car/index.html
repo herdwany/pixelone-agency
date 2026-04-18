@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="وكالة سيارات في المغرب بسيارات اقتصادية ومتوسطة مع تمويل مرن وضمان واضح وخدمة معاينة قبل الشراء.">
+  <title>دار العجلات | سيارات موثوقة في المغرب</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Changa:wght@500;600;700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="site-shell">
+    <header class="topbar">
+      <div class="wrap topbar-inner">
+        <p>مفتوح يوميًا: 09:00 - 19:30</p>
+        <div class="topbar-links">
+          <a href="tel:+212522000111">05 22 00 01 11</a>
+          <a href="https://wa.me/212660224455" target="_blank" rel="noopener">واتساب مباشر</a>
+        </div>
+      </div>
+    </header>
+
+    <header class="main-header">
+      <div class="wrap header-row">
+        <a class="brand" href="#home" aria-label="العودة إلى الصفحة الرئيسية">
+          <span class="brand-mark" aria-hidden="true">DA</span>
+          <span>
+            <strong>دار العجلات</strong>
+            <small>سيارات مختارة بثقة</small>
+          </span>
+        </a>
+        <button class="menu-toggle" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false">القائمة</button>
+        <nav class="main-nav" id="mainNav">
+          <a href="#inventory">السيارات</a>
+          <a href="#finance">التمويل</a>
+          <a href="#trust">الضمان</a>
+          <a href="#reviews">الآراء</a>
+          <a href="#faq">الأسئلة</a>
+          <a href="#contact">التواصل</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero section reveal" id="home">
+        <div class="wrap hero-grid">
+          <div class="hero-copy">
+            <p class="eyebrow">وكالة سيارات بالسوق المغربي</p>
+            <h1>سيارتك القادمة واضحة من أول خطوة: سعر، حالة، وتمويل</h1>
+            <p class="hero-lead">نوفّر سيارات اقتصادية ومتوسطة بحالة ممتازة، مع خيارات أعلى بشكل مدروس. كل سيارة معنا معها ملف واضح: السنة، الكيلومترات، الفحص، وخطة الأداء المالي.</p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="#inventory">شوف السيارات المتوفرة</a>
+              <a class="btn btn-outline" href="https://wa.me/212660224455" target="_blank" rel="noopener">تواصل عبر واتساب</a>
+            </div>
+            <ul class="hero-points">
+              <li>تمويل ابتداءً من 0% تسبيق لملفات مؤهلة</li>
+              <li>فحص تقني + تجربة قيادة قبل القرار</li>
+              <li>تسليم سريع داخل الدار البيضاء والمدن القريبة</li>
+            </ul>
+          </div>
+          <figure class="hero-media">
+            <img src="https://images.unsplash.com/photo-1583267746897-2cf415887172?auto=format&fit=crop&w=1200&q=80" alt="سيارة معروضة للبيع داخل وكالة سيارات">
+            <figcaption>
+              <div>
+                <strong>من 129,000 د.م</strong>
+                <span>فئات اقتصادية عملية</span>
+              </div>
+              <div>
+                <strong>من 1,790 د.م/شهر</strong>
+                <span>حلول تمويل مرنة</span>
+              </div>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="section search-panel reveal" id="inventory">
+        <div class="wrap">
+          <div class="section-head split">
+            <div>
+              <p class="eyebrow">المخزون المتوفر الآن</p>
+              <h2>ابحث بسرعة حسب السعر والموديل ونوع الوقود</h2>
+            </div>
+            <a class="mini-link" href="tel:+212522000111">اتصال فوري بالمستشار</a>
+          </div>
+
+          <form class="filters-grid" id="filtersForm" aria-label="تصفية السيارات">
+            <label>
+              <span>بحث بالاسم أو الماركة</span>
+              <input id="searchModel" type="search" placeholder="مثال: Dacia, Clio, Tucson">
+            </label>
+            <label>
+              <span>الفئة</span>
+              <select id="filterCategory">
+                <option value="">كل الفئات</option>
+                <option value="اقتصادية">اقتصادية</option>
+                <option value="متوسطة">متوسطة</option>
+                <option value="أعلى">فئات أعلى</option>
+              </select>
+            </label>
+            <label>
+              <span>الماركة</span>
+              <select id="filterBrand">
+                <option value="">كل الماركات</option>
+              </select>
+            </label>
+            <label>
+              <span>نوع الوقود</span>
+              <select id="filterFuel">
+                <option value="">الكل</option>
+                <option value="بنزين">بنزين</option>
+                <option value="ديزل">ديزل</option>
+                <option value="هجين">هجين</option>
+              </select>
+            </label>
+            <label class="price-filter">
+              <span>الحد الأقصى للسعر: <strong id="maxPriceValue">330,000 د.م</strong></span>
+              <input id="filterMaxPrice" type="range" min="90000" max="360000" step="5000" value="330000">
+            </label>
+            <button type="button" class="btn btn-ghost" id="resetFilters">إعادة ضبط الفلاتر</button>
+          </form>
+
+          <div class="results-head">
+            <p id="resultsCount"></p>
+            <p class="micro">الأسعار تقريبية وقد تتغير حسب الدفعة الأولى ومدة التمويل.</p>
+          </div>
+
+          <div class="results-grid" id="carResults" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="section block-economy reveal" id="economy">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="eyebrow">الأكثر طلبًا</p>
+            <h2>سيارات اقتصادية تعطيك قيمة حقيقية في الاستهلاك والصيانة</h2>
+          </div>
+          <div class="economy-layout">
+            <article class="economy-main card-surface">
+              <img src="https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=1200&q=80" alt="Dacia Sandero في الشارع">
+              <div>
+                <h3>Dacia Sandero Stepway</h3>
+                <p>مناسبة للتنقل اليومي داخل المدينة وخارجها. قطع متوفرة، صيانة بسيطة، ومصاريف تشغيل منخفضة.</p>
+                <ul>
+                  <li>استهلاك متوسط: 5.2L / 100km</li>
+                  <li>ضمان 12 شهر على المحرك وعلبة السرعة</li>
+                  <li>إمكانية تقسيط حتى 72 شهر</li>
+                </ul>
+              </div>
+            </article>
+            <div class="economy-side">
+              <article class="card-surface compact">
+                <h3>Renault Clio</h3>
+                <p>طلب مرتفع عند العائلات الصغيرة بسبب الراحة وسهولة إعادة البيع.</p>
+                <strong>ابتداءً من 154,000 د.م</strong>
+              </article>
+              <article class="card-surface compact accent">
+                <h3>Suzuki Swift</h3>
+                <p>وزن خفيف واستهلاك منخفض جدًا. خيار ممتاز للمدينة.</p>
+                <strong>ابتداءً من 141,000 د.م</strong>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section block-mid reveal" id="mid">
+        <div class="wrap">
+          <div class="section-head split">
+            <div>
+              <p class="eyebrow">اختيار الموظفين والعائلات</p>
+              <h2>الفئة المتوسطة: توازن بين التجهيز، الراحة، والقيمة</h2>
+            </div>
+            <p class="micro">هذه الفئة توفر تجهيزات أفضل بدون قفزة كبيرة في المصاريف.</p>
+          </div>
+
+          <div class="mid-grid">
+            <article class="mid-card">
+              <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=80" alt="Peugeot 208">
+              <div>
+                <h3>Peugeot 208</h3>
+                <p>تصميم عصري، قيادة مريحة، وتوازن جيد بين الأداء والاستهلاك.</p>
+                <span>متوفرة بنسخ بنزين وديزل</span>
+              </div>
+            </article>
+            <article class="mid-card alt">
+              <img src="https://images.unsplash.com/photo-1590362891991-f776e747a588?auto=format&fit=crop&w=1200&q=80" alt="Hyundai i20">
+              <div>
+                <h3>Hyundai i20 / Kia Rio</h3>
+                <p>حل مناسب للشباب والتنقل اليومي مع تجهيز داخلي عملي.</p>
+                <span>ملفات تمويل مرنة للموظفين والمهن الحرة</span>
+              </div>
+            </article>
+          </div>
+
+          <div class="mid-compare card-surface">
+            <h3>كيف تختار داخل الفئة المتوسطة؟</h3>
+            <div class="compare-grid">
+              <p><strong>إذا كان همك الاستهلاك:</strong> Fiat Tipo ديزل أو Hyundai i20.</p>
+              <p><strong>إذا كان همك التجهيز:</strong> Peugeot 208 أو Kia Rio Full Option.</p>
+              <p><strong>إذا كان همك المساحة:</strong> Dacia Duster أو Skoda Octavia المستعملة بحالة ممتازة.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section block-premium reveal" id="higher">
+        <div class="wrap premium-shell">
+          <div class="section-head split on-dark">
+            <div>
+              <p class="eyebrow">فئات أعلى بشكل محدود</p>
+              <h2>اختيارات مدروسة لمن يريد تجهيز أفضل وقيمة إعادة بيع قوية</h2>
+            </div>
+            <p class="micro">نحتفظ بعدد محدود لضمان الجودة وسرعة الدوران.</p>
+          </div>
+
+          <div class="premium-row">
+            <article class="premium-card">
+              <img src="https://images.unsplash.com/photo-1549924231-f129b911e442?auto=format&fit=crop&w=1200&q=80" alt="Volkswagen Golf 8">
+              <div>
+                <h3>Volkswagen Golf 8</h3>
+                <p>2021 | 43,000 كم | ديزل | أوتوماتيك</p>
+                <strong>255,000 د.م</strong>
+              </div>
+            </article>
+            <article class="premium-note">
+              <h3>قبل إدراج أي سيارة أعلى</h3>
+              <ul>
+                <li>فحص إلكتروني وميكانيكي متعدد النقاط</li>
+                <li>تاريخ صيانة واضح ومراجعة قانونية للملف</li>
+                <li>اختبار قيادة حقيقي داخل المدينة</li>
+              </ul>
+              <a class="btn btn-outline-light" href="#contact">احجز معاينة خاصة</a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section features reveal" id="why-us">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="eyebrow">لماذا دار العجلات</p>
+            <h2>نبيع بسياسة واضحة: معلومات دقيقة قبل أي قرار شراء</h2>
+          </div>
+
+          <div class="feature-grid">
+            <article>
+              <h3>أسعار شفافة</h3>
+              <p>السعر المعلن يشمل تفاصيل الحالة ومصاريف التحويل المتوقعة بوضوح.</p>
+            </article>
+            <article>
+              <h3>ملف سيارة واضح</h3>
+              <p>السنة، الكيلومترات، سجل الصيانة، ونقاط الفحص الأساسية أمامك من البداية.</p>
+            </article>
+            <article>
+              <h3>استبدال سيارتك</h3>
+              <p>نقيّم سيارتك القديمة ونعطيك عرضًا واقعيًا يدخل في الصفقة مباشرة.</p>
+            </article>
+            <article>
+              <h3>معاينة قبل الأداء</h3>
+              <p>تجربة قيادة فعلية + فحص نهائي قبل التسليم لتفادي أي مفاجآت.</p>
+            </article>
+            <article>
+              <h3>خدمة ما بعد البيع</h3>
+              <p>مواكبة أول 3 أشهر لتتبع الأداء وحل أي ملاحظة تقنية بسرعة.</p>
+            </article>
+            <article>
+              <h3>تسليم سريع</h3>
+              <p>أغلب السيارات الجاهزة تُسلَّم في أقل من 72 ساعة بعد اكتمال الملف.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section finance reveal" id="finance">
+        <div class="wrap finance-grid">
+          <article class="finance-plan card-surface">
+            <p class="eyebrow">التمويل والتقسيط</p>
+            <h2>خيارات مرنة حسب راتبك وميزانيتك الشهرية</h2>
+            <p>نتعامل مع شركاء تمويل معروفين في المغرب، ونساعدك تبني خطة واقعية بدون ضغط شهري مبالغ.</p>
+            <ol>
+              <li>تحديد السيارة المناسبة حسب الدخل.</li>
+              <li>اختيار مدة التمويل والتسبيق.</li>
+              <li>محاكاة واضحة قبل توقيع أي عقد.</li>
+            </ol>
+            <a class="btn btn-primary" href="https://wa.me/212660224455" target="_blank" rel="noopener">اطلب محاكاة تمويل عبر واتساب</a>
+          </article>
+
+          <aside class="finance-example">
+            <h3>مثال تقريبي</h3>
+            <div class="example-row">
+              <span>قيمة السيارة</span>
+              <strong>165,000 د.م</strong>
+            </div>
+            <div class="example-row">
+              <span>الدفعة الأولى</span>
+              <strong>35,000 د.م</strong>
+            </div>
+            <div class="example-row">
+              <span>مدة التمويل</span>
+              <strong>60 شهر</strong>
+            </div>
+            <div class="example-row highlight">
+              <span>قسط تقريبي</span>
+              <strong>2,180 د.م / شهر</strong>
+            </div>
+            <p>الأرقام تختلف حسب الملف ونسبة الفائدة المعتمدة وقت الطلب.</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section trust reveal" id="trust">
+        <div class="wrap trust-grid">
+          <div>
+            <div class="section-head">
+              <p class="eyebrow">الثقة والضمان</p>
+              <h2>تشتري وأنت عارف بالضبط شنو كتاخذ</h2>
+            </div>
+            <ul class="trust-list">
+              <li>فحص تقني موثق قبل العرض للبيع.</li>
+              <li>إمكانية ضمان من 6 إلى 18 شهر حسب السيارة.</li>
+              <li>مراجعة قانونية للوثائق ونقل ملكية منظم.</li>
+              <li>تتبع بعد التسليم لأول فترة استعمال.</li>
+            </ul>
+          </div>
+          <div class="trust-stats card-surface">
+            <h3>أرقام تشغيل حقيقية</h3>
+            <div class="stat-row">
+              <strong>+840</strong>
+              <span>سيارة مباعة آخر 18 شهر</span>
+            </div>
+            <div class="stat-row">
+              <strong>92%</strong>
+              <span>زبناء كملوا الشراء بعد المعاينة</span>
+            </div>
+            <div class="stat-row">
+              <strong>48 ساعة</strong>
+              <span>متوسط تجهيز ملف التسليم</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section reviews reveal" id="reviews">
+        <div class="wrap">
+          <div class="section-head split">
+            <div>
+              <p class="eyebrow">آراء الزبناء</p>
+              <h2>تجارب قصيرة لكنها تعكس طريقة الخدمة</h2>
+            </div>
+            <p class="micro">آراء من زبناء اشتروا فعليًا سيارات اقتصادية ومتوسطة.</p>
+          </div>
+
+          <div class="review-grid">
+            <article class="review-card wide">
+              <p>كنت باغي سيارة اقتصادية للخدمة اليومية. اللي عجبني هو الوضوح: ما لقّيتش كلام كثير، عطاوني الحالة الحقيقية، جربت السيارة، وكملت التمويل بلا تعقيد.</p>
+              <h3>أمين - الدار البيضاء</h3>
+            </article>
+            <article class="review-card">
+              <p>شرينا Renault Clio للعائلة. التسليم كان سريع والملف كان مرتب. حتى بعد الشراء تواصلوا معنا للتأكد من كلشي مزيان.</p>
+              <h3>سلمى - المحمدية</h3>
+            </article>
+            <article class="review-card">
+              <p>بدلت سيارتي القديمة وخديت Kia Rio بقسط مناسب. التقييم كان منطقي وما حسّيتش بأي ضغط فالبيع.</p>
+              <h3>يوسف - الرباط</h3>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section faq reveal" id="faq">
+        <div class="wrap faq-grid">
+          <div class="section-head">
+            <p class="eyebrow">FAQ</p>
+            <h2>أسئلة تتكرر قبل الشراء</h2>
+          </div>
+          <div class="faq-list">
+            <details open>
+              <summary>هل يمكن نحجز السيارة قبل الزيارة؟</summary>
+              <p>نعم، يمكن حجز مبدئي لمدة 24 ساعة مع تأكيد هاتفي حتى تكمل المعاينة.</p>
+            </details>
+            <details>
+              <summary>هل التقسيط متاح لغير الموظفين؟</summary>
+              <p>متاح حسب الملف والدخل المصرح به. نوفر حلولًا للمهن الحرة كذلك.</p>
+            </details>
+            <details>
+              <summary>هل جميع السيارات مفحوصة؟</summary>
+              <p>كل سيارة تمر من فحص أساسي ميكانيكي وكهربائي قبل إدراجها للبيع.</p>
+            </details>
+            <details>
+              <summary>كم المدة بين الموافقة والتسليم؟</summary>
+              <p>في العادة بين 24 و72 ساعة إذا كانت الوثائق مكتملة والتمويل مصادق عليه.</p>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <section class="section contact reveal" id="contact">
+        <div class="wrap contact-grid">
+          <article class="contact-panel">
+            <div class="section-head">
+              <p class="eyebrow">التواصل والمعاينة</p>
+              <h2>زورنا أو احجز مكالمة مع مستشار مبيعات</h2>
+            </div>
+
+            <ul class="contact-list">
+              <li><strong>العنوان:</strong> شارع يعقوب المنصور، المعاريف، الدار البيضاء</li>
+              <li><strong>الهاتف:</strong> 05 22 00 01 11</li>
+              <li><strong>واتساب:</strong> 06 60 22 44 55</li>
+              <li><strong>ساعات العمل:</strong> 09:00 - 19:30 (يوميًا)</li>
+            </ul>
+
+            <form class="contact-form" aria-label="نموذج التواصل">
+              <label>
+                <span>الاسم الكامل</span>
+                <input type="text" placeholder="الاسم">
+              </label>
+              <label>
+                <span>رقم الهاتف</span>
+                <input type="tel" placeholder="06XXXXXXXX">
+              </label>
+              <label>
+                <span>السيارة المطلوبة</span>
+                <input type="text" placeholder="مثال: Dacia Sandero">
+              </label>
+              <label>
+                <span>ملاحظات سريعة</span>
+                <textarea rows="3" placeholder="موعد المعاينة أو ميزانيتك الشهرية"></textarea>
+              </label>
+              <button type="button" class="btn btn-primary">إرسال الطلب</button>
+            </form>
+          </article>
+
+          <aside class="map-panel">
+            <iframe title="موقع الوكالة على الخريطة" src="https://www.openstreetmap.org/export/embed.html?bbox=-7.64153%2C33.57074%2C-7.60544%2C33.59869&amp;layer=mapnik"></iframe>
+            <a href="https://wa.me/212660224455" class="btn btn-outline" target="_blank" rel="noopener">ابدأ محادثة واتساب الآن</a>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section final-cta reveal">
+        <div class="wrap final-cta-box">
+          <h2>إذا كنت تبحث عن سيارة مناسبة بميزانية واضحة، ابدأ معنا اليوم</h2>
+          <p>كل ما تحتاجه: لائحة سيارات متوفرة، عرض تمويل، وموعد معاينة سريع.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="tel:+212522000111">اتصل الآن</a>
+            <a class="btn btn-outline" href="#inventory">تصفح السيارات</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="wrap footer-grid">
+        <div>
+          <h3>دار العجلات</h3>
+          <p>وكالة سيارات مغربية بخدمة واقعية: وضوح في السعر، ثقة في الحالة، ومرافقة إلى ما بعد التسليم.</p>
+        </div>
+        <div>
+          <h3>روابط سريعة</h3>
+          <a href="#inventory">السيارات المتوفرة</a>
+          <a href="#finance">التمويل</a>
+          <a href="#contact">التواصل</a>
+        </div>
+        <div>
+          <h3>التواصل</h3>
+          <a href="tel:+212522000111">05 22 00 01 11</a>
+          <a href="mailto:contact@dar-alajalat.ma">contact@dar-alajalat.ma</a>
+          <p>الدار البيضاء - المغرب</p>
+        </div>
+      </div>
+      <p class="copy">© 2026 دار العجلات. جميع الحقوق محفوظة.</p>
+    </footer>
+  </div>
+</body>
+</html>

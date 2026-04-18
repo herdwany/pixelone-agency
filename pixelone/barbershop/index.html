@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="meta.title">دار القص | عناية رجالية فاخرة</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&family=El+Messiri:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+    <style>
+        :root {
+            --ink: #161514;
+            --ink-soft: #292725;
+            --sand: #f3eee6;
+            --sand-deep: #e8dfd1;
+            --accent: #b48859;
+            --accent-soft: #d2b18b;
+            --muted: #6d645a;
+        }
+
+        body {
+            font-family: "Readex Pro", "Segoe UI", Tahoma, sans-serif;
+            color: var(--ink-soft);
+            background: linear-gradient(180deg, #f8f4ee 0%, #f4efe6 42%, #f7f3eb 100%);
+            line-height: 1.85;
+        }
+
+        h1,
+        h2,
+        h3,
+        .brand {
+            font-family: "El Messiri", "Readex Pro", sans-serif;
+            color: var(--ink);
+            letter-spacing: 0.15px;
+        }
+
+        .nav-shell {
+            background: rgba(14, 14, 14, 0.76);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(8px);
+        }
+
+        .nav-shell .nav-link {
+            color: rgba(255, 255, 255, 0.84);
+            font-size: 0.95rem;
+        }
+
+        .nav-shell .nav-link:hover {
+            color: #ffffff;
+        }
+
+        .hero {
+            position: relative;
+            min-height: 100svh;
+            padding-top: 7rem;
+            padding-bottom: 3.5rem;
+            background: url("https://images.unsplash.com/photo-1512690459411-b0fd220c7980?auto=format&fit=crop&w=1800&q=80") center center / cover no-repeat;
+            overflow: hidden;
+            isolation: isolate;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 82% 18%, rgba(180, 136, 89, 0.24), transparent 45%),
+                linear-gradient(115deg, rgba(10, 10, 10, 0.89) 28%, rgba(17, 17, 17, 0.68) 66%, rgba(6, 6, 6, 0.88) 100%);
+            z-index: -1;
+        }
+
+        .hero .tag {
+            background: rgba(255, 255, 255, 0.09);
+            border: 1px solid rgba(255, 255, 255, 0.17);
+            color: #efe8de;
+            font-size: 0.86rem;
+            letter-spacing: 0.2px;
+        }
+
+        .hero .lead {
+            color: rgba(245, 241, 234, 0.9);
+            max-width: 41rem;
+        }
+
+        .quick-pill {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            color: rgba(245, 241, 234, 0.92);
+            font-size: 0.88rem;
+        }
+
+        .btn-accent {
+            --bs-btn-bg: var(--accent);
+            --bs-btn-border-color: var(--accent);
+            --bs-btn-hover-bg: #c59967;
+            --bs-btn-hover-border-color: #c59967;
+            --bs-btn-color: #1f1c18;
+            --bs-btn-hover-color: #1f1c18;
+            --bs-btn-font-weight: 700;
+            box-shadow: 0 0.7rem 1.2rem rgba(0, 0, 0, 0.22);
+        }
+
+        .hero-note {
+            background: rgba(15, 15, 15, 0.74);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 1.2rem;
+            padding: 1.25rem;
+            color: #f3ede3;
+            box-shadow: 0 1.1rem 2rem rgba(0, 0, 0, 0.28);
+            backdrop-filter: blur(6px);
+        }
+
+        .section-warm {
+            background: linear-gradient(180deg, var(--sand) 0%, #f6f1e8 100%);
+        }
+
+        .service-card {
+            height: 100%;
+            border-radius: 1.2rem;
+            border: 1px solid rgba(18, 18, 18, 0.09);
+            background: #ffffff;
+            box-shadow: 0 0.7rem 1.5rem rgba(19, 16, 11, 0.06);
+            padding: 1.35rem;
+        }
+
+        .service-dark {
+            background: #1d1b19;
+            color: #f4eee4;
+            border-color: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0.9rem 1.6rem rgba(0, 0, 0, 0.22);
+        }
+
+        .service-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.7rem;
+            border-radius: 999px;
+            font-size: 0.76rem;
+            font-weight: 600;
+        }
+
+        .service-chip-light {
+            background: #ede4d5;
+            color: #6c4f2c;
+        }
+
+        .service-chip-dark {
+            background: rgba(180, 136, 89, 0.2);
+            color: #e5d2b9;
+        }
+
+        .gallery-tile {
+            position: relative;
+            overflow: hidden;
+            border-radius: 1rem;
+            box-shadow: 0 0.8rem 1.4rem rgba(0, 0, 0, 0.09);
+            background: #0f0f0f;
+        }
+
+        .gallery-tile img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+
+        .gallery-tile:hover img {
+            transform: scale(1.05);
+        }
+
+        .gallery-tile figcaption {
+            position: absolute;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            color: #f8f3ea;
+            font-size: 0.85rem;
+            padding: 0.65rem 0.9rem;
+            background: linear-gradient(0deg, rgba(0, 0, 0, 0.66) 0%, rgba(0, 0, 0, 0.03) 100%);
+        }
+
+        .gallery-lg {
+            min-height: 25.5rem;
+        }
+
+        .gallery-md {
+            min-height: 12.2rem;
+        }
+
+        .review-card {
+            height: 100%;
+            border-radius: 1.15rem;
+            border: 1px solid rgba(18, 18, 18, 0.09);
+            background: #ffffff;
+            box-shadow: 0 0.65rem 1.2rem rgba(0, 0, 0, 0.05);
+            padding: 1.35rem;
+        }
+
+        .review-card-highlight {
+            background: #1e1d1a;
+            color: #f4eee3;
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .stars {
+            color: #e3ad2a;
+            letter-spacing: 0.12rem;
+            font-size: 0.98rem;
+        }
+
+        .trust-main {
+            background: #171614;
+            color: #f6efe5;
+            border-radius: 1.2rem;
+            padding: 1.6rem;
+            box-shadow: 0 1.2rem 2.2rem rgba(0, 0, 0, 0.25);
+        }
+
+        .trust-list li {
+            position: relative;
+            padding-right: 1.1rem;
+            margin-bottom: 0.55rem;
+            color: rgba(243, 236, 225, 0.92);
+        }
+
+        .trust-list li::before {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 0.78rem;
+            width: 0.42rem;
+            height: 0.42rem;
+            border-radius: 50%;
+            background: var(--accent-soft);
+        }
+
+        .metric-card {
+            background: #ffffff;
+            border: 1px solid rgba(18, 18, 18, 0.08);
+            border-radius: 1rem;
+            padding: 1.15rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+            height: 100%;
+        }
+
+        .metric-value {
+            font-family: "El Messiri", "Readex Pro", sans-serif;
+            color: var(--ink);
+            font-size: 1.9rem;
+            line-height: 1.1;
+        }
+
+        .final-cta {
+            background:
+                radial-gradient(circle at 86% 20%, rgba(180, 136, 89, 0.22), transparent 44%),
+                linear-gradient(120deg, #1a1816 0%, #111111 100%);
+            color: #f4eee3;
+        }
+
+        .footer-shell {
+            background: #0f0f0e;
+            color: #bdb4a8;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(16px);
+            animation: rise 0.8s ease forwards;
+        }
+
+        .delay-1 {
+            animation-delay: 0.12s;
+        }
+
+        .delay-2 {
+            animation-delay: 0.24s;
+        }
+
+        .delay-3 {
+            animation-delay: 0.36s;
+        }
+
+        @keyframes rise {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 991.98px) {
+            .hero {
+                min-height: auto;
+                padding-top: 6.3rem;
+            }
+
+            .gallery-lg {
+                min-height: 16.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg fixed-top nav-shell py-3">
+        <div class="container">
+            <a class="navbar-brand text-white brand fs-4 mb-0" href="#top" data-i18n="nav.brand">دار القص</a>
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="تبديل القائمة" data-i18n-aria-label="nav.toggleAriaLabel">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-lg-2">
+                    <li class="nav-item"><a class="nav-link" href="#services" data-i18n="nav.links.services">الخدمات</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#gallery" data-i18n="nav.links.gallery">الأعمال</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#reviews" data-i18n="nav.links.reviews">آراء العملاء</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#trust" data-i18n="nav.links.trust">لماذا نحن</a></li>
+                </ul>
+                <a href="tel:+966500112233" class="btn btn-sm btn-outline-light rounded-pill px-3 mt-2 mt-lg-0 me-lg-3" data-i18n="nav.ctaCall">اتصال مباشر</a>
+            </div>
+        </div>
+    </nav>
+
+    <header id="top" class="hero d-flex align-items-center">
+        <div class="container position-relative">
+            <div class="row g-4 align-items-end">
+                <div class="col-lg-7">
+                    <span class="tag rounded-pill px-3 py-2 d-inline-block mb-3 reveal" data-i18n="hero.tag">منذ 2014 - خبرة يومية مع مواعيد منظمة</span>
+                    <h1 class="display-4 fw-bold text-white mb-3 reveal delay-1" data-i18n="hero.title">حلاقة نظيفة. حضور أقوى.</h1>
+                    <p class="lead mb-4 reveal delay-2" data-i18n="hero.lead">
+                        في دار القص، الجلسة تبدأ باستشارة سريعة قبل المقص. نسمع طلبك، نقترح الأنسب، وننفذ بدقة بدون استعجال.
+                    </p>
+
+                    <div class="d-flex flex-wrap gap-2 mb-4 reveal delay-2">
+                        <span class="quick-pill rounded-pill px-3 py-2" data-i18n="hero.pills.fastBooking">حجز خلال أقل من دقيقة</span>
+                        <span class="quick-pill rounded-pill px-3 py-2" data-i18n="hero.pills.sterilization">تعقيم كامل للأدوات</span>
+                        <span class="quick-pill rounded-pill px-3 py-2" data-i18n="hero.pills.parking">مواقف متاحة أمام الصالون</span>
+                    </div>
+
+                    <div class="d-flex flex-wrap align-items-center gap-3 reveal delay-3">
+                        <a href="https://wa.me/966500112233" target="_blank" rel="noopener noreferrer" class="btn btn-accent btn-lg rounded-pill px-4 py-3" data-i18n="hero.ctaPrimary">احجز عبر واتساب</a>
+                        <a href="#gallery" class="text-white text-decoration-none fw-semibold" data-i18n="hero.ctaSecondary">شاهد آخر الأعمال</a>
+                    </div>
+                </div>
+
+                <div class="col-lg-5">
+                    <aside class="hero-note reveal delay-2">
+                        <p class="mb-1 small text-white-50" data-i18n="hero.note.nextSlotLabel">أقرب موعد متاح اليوم</p>
+                        <h2 class="h3 text-white mb-2" data-i18n="hero.note.nextSlotValue">7:30 مساءً</h2>
+                        <p class="small mb-3 text-white-50" data-i18n="hero.note.duration">المدة المعتادة للجلسة بين 45 و60 دقيقة حسب الخدمة.</p>
+                        <div class="d-flex justify-content-between align-items-start border-top border-light border-opacity-25 pt-3">
+                            <div>
+                                <p class="mb-1 small text-white-50" data-i18n="hero.note.hoursLabel">ساعات العمل</p>
+                                <p class="mb-0 fw-semibold" data-i18n="hero.note.hoursValue">2:00م - 11:00م</p>
+                            </div>
+                            <div class="text-end">
+                                <p class="mb-1 small text-white-50" data-i18n="hero.note.locationLabel">الموقع</p>
+                                <p class="mb-0 fw-semibold" data-i18n="hero.note.locationValue">الرياض - حي الياسمين</p>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="services" class="section-warm py-5">
+            <div class="container py-5">
+                <div class="row align-items-end g-3 mb-5">
+                    <div class="col-lg-7">
+                        <p class="text-uppercase text-muted fw-semibold small mb-2" data-i18n="services.eyebrow">خدمات عملية بصياغة واضحة</p>
+                        <h2 class="display-6 fw-bold mb-0" data-i18n="services.title">اختيارات محددة بدل قائمة طويلة مربكة</h2>
+                    </div>
+                    <div class="col-lg-5">
+                        <p class="mb-0 text-muted" data-i18n="services.description">كل خدمة لها وقت وسعر معلوم مسبقًا. لا مفاجآت، ولا انتظار طويل داخل الصالون.</p>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-6 col-xl-3">
+                        <article class="service-card service-dark">
+                            <span class="service-chip service-chip-dark mb-3" data-i18n="services.cards.0.badge">الأكثر طلبًا</span>
+                            <h3 class="h4 fw-bold mb-2 text-white" data-i18n="services.cards.0.title">حلاقة الشعر</h3>
+                            <p class="mb-4 text-white-50" data-i18n="services.cards.0.description">تدرجات نظيفة وتفاصيل حواف دقيقة تناسب شكل الوجه ونوع الشعر.</p>
+                            <div class="d-flex justify-content-between small text-white-50">
+                                <span data-i18n="services.cards.0.duration">40 دقيقة</span>
+                                <span data-i18n="services.cards.0.price">85 ر.س</span>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="col-md-6 col-xl-3">
+                        <article class="service-card">
+                            <span class="service-chip service-chip-light mb-3" data-i18n="services.cards.1.badge">ترتيب أنيق</span>
+                            <h3 class="h4 fw-bold mb-2" data-i18n="services.cards.1.title">تهذيب اللحية</h3>
+                            <p class="mb-4 text-muted" data-i18n="services.cards.1.description">تحديد متوازن مع تشذيب ناعم وإظهار خط الفك بطريقة طبيعية.</p>
+                            <div class="d-flex justify-content-between small text-muted">
+                                <span data-i18n="services.cards.1.duration">30 دقيقة</span>
+                                <span data-i18n="services.cards.1.price">65 ر.س</span>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="col-md-6 col-xl-3">
+                        <article class="service-card">
+                            <span class="service-chip service-chip-light mb-3" data-i18n="services.cards.2.badge">راحة سريعة</span>
+                            <h3 class="h4 fw-bold mb-2" data-i18n="services.cards.2.title">عناية بالبشرة</h3>
+                            <p class="mb-4 text-muted" data-i18n="services.cards.2.description">تنظيف لطيف، كمادات دافئة، وإنهاء بترطيب يناسب البشرة الرجالية.</p>
+                            <div class="d-flex justify-content-between small text-muted">
+                                <span data-i18n="services.cards.2.duration">35 دقيقة</span>
+                                <span data-i18n="services.cards.2.price">90 ر.س</span>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="col-md-6 col-xl-3">
+                        <article class="service-card" style="background: #f2e9db; border-color: rgba(141, 108, 72, 0.22);">
+                            <span class="service-chip mb-3" style="background: rgba(180, 136, 89, 0.18); color: #6c4f2c;" data-i18n="services.cards.3.badge">استشارة شكلية</span>
+                            <h3 class="h4 fw-bold mb-2" data-i18n="services.cards.3.title">تجربة VIP</h3>
+                            <p class="mb-4 text-muted" data-i18n="services.cards.3.description">جلسة متكاملة تشمل الاستشارة، الحلاقة، اللحية، والعناية الختامية.</p>
+                            <div class="d-flex justify-content-between small text-muted">
+                                <span data-i18n="services.cards.3.duration">75 دقيقة</span>
+                                <span data-i18n="services.cards.3.price">180 ر.س</span>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="gallery" class="py-5">
+            <div class="container py-5">
+                <div class="d-flex flex-wrap justify-content-between align-items-end mb-4 gap-3">
+                    <div>
+                        <h2 class="display-6 fw-bold mb-2" data-i18n="gallery.title">أعمالنا</h2>
+                        <p class="text-muted mb-0" data-i18n="gallery.description">صور من مواعيد فعلية داخل الصالون خلال الأسابيع الأخيرة.</p>
+                    </div>
+                    <span class="small text-muted" data-i18n="gallery.instagram">Instagram: @dar.alqass.sa</span>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-12 col-md-7">
+                        <figure class="gallery-tile gallery-lg mb-0">
+                            <img src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?auto=format&fit=crop&w=1200&q=80" alt="حلاقة Fade مع تهذيب لحية" loading="lazy" data-i18n-alt="gallery.items.0.alt">
+                            <figcaption data-i18n="gallery.items.0.caption">Low Fade + تحديد لحية بخط طبيعي</figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-12 col-md-5">
+                        <div class="row g-3">
+                            <div class="col-6 col-md-12">
+                                <figure class="gallery-tile gallery-md mb-0">
+                                    <img src="https://images.unsplash.com/photo-1622287162716-f311baa1a2b8?auto=format&fit=crop&w=900&q=80" alt="ستايل جانبي مرتب" loading="lazy" data-i18n-alt="gallery.items.1.alt">
+                                    <figcaption data-i18n="gallery.items.1.caption">ستايل يومي مرتب</figcaption>
+                                </figure>
+                            </div>
+                            <div class="col-6 col-md-12">
+                                <figure class="gallery-tile gallery-md mb-0">
+                                    <img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?auto=format&fit=crop&w=900&q=80" alt="قصّة كلاسيكية" loading="lazy" data-i18n-alt="gallery.items.2.alt">
+                                    <figcaption data-i18n="gallery.items.2.caption">قصة كلاسيكية بلمسة حديثة</figcaption>
+                                </figure>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <figure class="gallery-tile gallery-md mb-0">
+                            <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=900&q=80" alt="جلسة تحضير قبل المناسبة" loading="lazy" data-i18n-alt="gallery.items.3.alt">
+                            <figcaption data-i18n="gallery.items.3.caption">تحضير مناسبة خاصة</figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <figure class="gallery-tile gallery-md mb-0">
+                            <img src="https://images.unsplash.com/photo-1517832606299-7ae9b720a186?auto=format&fit=crop&w=900&q=80" alt="تشذيب دقيق للحواف" loading="lazy" data-i18n-alt="gallery.items.4.alt">
+                            <figcaption data-i18n="gallery.items.4.caption">تشذيب حواف دقيق</figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <figure class="gallery-tile gallery-md mb-0">
+                            <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=900&q=80" alt="جلسة عناية رجالية متكاملة" loading="lazy" data-i18n-alt="gallery.items.5.alt">
+                            <figcaption data-i18n="gallery.items.5.caption">عناية متكاملة بعد الحلاقة</figcaption>
+                        </figure>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="reviews" class="section-warm py-5">
+            <div class="container py-5">
+                <div class="row g-3 align-items-end mb-4">
+                    <div class="col-lg-8">
+                        <h2 class="display-6 fw-bold mb-2" data-i18n="reviews.title">آراء العملاء</h2>
+                        <p class="text-muted mb-0" data-i18n="reviews.description">تعليقات مختصرة من عملاء يحجزون بشكل متكرر معنا.</p>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-lg-4">
+                        <article class="review-card">
+                            <p class="stars mb-2" aria-label="5 نجوم" data-i18n="reviews.cards.0.stars" data-i18n-aria-label="reviews.cards.0.starsAria">★ ★ ★ ★ ★</p>
+                            <p class="mb-3" data-i18n="reviews.cards.0.quote">"وصلت قبل مناسبة بساعتين، أخذوا ملاحظتي بدقة وطلعت النتيجة ممتازة بدون مبالغة."</p>
+                            <p class="fw-semibold mb-0" data-i18n="reviews.cards.0.name">خالد القحطاني</p>
+                            <small class="text-muted" data-i18n="reviews.cards.0.meta">عميل منذ 2022</small>
+                        </article>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <article class="review-card review-card-highlight">
+                            <p class="stars mb-2" aria-label="5 نجوم" data-i18n="reviews.cards.1.stars" data-i18n-aria-label="reviews.cards.1.starsAria">★ ★ ★ ★ ★</p>
+                            <p class="mb-3" data-i18n="reviews.cards.1.quote">"أحب وضوحهم في المواعيد. أدخل في وقتي وأطلع بنفس الشكل اللي اتفقنا عليه."</p>
+                            <p class="fw-semibold mb-0" data-i18n="reviews.cards.1.name">عبدالله ناصر</p>
+                            <small class="text-white-50" data-i18n="reviews.cards.1.meta">زيارة أسبوعية</small>
+                        </article>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <article class="review-card" style="transform: translateY(6px);">
+                            <p class="stars mb-2" aria-label="5 نجوم" data-i18n="reviews.cards.2.stars" data-i18n-aria-label="reviews.cards.2.starsAria">★ ★ ★ ★ ★</p>
+                            <p class="mb-3" data-i18n="reviews.cards.2.quote">"جلسة البشرة كانت هادئة ونتيجتها واضحة. مكان نظيف وتعامل محترم جدًا."</p>
+                            <p class="fw-semibold mb-0" data-i18n="reviews.cards.2.name">ماجد العتيبي</p>
+                            <small class="text-muted" data-i18n="reviews.cards.2.meta">حجز VIP شهري</small>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="trust" class="py-5">
+            <div class="container py-5">
+                <div class="row g-4 align-items-stretch">
+                    <div class="col-lg-5">
+                        <div class="trust-main h-100">
+                            <h2 class="h3 text-white mb-3" data-i18n="trust.title">لماذا يعود لنا العميل مرة ثانية؟</h2>
+                            <p class="text-white-50 mb-4" data-i18n="trust.description">لأن التجربة متوقعة وواضحة من أول رسالة إلى نهاية الجلسة.</p>
+                            <ul class="list-unstyled trust-list mb-0">
+                                <li data-i18n="trust.points.0">استقبال سريع دون ازدحام داخل الصالون.</li>
+                                <li data-i18n="trust.points.1">فريق ثابت يعرف تفاصيل كل عميل متكرر.</li>
+                                <li data-i18n="trust.points.2">تعقيم معلن أمام العميل قبل كل جلسة.</li>
+                                <li data-i18n="trust.points.3">خيارات خدمة محددة بدون بيع إضافي مزعج.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-7">
+                        <div class="row g-3 h-100">
+                            <div class="col-sm-6">
+                                <div class="metric-card">
+                                    <p class="metric-value mb-2" data-i18n="metrics.0.value">+8,600</p>
+                                    <p class="mb-1 fw-semibold" data-i18n="metrics.0.title">عميل تمت خدمته</p>
+                                    <small class="text-muted" data-i18n="metrics.0.description">من داخل الحي وخارجه خلال السنوات الماضية.</small>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="metric-card" style="background: #f4eadb; border-color: rgba(180, 136, 89, 0.26);">
+                                    <p class="metric-value mb-2" data-i18n="metrics.1.value">92%</p>
+                                    <p class="mb-1 fw-semibold" data-i18n="metrics.1.title">نسبة العملاء العائدين</p>
+                                    <small class="text-muted" data-i18n="metrics.1.description">معظم الحجوزات الجديدة تأتي بتوصية مباشرة.</small>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="metric-card">
+                                    <p class="metric-value mb-2" data-i18n="metrics.2.value">11 سنة</p>
+                                    <p class="mb-1 fw-semibold" data-i18n="metrics.2.title">خبرة تشغيل فعلية</p>
+                                    <small class="text-muted" data-i18n="metrics.2.description">نفس الفريق الإداري ونفس المعايير اليومية.</small>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="metric-card">
+                                    <p class="metric-value mb-2" data-i18n="metrics.3.value">15 دقيقة</p>
+                                    <p class="mb-1 fw-semibold" data-i18n="metrics.3.title">متوسط انتظار</p>
+                                    <small class="text-muted" data-i18n="metrics.3.description">عند الحجز المسبق عبر واتساب.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="final-cta py-5">
+            <div class="container py-4">
+                <div class="row g-4 align-items-center">
+                    <div class="col-lg-8">
+                        <h2 class="display-6 text-white fw-bold mb-2" data-i18n="finalCta.title">عندك مناسبة هذا الأسبوع؟</h2>
+                        <p class="mb-0 text-white-50" data-i18n="finalCta.description">أرسل لنا صورة الستايل الذي تفضله، ونرتب لك خدمة مناسبة بموعد مؤكد.</p>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="d-grid gap-2">
+                            <a href="https://wa.me/966500112233" target="_blank" rel="noopener noreferrer" class="btn btn-accent btn-lg rounded-pill" data-i18n="finalCta.primary">احجز الآن</a>
+                            <a href="tel:+966500112233" class="btn btn-outline-light rounded-pill" data-i18n="finalCta.secondary">اتصال مباشر</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer-shell py-4">
+        <div class="container">
+            <div class="row align-items-center g-3">
+                <div class="col-md-6">
+                    <p class="mb-1 text-light fw-semibold" data-i18n="footer.brand">دار القص - عناية رجالية فاخرة</p>
+                    <p class="mb-0 small" data-i18n="footer.rights">© 2026 جميع الحقوق محفوظة</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <span class="small" data-i18n="footer.hours">السبت - الخميس: 2:00م إلى 11:00م</span>
+                    <span class="mx-2 text-secondary" data-i18n="footer.separator">|</span>
+                    <span class="small" data-i18n="footer.location">الرياض - حي الياسمين - طريق أنس بن مالك</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        (function () {
+            const contentFile = "./content.json";
+            const hasOwn = Object.prototype.hasOwnProperty;
+
+            function readByPath(source, path) {
+                return path.split(".").reduce((current, segment) => {
+                    if (current === null || current === undefined) {
+                        return undefined;
+                    }
+
+                    if (!hasOwn.call(current, segment)) {
+                        return undefined;
+                    }
+
+                    return current[segment];
+                }, source);
+            }
+
+            function applyContent(messages) {
+                document.querySelectorAll("[data-i18n]").forEach((element) => {
+                    const key = element.getAttribute("data-i18n");
+                    const value = readByPath(messages, key);
+
+                    if (typeof value === "string") {
+                        element.textContent = value;
+                    }
+                });
+
+                document.querySelectorAll("*").forEach((element) => {
+                    Array.from(element.attributes).forEach((attribute) => {
+                        if (!attribute.name.startsWith("data-i18n-") || attribute.name === "data-i18n") {
+                            return;
+                        }
+
+                        const targetAttribute = attribute.name.replace("data-i18n-", "");
+                        const value = readByPath(messages, attribute.value);
+
+                        if (typeof value === "string") {
+                            element.setAttribute(targetAttribute, value);
+                        }
+                    });
+                });
+            }
+
+            fetch(contentFile, { cache: "no-store" })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Unable to load content.json");
+                    }
+
+                    return response.json();
+                })
+                .then((messages) => {
+                    applyContent(messages);
+                })
+                .catch((error) => {
+                    console.error("Content loader:", error);
+                });
+        }());
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
