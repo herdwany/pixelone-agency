@@ -208,6 +208,75 @@ textarea:focus-visible {
     outline-offset: 2px;
 }
 
+/* ==================================================================
+   Global Home Shortcut
+   ================================================================== */
+.global-home-btn {
+    position: fixed;
+    inset-inline-start: 1rem;
+    bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+    z-index: 1150;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.6rem 0.95rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: linear-gradient(140deg, rgba(10, 14, 28, 0.96), rgba(18, 25, 44, 0.95));
+    color: #f8f9fc;
+    text-decoration: none;
+    font-size: 0.83rem;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+}
+
+.global-home-btn:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.26);
+    box-shadow: 0 16px 28px rgba(0, 0, 0, 0.5), 0 0 14px rgba(229, 9, 20, 0.18);
+}
+
+.global-home-btn:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.7);
+    outline-offset: 2px;
+}
+
+.global-home-btn-icon {
+    width: 1.28rem;
+    height: 1.28rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.23);
+    display: grid;
+    place-items: center;
+    font-size: 0.78rem;
+    line-height: 1;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.global-home-btn.is-current {
+    border-color: rgba(229, 9, 20, 0.52);
+    background: linear-gradient(145deg, rgba(229, 9, 20, 0.28), rgba(26, 12, 20, 0.95));
+}
+
+@media (max-width: 640px) {
+    .global-home-btn {
+        inset-inline-start: 0.7rem;
+        bottom: calc(0.78rem + env(safe-area-inset-bottom, 0px));
+        padding: 0.54rem 0.76rem;
+        font-size: 0.76rem;
+    }
+
+    .global-home-btn-icon {
+        width: 1.15rem;
+        height: 1.15rem;
+        font-size: 0.72rem;
+    }
+}
+
 /* ==========================================================================
    Global Branded Loader
    ========================================================================== */

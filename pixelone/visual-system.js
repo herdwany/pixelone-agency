@@ -77,6 +77,31 @@
         return veil;
     }
 
+    function initGlobalHomeButton() {
+        if (!document.body) return;
+        if (document.getElementById('globalHomeButton')) return;
+
+        var homeLink = document.createElement('a');
+        homeLink.id = 'globalHomeButton';
+        homeLink.className = 'global-home-btn';
+        homeLink.href = 'index.html';
+        homeLink.setAttribute('aria-label', 'الانتقال إلى الصفحة الرئيسية');
+        homeLink.setAttribute('data-i18n-skip', '');
+        homeLink.innerHTML = [
+            '<span class="global-home-btn-icon" aria-hidden="true">⌂</span>',
+            '<span class="global-home-btn-text">الصفحة الرئيسية</span>'
+        ].join('');
+
+        var currentUrl = new URL(window.location.href);
+        var homeUrl = new URL(homeLink.href, currentUrl.href);
+        if (normalizePathname(currentUrl.pathname) === normalizePathname(homeUrl.pathname) && !currentUrl.search && !currentUrl.hash) {
+            homeLink.classList.add('is-current');
+            homeLink.setAttribute('aria-current', 'page');
+        }
+
+        document.body.appendChild(homeLink);
+    }
+
     function isSamePageAnchor(url, current) {
         return url.origin === current.origin && url.pathname === current.pathname && url.hash;
     }
@@ -403,6 +428,8 @@
 
     async function initVisualSystem() {
         if (!document.body) return;
+
+        initGlobalHomeButton();
 
         try {
             await loadExternalScript(GSAP_URL);
