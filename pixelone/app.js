@@ -138,6 +138,7 @@ const QUOTES_STORAGE_KEY = 'pixelone_quotes_v1';
 const INVOICES_STORAGE_KEY = 'pixelone_invoices_v1';
 const OFFERS_STORAGE_KEY = 'pixelone_offers_v1';
 const SERVICES_STORAGE_KEY = 'pixelone_services_v2';
+const PORTFOLIO_ITEMS_STORAGE_KEY = 'pixelone_portfolio_items_v1';
 const DISPUTES_STORAGE_KEY = 'pixelone_disputes_v1';
 const DISCOUNTS_STORAGE_KEY = 'pixelone_discounts_v1';
 const DOCUMENT_LANGUAGE_STORAGE_KEY = 'pixelone_document_lang_v1';
@@ -260,6 +261,161 @@ const DEFAULT_MANAGED_SERVICES = [
     },
 ];
 
+const DEFAULT_PORTFOLIO_ITEMS = [
+    {
+        id: 'pfs-car-agency',
+        title: 'وكالة سيارات (Car Agency)',
+        description: 'تجربة رقمية فاخرة لعرض السيارات المميزة مع تنظيم بصري أنيق، مسارات تحويل واضحة، وأسلوب عرض يرفع ثقة العميل من اللحظة الأولى.',
+        category: 'web',
+        cardStyle: 'standard',
+        isStaticCard: false,
+        mediaType: 'image',
+        imageUrl: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1400&q=80',
+        imageAlt: 'واجهة مشروع وكالة سيارات فاخرة مع عرض سيارات رياضية وتصميم عصري',
+        badgeText: '',
+        actionType: 'external_link',
+        actionLabel: 'معاينة حية',
+        actionUrl: '/car',
+        openInNewTab: true,
+        orderServiceName: '',
+        sortOrder: 1,
+        enabled: true,
+    },
+    {
+        id: 'pfs-premium-restaurant',
+        title: 'مطعم سدرة (Premium Restaurant)',
+        description: 'تصميم يقدم تجربة ضيافة رقمية راقية، يبرز قوائم الطعام والصور بأسلوب يرفع الرغبة بالزيارة والحجز ويعكس هوية مطعم فاخر.',
+        category: 'web',
+        cardStyle: 'standard',
+        isStaticCard: false,
+        mediaType: 'image',
+        imageUrl: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1400&q=80',
+        imageAlt: 'واجهة مشروع مطعم راق مع أطباق فاخرة وتصميم دافئ عالي الجودة',
+        badgeText: '',
+        actionType: 'external_link',
+        actionLabel: 'معاينة حية',
+        actionUrl: '/food',
+        openInNewTab: true,
+        orderServiceName: '',
+        sortOrder: 2,
+        enabled: true,
+    },
+    {
+        id: 'pfs-barbershop-demo',
+        title: 'صالون حلاقة (Barbershop Demo)',
+        description: 'واجهة قوية لعلامة حلاقة عصرية، تجمع بين جمالية التفاصيل وسهولة التصفح لتقديم الخدمات والحجوزات بشكل مباشر واحترافي.',
+        category: 'web',
+        cardStyle: 'standard',
+        isStaticCard: false,
+        mediaType: 'image',
+        imageUrl: 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?auto=format&fit=crop&w=1400&q=80',
+        imageAlt: 'واجهة مشروع صالون حلاقة حديث مع ألوان داكنة ولمسات احترافية',
+        badgeText: '',
+        actionType: 'external_link',
+        actionLabel: 'معاينة حية',
+        actionUrl: '/barbershop',
+        openInNewTab: true,
+        orderServiceName: '',
+        sortOrder: 3,
+        enabled: true,
+    },
+    {
+        id: 'pfs-brand-identity',
+        title: 'هوية بصرية فاخرة',
+        description: 'نموذج لهوية متكاملة يشمل الشعار، الألوان، وأنماط المنشورات لضمان حضور بصري متناسق وقابل للتوسع.',
+        category: 'design',
+        cardStyle: 'standard',
+        isStaticCard: false,
+        mediaType: 'placeholder',
+        imageUrl: '',
+        imageAlt: '',
+        badgeText: 'Design Preview',
+        actionType: 'internal_link',
+        actionLabel: 'تكبير الصورة',
+        actionUrl: 'service-brand-identity.html',
+        openInNewTab: false,
+        orderServiceName: '',
+        sortOrder: 4,
+        enabled: true,
+    },
+    {
+        id: 'pfs-logo-social-kit',
+        title: 'تصميم جرافيك وشعارات',
+        description: 'عينات لأعمال شعار وبوستات سوشيال تستهدف رفع وضوح العلامة وبناء صورة احترافية موحدة عبر المنصات.',
+        category: 'design',
+        cardStyle: 'standard',
+        isStaticCard: false,
+        mediaType: 'placeholder',
+        imageUrl: '',
+        imageAlt: '',
+        badgeText: 'Logo & Social Kit',
+        actionType: 'internal_link',
+        actionLabel: 'تكبير الصورة',
+        actionUrl: 'service-logo-design.html',
+        openInNewTab: false,
+        orderServiceName: '',
+        sortOrder: 5,
+        enabled: true,
+    },
+    {
+        id: 'pfs-reels-motion',
+        title: 'مونتاج Reels تسويقي',
+        description: 'بطاقة نائبة لعرض فيديوهات قصيرة بإيقاع سريع، نصوص متحركة، وهوية صوتية تساعد على رفع التفاعل.',
+        category: 'video',
+        cardStyle: 'standard',
+        isStaticCard: false,
+        mediaType: 'placeholder',
+        imageUrl: '',
+        imageAlt: '',
+        badgeText: 'Reels Motion Sample',
+        actionType: 'internal_link',
+        actionLabel: 'مشاهدة الفيديو',
+        actionUrl: 'service-short-video.html',
+        openInNewTab: false,
+        orderServiceName: '',
+        sortOrder: 6,
+        enabled: true,
+    },
+    {
+        id: 'pfs-premium-editing',
+        title: 'مونتاج فيديوهات احترافي',
+        description: 'نموذج لمونتاج مخصص للإعلانات القصيرة على TikTok وInstagram مع إخراج بصري يركز على الرسالة البيعية.',
+        category: 'video',
+        cardStyle: 'standard',
+        isStaticCard: false,
+        mediaType: 'placeholder',
+        imageUrl: '',
+        imageAlt: '',
+        badgeText: 'Premium Editing Reel',
+        actionType: 'internal_link',
+        actionLabel: 'مشاهدة الفيديو',
+        actionUrl: 'service-short-videos-premium.html',
+        openInNewTab: false,
+        orderServiceName: '',
+        sortOrder: 7,
+        enabled: true,
+    },
+    {
+        id: 'pfs-cta-main',
+        title: 'هل مشروعك هو التالي؟ دعنا نبني لك واجهة تخطف الأنظار!',
+        description: 'نحوّل فكرتك إلى تجربة رقمية متكاملة تجمع الأداء، الجمال، والوضوح البيعي من أول زيارة.',
+        category: 'video',
+        cardStyle: 'cta',
+        isStaticCard: true,
+        mediaType: 'placeholder',
+        imageUrl: '',
+        imageAlt: '',
+        badgeText: '',
+        actionType: 'open_order_modal',
+        actionLabel: 'تواصل معنا',
+        actionUrl: '',
+        openInNewTab: false,
+        orderServiceName: 'طلب موقع أو هوية بصرية',
+        sortOrder: 999,
+        enabled: true,
+    },
+];
+
 const ORDER_STATUS_OPTIONS = [
     'تم استلام الطلب',
     'مقبول',
@@ -273,6 +429,7 @@ const INVOICE_STATUS_OPTIONS = ['unpaid', 'paid', 'cancelled'];
 
 const TABLES = {
     services: 'pixel_services',
+    portfolioItems: 'pixel_portfolio_items',
     offers: 'pixel_offers',
     orders: 'pixel_orders',
     quotes: 'pixel_quotes',
@@ -328,6 +485,7 @@ const runtimeStore = {
     invoices: [],
     offers: [],
     services: [],
+    portfolioItems: [],
     disputes: [],
     discounts: {
         global: { ...DEFAULT_DISCOUNT_SETTINGS.global },
@@ -547,6 +705,54 @@ function offerFromRow(row) {
         createdAt: row.created_at,
         updatedAt: row.updated_at,
     };
+}
+
+function portfolioItemToRow(item) {
+    return {
+        id: item.id,
+        title_ar: item.title || '',
+        description_ar: item.description || '',
+        category: item.category || 'web',
+        card_style: item.cardStyle || 'standard',
+        is_static_card: Boolean(item.isStaticCard),
+        media_type: item.mediaType || 'image',
+        image_url: item.imageUrl || null,
+        image_alt_ar: item.imageAlt || null,
+        badge_text_ar: item.badgeText || '',
+        action_type: item.actionType || 'external_link',
+        action_label_ar: item.actionLabel || '',
+        action_url: item.actionUrl || '',
+        open_in_new_tab: Boolean(item.openInNewTab),
+        order_service_name_ar: item.orderServiceName || '',
+        sort_order: Number.parseInt(item.sortOrder, 10) || 999,
+        enabled: item.enabled !== false,
+        created_at: item.createdAt || new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+    };
+}
+
+function portfolioItemFromRow(row, index = 0) {
+    return normalizePortfolioItem({
+        id: row.id,
+        title: row.title_ar,
+        description: row.description_ar,
+        category: row.category,
+        cardStyle: row.card_style,
+        isStaticCard: row.is_static_card,
+        mediaType: row.media_type,
+        imageUrl: row.image_url,
+        imageAlt: row.image_alt_ar,
+        badgeText: row.badge_text_ar,
+        actionType: row.action_type,
+        actionLabel: row.action_label_ar,
+        actionUrl: row.action_url,
+        openInNewTab: row.open_in_new_tab,
+        orderServiceName: row.order_service_name_ar,
+        sortOrder: row.sort_order,
+        enabled: row.enabled,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at,
+    }, index);
 }
 
 function orderToRow(order) {
@@ -1289,11 +1495,13 @@ async function hydrateDataStores() {
     runtimeStore.invoices = localInvoices;
     runtimeStore.offers = getLocalOffers();
     runtimeStore.services = getLocalServices();
+    runtimeStore.portfolioItems = getLocalPortfolioItems();
     runtimeStore.disputes = getLocalDisputes();
     runtimeStore.discounts = getLocalDiscounts();
 
     const results = await Promise.allSettled([
         fetchAllRows(TABLES.services, 'popularity'),
+        fetchAllRows(TABLES.portfolioItems, 'sort_order'),
         fetchAllRows(TABLES.offers, 'updated_at'),
         fetchAllRows(TABLES.orders, 'created_at'),
         fetchAllRows(TABLES.quotes, 'created_at'),
@@ -1305,6 +1513,7 @@ async function hydrateDataStores() {
 
     const [
         servicesResult,
+        portfolioResult,
         offersResult,
         ordersResult,
         quotesResult,
@@ -1339,6 +1548,10 @@ async function hydrateDataStores() {
     runtimeStore.services = servicesResult.status === 'fulfilled' && servicesResult.value.length > 0
         ? servicesResult.value.map((row, index) => serviceFromRow(row, index))
         : getLocalServices();
+
+    runtimeStore.portfolioItems = portfolioResult.status === 'fulfilled' && portfolioResult.value.length > 0
+        ? portfolioResult.value.map((row, index) => portfolioItemFromRow(row, index))
+        : getLocalPortfolioItems();
 
     enforceExclusiveServiceCatalog();
 
@@ -1414,6 +1627,7 @@ async function hydrateDataStores() {
 
     const hasSupabaseData = [
         servicesResult,
+        portfolioResult,
         offersResult,
         ordersResult,
         quotesResult,
@@ -1431,6 +1645,7 @@ async function hydrateDataStores() {
     writeLocalJson(INVOICES_STORAGE_KEY, runtimeStore.invoices);
     writeLocalJson(OFFERS_STORAGE_KEY, runtimeStore.offers);
     writeLocalJson(SERVICES_STORAGE_KEY, runtimeStore.services);
+    writeLocalJson(PORTFOLIO_ITEMS_STORAGE_KEY, runtimeStore.portfolioItems);
     writeLocalJson(DISPUTES_STORAGE_KEY, runtimeStore.disputes);
     writeLocalJson(DISCOUNTS_STORAGE_KEY, runtimeStore.discounts);
 }
@@ -2722,6 +2937,66 @@ function normalizeStringList(value) {
     return [];
 }
 
+function normalizePortfolioCategory(value) {
+    const safe = String(value || '').trim().toLowerCase();
+    const allowed = ['web', 'design', 'video', 'custom'];
+    return allowed.includes(safe) ? safe : 'web';
+}
+
+function normalizePortfolioCardStyle(value) {
+    const safe = String(value || '').trim().toLowerCase();
+    return safe === 'cta' ? 'cta' : 'standard';
+}
+
+function normalizePortfolioMediaType(value) {
+    const safe = String(value || '').trim().toLowerCase();
+    return safe === 'placeholder' ? 'placeholder' : 'image';
+}
+
+function normalizePortfolioActionType(value) {
+    const safe = String(value || '').trim().toLowerCase();
+    const allowed = ['external_link', 'internal_link', 'open_order_modal'];
+    return allowed.includes(safe) ? safe : 'external_link';
+}
+
+function normalizePortfolioItem(item, index = 0) {
+    const cardStyle = normalizePortfolioCardStyle(item?.cardStyle);
+    const actionType = normalizePortfolioActionType(item?.actionType);
+    const mediaType = normalizePortfolioMediaType(item?.mediaType);
+    const sortOrder = Number.parseInt(item?.sortOrder, 10);
+
+    return {
+        id: String(item?.id || createId('PFS')),
+        title: String(item?.title || '').trim() || 'عنوان مشروع',
+        description: String(item?.description || '').trim() || 'وصف المشروع غير متوفر حالياً.',
+        category: normalizePortfolioCategory(item?.category),
+        cardStyle,
+        isStaticCard: Boolean(item?.isStaticCard || cardStyle === 'cta'),
+        mediaType,
+        imageUrl: normalizeServiceImageUrl(item?.imageUrl || ''),
+        imageAlt: String(item?.imageAlt || '').trim(),
+        badgeText: String(item?.badgeText || '').trim(),
+        actionType,
+        actionLabel: String(item?.actionLabel || '').trim(),
+        actionUrl: String(item?.actionUrl || '').trim(),
+        openInNewTab: Boolean(item?.openInNewTab),
+        orderServiceName: String(item?.orderServiceName || '').trim(),
+        sortOrder: Number.isFinite(sortOrder) ? sortOrder : index + 1,
+        enabled: item?.enabled !== false,
+        createdAt: item?.createdAt || new Date().toISOString(),
+        updatedAt: item?.updatedAt || new Date().toISOString(),
+    };
+}
+
+function getLocalPortfolioItems() {
+    const stored = readLocalJson(PORTFOLIO_ITEMS_STORAGE_KEY, []);
+    if (Array.isArray(stored) && stored.length > 0) {
+        return stored.map((item, index) => normalizePortfolioItem(item, index));
+    }
+
+    return DEFAULT_PORTFOLIO_ITEMS.map((item, index) => normalizePortfolioItem(item, index));
+}
+
 function normalizeManagedService(service, index = 0) {
     const title = String(service?.titles?.ar || service?.title || '').trim() || 'خدمة بدون اسم';
     const description = String(service?.descriptions?.ar || service?.description || '').trim() || 'وصف الخدمة غير متوفر حالياً.';
@@ -2752,6 +3027,25 @@ function normalizeManagedService(service, index = 0) {
 
 function getStoredServices() {
     return cloneData(runtimeStore.services);
+}
+
+function getStoredPortfolioItems() {
+    return cloneData(runtimeStore.portfolioItems);
+}
+
+function saveStoredPortfolioItems(items) {
+    const normalized = Array.isArray(items)
+        ? items.map((item, index) => normalizePortfolioItem(item, index))
+        : [];
+
+    runtimeStore.portfolioItems = normalized;
+    writeLocalJson(PORTFOLIO_ITEMS_STORAGE_KEY, runtimeStore.portfolioItems);
+
+    if (dataSourceMode === 'supabase') {
+        replaceTableSnapshot(TABLES.portfolioItems, runtimeStore.portfolioItems.map(portfolioItemToRow)).catch(() => {
+            dataSourceMode = 'fallback';
+        });
+    }
 }
 
 function saveStoredServices(services) {
@@ -3115,6 +3409,152 @@ function resolveLocalizedInlineText(value) {
     }
 
     return raw;
+}
+
+function getPortfolioCategoryLabel(category) {
+    const labels = {
+        web: 'مواقع وصفحات هبوط',
+        design: 'تصميم جرافيك وشعارات',
+        video: 'مونتاج فيديوهات',
+        custom: 'أخرى',
+    };
+
+    return labels[normalizePortfolioCategory(category)] || labels.web;
+}
+
+function sanitizePortfolioActionUrl(url) {
+    const raw = String(url || '').trim();
+    if (!raw) return '#';
+
+    const normalized = raw.replace(/\\/g, '/');
+
+    if (/^https?:\/\//i.test(normalized)) return normalized;
+    if (/^\//.test(normalized)) return normalized;
+    if (/^(\.\/|\.\.\/)/.test(normalized)) return normalized;
+    if (/^[a-z0-9][a-z0-9\-./]*\.html(?:[?#].*)?$/i.test(normalized)) return normalized;
+
+    return '#';
+}
+
+function renderPortfolioActionMarkup(item, isCtaCard) {
+    const actionType = normalizePortfolioActionType(item.actionType);
+    const actionLabel = escapeHtml(resolveLocalizedInlineText(item.actionLabel)
+        || (actionType === 'open_order_modal' ? 'تواصل معنا' : 'معاينة'));
+
+    if (actionType === 'open_order_modal') {
+        const serviceName = escapeHtml(resolveLocalizedInlineText(item.orderServiceName)
+            || resolveLocalizedInlineText(item.title)
+            || t('customServiceName'));
+        const className = isCtaCard ? 'portfolio-cta-action' : 'portfolio-secondary-btn';
+
+        return `
+            <button type="button" data-action="open-order-modal" data-service-name="${serviceName}" class="${className}" aria-label="${actionLabel}">
+                ${actionLabel}
+            </button>
+        `;
+    }
+
+    const href = escapeHtml(sanitizePortfolioActionUrl(item.actionUrl));
+    const isExternal = actionType === 'external_link';
+    const openInNewTab = isExternal && item.openInNewTab;
+    const className = isExternal ? 'portfolio-link-btn' : 'portfolio-secondary-btn';
+    const targetAttrs = openInNewTab ? ' target="_blank" rel="noopener noreferrer"' : '';
+    const suffix = openInNewTab
+        ? ' <span aria-hidden="true">↗</span><span class="portfolio-visually-hidden">يفتح في علامة تبويب جديدة</span>'
+        : '';
+
+    return `
+        <a href="${href}"${targetAttrs} class="${className}" aria-label="${actionLabel}">
+            ${actionLabel}${suffix}
+        </a>
+    `;
+}
+
+function renderPortfolioCardMarkup(item) {
+    const category = normalizePortfolioCategory(item.category);
+    const safeTitle = escapeHtml(resolveLocalizedInlineText(item.title));
+    const safeDescription = escapeHtml(resolveLocalizedInlineText(item.description));
+    const staticAttr = item.isStaticCard ? ' data-static-card="true"' : '';
+    const isCtaCard = item.cardStyle === 'cta';
+
+    if (isCtaCard) {
+        return `
+            <article class="portfolio-card portfolio-item portfolio-cta-card portfolio-reveal" role="listitem" data-category="${escapeHtml(category)}"${staticAttr}>
+                <div class="portfolio-body">
+                    <h3>${safeTitle}</h3>
+                    <p>${safeDescription}</p>
+                    ${renderPortfolioActionMarkup(item, true)}
+                </div>
+            </article>
+        `;
+    }
+
+    const normalizedImageUrl = normalizeServiceImageUrl(item.imageUrl || '');
+    const useImage = item.mediaType === 'image' && Boolean(normalizedImageUrl);
+    const mediaMarkup = useImage
+        ? `
+            <figure class="portfolio-media">
+                <img src="${escapeHtml(normalizedImageUrl)}" alt="${escapeHtml(item.imageAlt || item.title || 'Portfolio item')}" width="1200" height="750" loading="lazy" decoding="async">
+            </figure>
+        `
+        : `
+            <figure class="portfolio-media">
+                <div class="portfolio-media-placeholder" aria-hidden="true">
+                    <span>${escapeHtml(resolveLocalizedInlineText(item.badgeText) || 'Preview')}</span>
+                </div>
+            </figure>
+        `;
+
+    return `
+        <article class="portfolio-card portfolio-item portfolio-reveal" role="listitem" data-category="${escapeHtml(category)}"${staticAttr}>
+            ${mediaMarkup}
+            <div class="portfolio-body">
+                <h3>${safeTitle}</h3>
+                <p>${safeDescription}</p>
+                ${renderPortfolioActionMarkup(item, false)}
+            </div>
+        </article>
+    `;
+}
+
+function renderPortfolioForHome() {
+    const section = document.getElementById('portfolio');
+    if (!section) return;
+
+    const grid = section.querySelector('.portfolio-grid');
+    const filtersContainer = section.querySelector('.portfolio-filters');
+    if (!grid || !filtersContainer) return;
+
+    const activeItems = getStoredPortfolioItems()
+        .filter((item) => item.enabled !== false)
+        .sort((a, b) => (a.sortOrder || 999) - (b.sortOrder || 999));
+
+    if (!activeItems.length) {
+        return;
+    }
+
+    const filterableItems = activeItems.filter((item) => !item.isStaticCard);
+    const detectedCategories = Array.from(new Set(filterableItems.map((item) => normalizePortfolioCategory(item.category))));
+    const preferredOrder = ['web', 'design', 'video', 'custom'];
+    const orderedCategories = preferredOrder.filter((category) => detectedCategories.includes(category));
+
+    const filtersMarkup = [
+        '<button type="button" class="portfolio-filter-btn is-active" role="tab" data-filter="all" aria-selected="true" aria-pressed="true">الكل</button>',
+        ...orderedCategories.map((category) => (`
+            <button type="button" class="portfolio-filter-btn" role="tab" data-filter="${escapeHtml(category)}" aria-selected="false" aria-pressed="false">
+                ${escapeHtml(getPortfolioCategoryLabel(category))}
+            </button>
+        `)),
+    ].join('');
+
+    filtersContainer.innerHTML = filtersMarkup;
+    filtersContainer.hidden = orderedCategories.length === 0;
+
+    grid.innerHTML = activeItems.map((item) => renderPortfolioCardMarkup(item)).join('');
+
+    if (typeof window.initPortfolioInteractions === 'function') {
+        window.initPortfolioInteractions();
+    }
 }
 
 function renderOffersForHome() {
@@ -6664,6 +7104,212 @@ function resetServiceForm() {
     if (cancelBtn) cancelBtn.classList.add('hidden');
 }
 
+function syncPortfolioFormUiState() {
+    const cardStyleEl = document.getElementById('portfolioCardStyle');
+    const mediaTypeEl = document.getElementById('portfolioMediaType');
+    const actionTypeEl = document.getElementById('portfolioActionType');
+    const staticCardEl = document.getElementById('portfolioStaticCard');
+
+    if (!cardStyleEl || !mediaTypeEl || !actionTypeEl) return;
+
+    const cardStyle = normalizePortfolioCardStyle(cardStyleEl.value);
+
+    if (cardStyle === 'cta') {
+        mediaTypeEl.value = 'placeholder';
+        actionTypeEl.value = 'open_order_modal';
+        if (staticCardEl) {
+            staticCardEl.checked = true;
+            staticCardEl.disabled = true;
+        }
+    } else if (staticCardEl) {
+        staticCardEl.disabled = false;
+    }
+
+    const mediaType = normalizePortfolioMediaType(mediaTypeEl.value);
+    const actionType = normalizePortfolioActionType(actionTypeEl.value);
+
+    const mediaImageWrap = document.getElementById('portfolioImageUrlWrap');
+    const mediaAltWrap = document.getElementById('portfolioImageAltWrap');
+    const badgeWrap = document.getElementById('portfolioBadgeWrap');
+    const actionUrlWrap = document.getElementById('portfolioActionUrlWrap');
+    const openInNewTabWrap = document.getElementById('portfolioOpenInNewTabWrap');
+    const orderServiceWrap = document.getElementById('portfolioOrderServiceWrap');
+
+    const linkAction = actionType === 'external_link' || actionType === 'internal_link';
+
+    if (mediaImageWrap) mediaImageWrap.classList.toggle('hidden', mediaType !== 'image');
+    if (mediaAltWrap) mediaAltWrap.classList.toggle('hidden', mediaType !== 'image');
+    if (badgeWrap) badgeWrap.classList.toggle('hidden', mediaType !== 'placeholder');
+
+    if (actionUrlWrap) actionUrlWrap.classList.toggle('hidden', !linkAction);
+    if (openInNewTabWrap) openInNewTabWrap.classList.toggle('hidden', actionType !== 'external_link');
+    if (orderServiceWrap) orderServiceWrap.classList.toggle('hidden', actionType !== 'open_order_modal');
+}
+
+function resetPortfolioForm() {
+    const form = document.getElementById('portfolioForm');
+    if (!form) return;
+
+    form.reset();
+
+    const editIdEl = document.getElementById('portfolioEditId');
+    const enabledEl = document.getElementById('portfolioEnabled');
+    const openNewTabEl = document.getElementById('portfolioOpenInNewTab');
+    const submitBtn = document.getElementById('portfolioSubmitBtn');
+    const cancelBtn = document.getElementById('portfolioCancelEditBtn');
+    const cardStyleEl = document.getElementById('portfolioCardStyle');
+    const mediaTypeEl = document.getElementById('portfolioMediaType');
+    const actionTypeEl = document.getElementById('portfolioActionType');
+    const sortOrderEl = document.getElementById('portfolioSortOrder');
+
+    if (editIdEl) editIdEl.value = '';
+    if (enabledEl) enabledEl.checked = true;
+    if (openNewTabEl) openNewTabEl.checked = true;
+    if (cardStyleEl) cardStyleEl.value = 'standard';
+    if (mediaTypeEl) mediaTypeEl.value = 'image';
+    if (actionTypeEl) actionTypeEl.value = 'external_link';
+    if (sortOrderEl) sortOrderEl.value = '1';
+    if (submitBtn) submitBtn.textContent = 'حفظ العنصر';
+    if (cancelBtn) cancelBtn.classList.add('hidden');
+
+    syncPortfolioFormUiState();
+}
+
+function renderPortfolioAdminSection() {
+    const list = document.getElementById('portfolioList');
+    if (!list) return;
+
+    const items = getStoredPortfolioItems().sort((a, b) => (a.sortOrder || 999) - (b.sortOrder || 999));
+
+    if (items.length === 0) {
+        list.innerHTML = '<div class="text-gray-500 text-sm">لا توجد عناصر Portfolio بعد.</div>';
+        return;
+    }
+
+    list.innerHTML = '';
+    items.forEach((item) => {
+        const styleLabel = item.cardStyle === 'cta' ? 'CTA' : 'Standard';
+        const categoryLabel = getPortfolioCategoryLabel(item.category);
+
+        list.insertAdjacentHTML('beforeend', `
+            <article class="border border-white/10 rounded-xl p-4 bg-black/30">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-2">
+                    <div>
+                        <h4 class="text-white font-bold text-sm">${escapeHtml(item.title)}</h4>
+                        <p class="text-[11px] text-gray-500 mt-1">${escapeHtml(categoryLabel)} | ${escapeHtml(styleLabel)} | الترتيب: ${escapeHtml(String(item.sortOrder || 0))}</p>
+                    </div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <label class="text-xs text-gray-300 flex items-center gap-1">
+                            <input type="checkbox" class="toggle-portfolio-enabled" data-id="${escapeHtml(item.id)}" ${item.enabled ? 'checked' : ''}>
+                            نشط
+                        </label>
+                        <label class="text-xs text-gray-300 flex items-center gap-1">
+                            <input type="checkbox" class="toggle-portfolio-static" data-id="${escapeHtml(item.id)}" ${item.isStaticCard ? 'checked' : ''}>
+                            ثابت
+                        </label>
+                        <button class="edit-portfolio text-xs px-2 py-1 rounded border border-blue-400/40 text-blue-200" data-id="${escapeHtml(item.id)}">تعديل</button>
+                        <button class="delete-portfolio text-xs px-2 py-1 rounded border border-red-400/40 text-red-300" data-id="${escapeHtml(item.id)}">حذف</button>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-300 mb-2">${escapeHtml(item.description || '')}</p>
+                <p class="text-xs text-emerald-300">الإجراء: ${escapeHtml(item.actionType || 'external_link')} | الوسائط: ${escapeHtml(item.mediaType || 'image')}</p>
+            </article>
+        `);
+    });
+
+    document.querySelectorAll('.toggle-portfolio-enabled').forEach((toggle) => {
+        toggle.addEventListener('change', () => {
+            const id = toggle.dataset.id;
+            const updated = getStoredPortfolioItems().map((item) => {
+                if (item.id !== id) return item;
+                return {
+                    ...item,
+                    enabled: toggle.checked,
+                    updatedAt: new Date().toISOString(),
+                };
+            });
+            saveStoredPortfolioItems(updated);
+            renderPortfolioAdminSection();
+        });
+    });
+
+    document.querySelectorAll('.toggle-portfolio-static').forEach((toggle) => {
+        toggle.addEventListener('change', () => {
+            const id = toggle.dataset.id;
+            const updated = getStoredPortfolioItems().map((item) => {
+                if (item.id !== id) return item;
+                return {
+                    ...item,
+                    isStaticCard: toggle.checked,
+                    updatedAt: new Date().toISOString(),
+                };
+            });
+            saveStoredPortfolioItems(updated);
+            renderPortfolioAdminSection();
+        });
+    });
+
+    document.querySelectorAll('.delete-portfolio').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const id = btn.dataset.id;
+            const updated = getStoredPortfolioItems().filter((item) => item.id !== id);
+            saveStoredPortfolioItems(updated);
+            renderPortfolioAdminSection();
+        });
+    });
+
+    document.querySelectorAll('.edit-portfolio').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const id = btn.dataset.id;
+            const item = getStoredPortfolioItems().find((entry) => entry.id === id);
+            if (!item) return;
+
+            const editIdEl = document.getElementById('portfolioEditId');
+            const categoryEl = document.getElementById('portfolioCategory');
+            const cardStyleEl = document.getElementById('portfolioCardStyle');
+            const titleEl = document.getElementById('portfolioTitle');
+            const descriptionEl = document.getElementById('portfolioDescription');
+            const sortOrderEl = document.getElementById('portfolioSortOrder');
+            const enabledEl = document.getElementById('portfolioEnabled');
+            const staticEl = document.getElementById('portfolioStaticCard');
+            const mediaTypeEl = document.getElementById('portfolioMediaType');
+            const imageUrlEl = document.getElementById('portfolioImageUrl');
+            const imageAltEl = document.getElementById('portfolioImageAlt');
+            const badgeEl = document.getElementById('portfolioBadgeText');
+            const actionTypeEl = document.getElementById('portfolioActionType');
+            const actionLabelEl = document.getElementById('portfolioActionLabel');
+            const actionUrlEl = document.getElementById('portfolioActionUrl');
+            const openInNewTabEl = document.getElementById('portfolioOpenInNewTab');
+            const orderServiceNameEl = document.getElementById('portfolioOrderServiceName');
+            const submitBtn = document.getElementById('portfolioSubmitBtn');
+            const cancelBtn = document.getElementById('portfolioCancelEditBtn');
+
+            if (editIdEl) editIdEl.value = item.id;
+            if (categoryEl) categoryEl.value = item.category || 'web';
+            if (cardStyleEl) cardStyleEl.value = item.cardStyle || 'standard';
+            if (titleEl) titleEl.value = item.title || '';
+            if (descriptionEl) descriptionEl.value = item.description || '';
+            if (sortOrderEl) sortOrderEl.value = String(item.sortOrder || 1);
+            if (enabledEl) enabledEl.checked = Boolean(item.enabled);
+            if (staticEl) staticEl.checked = Boolean(item.isStaticCard);
+            if (mediaTypeEl) mediaTypeEl.value = item.mediaType || 'image';
+            if (imageUrlEl) imageUrlEl.value = item.imageUrl || '';
+            if (imageAltEl) imageAltEl.value = item.imageAlt || '';
+            if (badgeEl) badgeEl.value = item.badgeText || '';
+            if (actionTypeEl) actionTypeEl.value = item.actionType || 'external_link';
+            if (actionLabelEl) actionLabelEl.value = item.actionLabel || '';
+            if (actionUrlEl) actionUrlEl.value = item.actionUrl || '';
+            if (openInNewTabEl) openInNewTabEl.checked = Boolean(item.openInNewTab);
+            if (orderServiceNameEl) orderServiceNameEl.value = item.orderServiceName || '';
+            if (submitBtn) submitBtn.textContent = 'تحديث العنصر';
+            if (cancelBtn) cancelBtn.classList.remove('hidden');
+
+            syncPortfolioFormUiState();
+            document.getElementById('portfolioForm')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+    });
+}
+
 function renderDiscountsSection() {
     const discounts = getStoredDiscounts();
 
@@ -7153,6 +7799,115 @@ function bindAdminForms() {
             });
         }
 
+    const portfolioForm = document.getElementById('portfolioForm');
+    if (portfolioForm && !portfolioForm.dataset.bound) {
+        portfolioForm.dataset.bound = 'true';
+        portfolioForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const portfolioMsgBox = document.getElementById('portfolioAdminMsgBox') || adminMsgBox;
+            const editId = document.getElementById('portfolioEditId')?.value.trim() || '';
+            const category = normalizePortfolioCategory(document.getElementById('portfolioCategory')?.value || 'web');
+            const cardStyle = normalizePortfolioCardStyle(document.getElementById('portfolioCardStyle')?.value || 'standard');
+            const title = String(document.getElementById('portfolioTitle')?.value || '').trim();
+            const description = String(document.getElementById('portfolioDescription')?.value || '').trim();
+            const sortOrder = Number.parseInt(document.getElementById('portfolioSortOrder')?.value || '', 10);
+            const enabled = Boolean(document.getElementById('portfolioEnabled')?.checked);
+            const isStaticCard = Boolean(document.getElementById('portfolioStaticCard')?.checked);
+            const mediaType = normalizePortfolioMediaType(document.getElementById('portfolioMediaType')?.value || 'image');
+            const imageUrl = String(document.getElementById('portfolioImageUrl')?.value || '').trim();
+            const imageAlt = String(document.getElementById('portfolioImageAlt')?.value || '').trim();
+            const badgeText = String(document.getElementById('portfolioBadgeText')?.value || '').trim();
+            const actionType = normalizePortfolioActionType(document.getElementById('portfolioActionType')?.value || 'external_link');
+            const actionLabel = String(document.getElementById('portfolioActionLabel')?.value || '').trim();
+            const actionUrl = String(document.getElementById('portfolioActionUrl')?.value || '').trim();
+            const openInNewTab = Boolean(document.getElementById('portfolioOpenInNewTab')?.checked);
+            const orderServiceName = String(document.getElementById('portfolioOrderServiceName')?.value || '').trim();
+
+            if (!title || !description || !Number.isFinite(sortOrder) || sortOrder <= 0) {
+                showInlineMessage(portfolioMsgBox, '❌ يرجى تعبئة العنوان والوصف والترتيب بشكل صحيح.', 'error');
+                return;
+            }
+
+            if ((actionType === 'external_link' || actionType === 'internal_link') && !actionUrl) {
+                showInlineMessage(portfolioMsgBox, '❌ يرجى إدخال رابط صالح للعنصر.', 'error');
+                return;
+            }
+
+            if (cardStyle === 'cta' && actionType !== 'open_order_modal') {
+                showInlineMessage(portfolioMsgBox, '❌ بطاقة CTA يجب أن تستخدم إجراء "فتح نموذج الطلب".', 'error');
+                return;
+            }
+
+            if (actionType === 'open_order_modal' && !orderServiceName && !title) {
+                showInlineMessage(portfolioMsgBox, '❌ أدخل اسم الخدمة المستخدم عند فتح نموذج الطلب.', 'error');
+                return;
+            }
+
+            const items = getStoredPortfolioItems();
+            const now = new Date().toISOString();
+
+            const payload = {
+                category,
+                cardStyle,
+                title,
+                description,
+                sortOrder,
+                enabled,
+                isStaticCard,
+                mediaType,
+                imageUrl,
+                imageAlt,
+                badgeText,
+                actionType,
+                actionLabel,
+                actionUrl,
+                openInNewTab,
+                orderServiceName,
+                updatedAt: now,
+            };
+
+            if (editId) {
+                const updatedItems = items.map((item) => {
+                    if (item.id !== editId) return item;
+                    return {
+                        ...item,
+                        ...payload,
+                    };
+                });
+                saveStoredPortfolioItems(updatedItems);
+            } else {
+                items.unshift(normalizePortfolioItem({
+                    id: createId('PFS'),
+                    ...payload,
+                    createdAt: now,
+                }, items.length));
+                saveStoredPortfolioItems(items);
+            }
+
+            resetPortfolioForm();
+            renderPortfolioAdminSection();
+            showInlineMessage(portfolioMsgBox, '✅ تم حفظ عنصر Portfolio بنجاح.', 'success');
+        });
+
+        ['portfolioCardStyle', 'portfolioMediaType', 'portfolioActionType'].forEach((id) => {
+            const control = document.getElementById(id);
+            if (!control || control.dataset.bound === 'true') return;
+            control.dataset.bound = 'true';
+            control.addEventListener('change', () => {
+                syncPortfolioFormUiState();
+            });
+        });
+    }
+
+    const portfolioCancelEditBtn = document.getElementById('portfolioCancelEditBtn');
+    if (portfolioCancelEditBtn && !portfolioCancelEditBtn.dataset.bound) {
+        portfolioCancelEditBtn.dataset.bound = 'true';
+        portfolioCancelEditBtn.addEventListener('click', () => {
+            resetPortfolioForm();
+        });
+    }
+
     const globalForm = document.getElementById('globalDiscountForm');
     if (globalForm && !globalForm.dataset.bound) {
         globalForm.dataset.bound = 'true';
@@ -7217,11 +7972,13 @@ async function initializeAdminDashboard() {
     renderDisputesSection();
     renderOffersAdminSection();
     renderServicesAdminSection();
+    renderPortfolioAdminSection();
     renderDiscountsSection();
     await renderInviteAuditLog();
     await renderAdminNewUsersSection();
     resetOfferForm();
     resetServiceForm();
+    resetPortfolioForm();
     setupAdminInviteUser();
     bindAdminForms();
     bindAdminManualOrderControls();
@@ -7388,6 +8145,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             await hydrateDataStores();
             await loadServices();
             renderOffersForHome();
+            renderPortfolioForHome();
         }
 
         if (hasServiceDetailView) {

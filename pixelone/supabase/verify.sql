@@ -1,6 +1,7 @@
 -- Pixel One quick verification checks
 
 select 'table_exists_pixel_services' as check_name, to_regclass('public.pixel_services') is not null as ok;
+select 'table_exists_pixel_portfolio_items' as check_name, to_regclass('public.pixel_portfolio_items') is not null as ok;
 select 'table_exists_pixel_offers' as check_name, to_regclass('public.pixel_offers') is not null as ok;
 select 'table_exists_pixel_orders' as check_name, to_regclass('public.pixel_orders') is not null as ok;
 select 'table_exists_pixel_quotes' as check_name, to_regclass('public.pixel_quotes') is not null as ok;
@@ -23,9 +24,17 @@ select 'rls_enabled_pixel_services' as check_name, relrowsecurity as ok
 from pg_class
 where oid = 'public.pixel_services'::regclass;
 
+select 'rls_enabled_pixel_portfolio_items' as check_name, relrowsecurity as ok
+from pg_class
+where oid = 'public.pixel_portfolio_items'::regclass;
+
 select 'policy_count_pixel_services' as check_name, count(*) >= 2 as ok
 from pg_policies
 where schemaname = 'public' and tablename = 'pixel_services';
+
+select 'policy_count_pixel_portfolio_items' as check_name, count(*) >= 2 as ok
+from pg_policies
+where schemaname = 'public' and tablename = 'pixel_portfolio_items';
 
 select 'policy_count_pixel_offers' as check_name, count(*) >= 2 as ok
 from pg_policies

@@ -289,6 +289,98 @@
             </section>
 
             <section class="bg-[#121212] border border-[#222] rounded-2xl p-6 md:p-8">
+                <h2 class="text-2xl font-black text-white mb-2">إدارة معرض الأعمال Portfolio</h2>
+                <p class="text-sm text-gray-500 mb-6">أضف نماذج صفحات هبوط، تصميم، أو فيديو لتظهر تلقائياً في قسم PORTFOLIO بالصفحة الرئيسية.</p>
+
+                <div id="portfolioAdminMsgBox" class="msg-box mb-4" aria-live="polite"></div>
+
+                <form id="portfolioForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <input id="portfolioEditId" type="hidden">
+
+                    <select id="portfolioCategory" class="input-luxury" required>
+                        <option value="web">مواقع وصفحات هبوط</option>
+                        <option value="design">تصميم جرافيك وشعارات</option>
+                        <option value="video">مونتاج فيديوهات</option>
+                        <option value="custom">أخرى</option>
+                    </select>
+
+                    <select id="portfolioCardStyle" class="input-luxury" required>
+                        <option value="standard">Standard Card</option>
+                        <option value="cta">CTA Card</option>
+                    </select>
+
+                    <input id="portfolioTitle" class="input-luxury md:col-span-2" placeholder="عنوان العنصر" required>
+                    <textarea id="portfolioDescription" class="input-luxury md:col-span-2" placeholder="وصف العنصر" required></textarea>
+
+                    <input id="portfolioSortOrder" type="number" min="1" value="1" class="input-luxury" placeholder="ترتيب الظهور" required>
+
+                    <div class="flex items-center gap-4">
+                        <label class="flex items-center gap-2 text-sm text-gray-300">
+                            <input id="portfolioEnabled" type="checkbox" checked>
+                            نشط
+                        </label>
+                        <label class="flex items-center gap-2 text-sm text-gray-300">
+                            <input id="portfolioStaticCard" type="checkbox">
+                            ثابت (لا يتأثر بالفلترة)
+                        </label>
+                    </div>
+
+                    <hr class="md:col-span-2 border-white/10 my-1">
+                    <h3 class="md:col-span-2 text-lg font-bold text-gray-300">الوسائط</h3>
+
+                    <select id="portfolioMediaType" class="input-luxury" required>
+                        <option value="image">صورة</option>
+                        <option value="placeholder">Placeholder</option>
+                    </select>
+
+                    <div id="portfolioBadgeWrap">
+                        <input id="portfolioBadgeText" class="input-luxury" placeholder="نص الـ Placeholder (مثال: Design Preview)">
+                    </div>
+
+                    <div id="portfolioImageUrlWrap" class="md:col-span-2">
+                        <input id="portfolioImageUrl" class="input-luxury font-en" dir="ltr" placeholder="رابط الصورة (URL)">
+                    </div>
+
+                    <div id="portfolioImageAltWrap" class="md:col-span-2">
+                        <input id="portfolioImageAlt" class="input-luxury" placeholder="النص البديل للصورة (Image Alt)">
+                    </div>
+
+                    <hr class="md:col-span-2 border-white/10 my-1">
+                    <h3 class="md:col-span-2 text-lg font-bold text-gray-300">الإجراء عند الضغط</h3>
+
+                    <select id="portfolioActionType" class="input-luxury" required>
+                        <option value="external_link">رابط خارجي (يفتح معاينة)</option>
+                        <option value="internal_link">رابط داخلي</option>
+                        <option value="open_order_modal">فتح نموذج الطلب</option>
+                    </select>
+
+                    <input id="portfolioActionLabel" class="input-luxury" placeholder="نص الزر (مثال: معاينة حية)">
+
+                    <div id="portfolioActionUrlWrap" class="md:col-span-2">
+                        <input id="portfolioActionUrl" class="input-luxury font-en" dir="ltr" placeholder="الرابط (مثال: /car أو service-logo-design.html)">
+                    </div>
+
+                    <div id="portfolioOpenInNewTabWrap" class="md:col-span-2">
+                        <label class="flex items-center gap-2 text-sm text-gray-300">
+                            <input id="portfolioOpenInNewTab" type="checkbox" checked>
+                            فتح الرابط في تبويب جديد (للروابط الخارجية)
+                        </label>
+                    </div>
+
+                    <div id="portfolioOrderServiceWrap" class="md:col-span-2">
+                        <input id="portfolioOrderServiceName" class="input-luxury" placeholder="اسم الخدمة داخل نموذج الطلب (اختياري)">
+                    </div>
+
+                    <div class="md:col-span-2 flex gap-3">
+                        <button id="portfolioSubmitBtn" class="btn-filled-red py-3 rounded-lg font-black flex-1" type="submit">حفظ العنصر</button>
+                        <button id="portfolioCancelEditBtn" class="px-4 py-3 rounded-lg border border-white/20 text-gray-300 text-sm hidden" type="button">إلغاء التعديل</button>
+                    </div>
+                </form>
+
+                <div id="portfolioList" class="space-y-3"></div>
+            </section>
+
+            <section class="bg-[#121212] border border-[#222] rounded-2xl p-6 md:p-8">
                 <h2 class="text-2xl font-black text-white mb-2">نظام الخصومات</h2>
                 <p class="text-sm text-gray-500 mb-6">خصم عام + خصومات مخصصة حسب البريد.</p>
 

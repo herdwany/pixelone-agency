@@ -66,11 +66,36 @@ create table if not exists public.pixel_invoices (
     created_at timestamptz not null default now()
 );
 
+create table if not exists public.pixel_portfolio_items (
+    id text primary key,
+    title_ar text not null,
+    description_ar text not null default '',
+    category text not null default 'web' check (category in ('web', 'design', 'video', 'custom')),
+    card_style text not null default 'standard' check (card_style in ('standard', 'cta')),
+    is_static_card boolean not null default false,
+    media_type text not null default 'image' check (media_type in ('image', 'placeholder')),
+    image_url text,
+    image_alt_ar text,
+    badge_text_ar text not null default '',
+    action_type text not null default 'external_link' check (action_type in ('external_link', 'internal_link', 'open_order_modal')),
+    action_label_ar text not null default '',
+    action_url text not null default '',
+    open_in_new_tab boolean not null default true,
+    order_service_name_ar text not null default '',
+    sort_order integer not null default 999,
+    enabled boolean not null default true,
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now()
+);
+
 -- ------------------------------------------------------------
 -- Optional indexes (safe)
 -- ------------------------------------------------------------
 create index if not exists idx_pixel_services_popularity on public.pixel_services (popularity);
 create index if not exists idx_pixel_services_enabled on public.pixel_services (enabled);
+create index if not exists idx_pixel_portfolio_items_sort_order on public.pixel_portfolio_items (sort_order);
+create index if not exists idx_pixel_portfolio_items_enabled on public.pixel_portfolio_items (enabled);
+create index if not exists idx_pixel_portfolio_items_category on public.pixel_portfolio_items (category);
 create index if not exists idx_pixel_offers_enabled on public.pixel_offers (enabled);
 create index if not exists idx_pixel_offers_target_email on public.pixel_offers (lower(target_email));
 create index if not exists idx_pixel_orders_user_email on public.pixel_orders (lower(user_email));
@@ -97,6 +122,11 @@ create trigger trg_pixel_offers_updated_at
 before update on public.pixel_offers
 for each row execute function public.set_updated_at();
 
+drop trigger if exists trg_pixel_portfolio_items_updated_at on public.pixel_portfolio_items;
+create trigger trg_pixel_portfolio_items_updated_at
+before update on public.pixel_portfolio_items
+for each row execute function public.set_updated_at();
+
 drop trigger if exists trg_pixel_disputes_updated_at on public.pixel_disputes;
 create trigger trg_pixel_disputes_updated_at
 before update on public.pixel_disputes
@@ -112,6 +142,7 @@ for each row execute function public.set_updated_at();
 -- ------------------------------------------------------------
 alter table public.pixel_admin_users enable row level security;
 alter table public.pixel_services enable row level security;
+alter table public.pixel_portfolio_items enable row level security;
 alter table public.pixel_offers enable row level security;
 alter table public.pixel_orders enable row level security;
 alter table public.pixel_quotes enable row level security;
@@ -153,6 +184,27 @@ using (public.is_admin_email());
 drop policy if exists pixel_services_write_admin on public.pixel_services;
 create policy pixel_services_write_admin
 on public.pixel_services
+for all
+using (public.is_admin_email())
+with check (public.is_admin_email());
+
+-- pixel_portfolio_items
+
+drop policy if exists pixel_portfolio_items_select_public_enabled on public.pixel_portfolio_items;
+create policy pixel_portfolio_items_select_public_enabled
+on public.pixel_portfolio_items
+for select
+using (enabled = true);
+
+drop policy if exists pixel_portfolio_items_select_admin_all on public.pixel_portfolio_items;
+create policy pixel_portfolio_items_select_admin_all
+on public.pixel_portfolio_items
+for select
+using (public.is_admin_email());
+
+drop policy if exists pixel_portfolio_items_write_admin on public.pixel_portfolio_items;
+create policy pixel_portfolio_items_write_admin
+on public.pixel_portfolio_items
 for all
 using (public.is_admin_email())
 with check (public.is_admin_email());

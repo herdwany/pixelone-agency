@@ -8,6 +8,10 @@ Examples:
 - `about.html` -> `content/about.ar.json`
 - `services.html` -> `content/services.ar.json`
 
+Home portfolio section:
+
+- `index.html` portfolio showcase -> `content/index.portfolio.ar.json`
+
 ## What to edit
 
 Inside each language JSON file:
@@ -23,6 +27,7 @@ Inside each language JSON file:
 - Keep the same `texts` array length unless you also change the HTML structure.
 - If you changed HTML text structure, regenerate JSON files.
 - Use the admin dashboard i18n section to save runtime overrides into Supabase.
+- For `index.portfolio.ar.json`, keep keys inside `texts` unchanged and edit values only.
 
 ## Regenerate command
 
