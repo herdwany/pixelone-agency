@@ -149,15 +149,15 @@ if (bookingForm && formFeedback) {
 
     const data = new FormData(bookingForm);
     const name = String(data.get("name") || "").trim();
-    const people = String(data.get("people") || data.get("guests") || "").trim();
+    const guests = String(data.get("guests") || data.get("people") || "").trim();
     const time = String(data.get("time") || "").trim();
     const phone = String(data.get("phone") || "").trim();
     const date = String(data.get("date") || "").trim();
     const notes = String(data.get("notes") || "").trim();
 
-    // Required WhatsApp payload fields as requested: name, time, and people.
-    if (!name || !time || !people) {
-      formFeedback.textContent = "يرجى إدخال الاسم، الوقت، وعدد الأشخاص.";
+    // Build the WhatsApp payload from core booking fields.
+    if (!name || !date || !time || !guests) {
+      formFeedback.textContent = "يرجى إدخال الاسم، التاريخ، الوقت، وعدد الأشخاص.";
       formFeedback.classList.remove("success");
       formFeedback.classList.add("error");
       bookingForm.reportValidity();
@@ -169,13 +169,10 @@ if (bookingForm && formFeedback) {
     const messageLines = [
       "مرحباً مطعم سدرة، أود حجز طاولة:",
       `• الاسم: ${name}`,
+      `• التاريخ: ${date}`,
       `• الوقت: ${time}`,
-      `• عدد الأشخاص: ${people}`,
+      `• عدد الأشخاص: ${guests}`,
     ];
-
-    if (date) {
-      messageLines.push(`• التاريخ: ${date}`);
-    }
 
     if (phone) {
       messageLines.push(`• الهاتف: ${phone}`);
@@ -195,7 +192,14 @@ if (bookingForm && formFeedback) {
       window.location.href = whatsappUrl;
     }
 
-    formFeedback.textContent = "تم تجهيز رسالة الحجز على واتساب.";
+    formFeedback.innerHTML = "";
+    const fallbackText = document.createTextNode("إذا لم يفتح واتساب تلقائياً، ");
+    const fallbackLink = document.createElement("a");
+    fallbackLink.href = whatsappUrl;
+    fallbackLink.target = "_blank";
+    fallbackLink.rel = "noopener noreferrer";
+    fallbackLink.textContent = "اضغط هنا لإرسال الطلب";
+    formFeedback.append(fallbackText, fallbackLink);
     formFeedback.classList.remove("error");
     formFeedback.classList.add("success");
 
