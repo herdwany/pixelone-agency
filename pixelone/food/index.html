@@ -1,515 +1,492 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="مطعم سدرة - مطبخ عربي معاصر، حجوزات مباشرة، طلبات أونلاين، وتجربة ضيافة دافئة في قلب المدينة."
-    />
-    <title>مطعم سدرة | مطبخ عربي معاصر</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <a class="skip-link" href="#main-content">تخطي إلى المحتوى</a>
 
-    <header class="site-header" id="top">
-      <div class="top-strip">
-        <p>الحجز المباشر أسرع: <a href="tel:+966114455990">+966 11 445 5990</a></p>
-        <p>فرع العليا - الرياض | يوميًا من 1:00 ظهرًا حتى 12:30 ليلًا</p>
-      </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="مطعم سدرة - مطبخ عربي معاصر، حجوزات مباشرة، طلبات أونلاين، وتجربة ضيافة دافئة في قلب المدينة." />
+  <title>مطعم سدرة | مطبخ عربي معاصر</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=20260421-ux3" />
+</head>
 
-      <div class="nav-wrap">
-        <a href="#top" class="brand" aria-label="العودة للأعلى">
-          <span class="brand-mark">س</span>
-          <span class="brand-text">
-            <strong>سدرة</strong>
-            <small>مطبخ عربي معاصر</small>
-          </span>
-        </a>
+<body>
+  <a class="skip-link" href="#main-content">تخطي إلى المحتوى</a>
 
-        <button class="menu-toggle" aria-expanded="false" aria-controls="main-nav">
-          <span></span>
-          <span></span>
-          <span></span>
-          <span class="menu-label">القائمة</span>
-        </button>
+  <header class="site-header" id="top">
+    <div class="top-strip">
+      <p>الحجز المباشر أسرع: <a href="tel:+212537445990" class="phone-link">+212 537 44 59 90</a></p>
+      <p>تمارة - الرباط | يوميًا من 1:00 ظهرًا حتى 12:30 ليلًا</p>
+    </div>
 
-        <nav id="main-nav" class="main-nav" aria-label="التنقل الرئيسي">
+    <div class="nav-wrap">
+      <a href="#top" class="brand" aria-label="العودة للأعلى">
+        <span class="brand-mark">س</span>
+        <span class="brand-text">
+          <strong>سدرة</strong>
+          <small>مطبخ عربي معاصر</small>
+        </span>
+      </a>
+
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="main-nav" aria-label="فتح القائمة">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span class="menu-label">القائمة</span>
+      </button>
+
+      <nav id="main-nav" class="main-nav" aria-label="التنقل الرئيسي">
+        <div class="nav-links">
           <a href="#story">قصتنا</a>
           <a href="#menu">الأطباق</a>
           <a href="#experience">التجربة</a>
           <a href="#booking">الحجز</a>
           <a href="#gallery">الصور</a>
           <a href="#location">الموقع</a>
-        </nav>
-
-        <a href="#booking" class="btn btn-primary header-cta">احجز طاولتك</a>
-      </div>
-    </header>
-
-    <main id="main-content">
-      <section class="hero" id="hero" aria-labelledby="hero-title">
-        <div class="hero-media">
-          <img
-            src="https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=1400&q=80"
-            alt="أطباق عربية معاصرة مقدمة على طاولة خشبية"
-          />
         </div>
 
-        <div class="hero-content">
-          <p class="eyebrow">نكهات عربية بلمسة مدينة حديثة</p>
-          <h1 id="hero-title">مذاق يليق بالمناسبة العادية قبل الكبيرة</h1>
-          <p class="hero-copy">
-            في سدرة نشتغل على تفاصيل الطبق من مصدر المكون إلى طريقة التقديم.
-            تحجز في أقل من دقيقة، وتختار بين جلسة هادئة داخلية أو طاولة خارجية مطلة.
+        <!-- Quick actions surface top tasks first on mobile (billboard pattern) -->
+        <div class="nav-quick-actions" aria-label="وصول سريع">
+          <a href="#booking" class="nav-quick nav-quick-primary">حجز سريع</a>
+          <a href="tel:+212537445990" class="nav-quick">اتصال مباشر</a>
+        </div>
+      </nav>
+
+      <a href="#booking" class="btn btn-primary header-cta">احجز طاولتك</a>
+    </div>
+
+    <!-- Backdrop improves mobile menu focus and enables outside-click close -->
+    <button class="nav-backdrop" type="button" hidden aria-label="إغلاق القائمة"></button>
+  </header>
+
+  <main id="main-content">
+    <section class="hero" id="hero" aria-labelledby="hero-title">
+      <div class="hero-media">
+        <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=1400&q=80"
+          alt="أطباق عربية معاصرة مقدمة على طاولة خشبية" />
+      </div>
+
+      <div class="hero-content">
+        <p class="eyebrow">نكهات عربية بلمسة مدينة حديثة</p>
+        <h1 id="hero-title">مذاق يليق بالمناسبة العادية قبل الكبيرة</h1>
+        <p class="hero-copy">
+          في سدرة نشتغل على تفاصيل الطبق من مصدر المكون إلى طريقة التقديم.
+          تحجز في أقل من دقيقة، وتختار بين جلسة هادئة داخلية أو طاولة خارجية مطلة.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#booking" class="btn btn-primary">احجز الآن</a>
+          <a href="#menu" class="btn btn-outline">استعرض المينيو</a>
+        </div>
+
+        <ul class="hero-meta" aria-label="معلومات سريعة">
+          <li>
+            <strong>4.8/5</strong>
+            <span>متوسط تقييم 1,900+ زيارة</span>
+          </li>
+          <li>
+            <strong>15 دقيقة</strong>
+            <span>متوسط تجهيز الطلبات السريعة</span>
+          </li>
+          <li>
+            <strong>غرفة خاصة</strong>
+            <span>لجلسات العائلة والمناسبات الصغيرة</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section story" id="story" aria-labelledby="story-title">
+      <div class="section-head reveal">
+        <p class="eyebrow">عن المطعم</p>
+        <h2 id="story-title">من مطبخ البيت إلى طاولة المدينة</h2>
+      </div>
+
+      <div class="story-grid">
+        <article class="story-text reveal">
+          <p>
+            بدأت سدرة كفكرة بسيطة: أطباق نحبها فعلًا، لكن بتقديم أخف وأنظف يناسب
+            إيقاع اليوم. نعتمد على موردين محليين للخضار واللحم، ونحضّر الصلصات
+            يوميًا داخل المطبخ بدل المنتجات الجاهزة.
           </p>
+          <p>
+            كل طبق في المينيو مرّ بتجارب تذوق فعلية مع ضيوفنا قبل اعتماده. لذلك
+            ستجد في كل طبق توازنًا واضحًا بين النكهة والملمس، وليس مجرد شكل جميل.
+          </p>
+          <blockquote>
+            "هدفنا أن يخرج الضيف شبعان وراضٍ، وليس فقط مع صورة لطيفة للطاولة."
+            <cite>الشيف التنفيذي: ريان السديري</cite>
+          </blockquote>
+        </article>
 
-          <div class="hero-actions">
-            <a href="#booking" class="btn btn-primary">احجز الآن</a>
-            <a href="#menu" class="btn btn-outline">استعرض المينيو</a>
+        <aside class="story-cards reveal">
+          <div class="mini-card warm">
+            <h3>المكونات</h3>
+            <p>توريد يومي للخضار، خبز مخمر طبيعي، وتوابل مطحونة داخل المطعم.</p>
           </div>
+          <div class="mini-card olive">
+            <h3>الطهو</h3>
+            <p>شواية فحم، أفران حجرية، وتحكم دقيق في الحرارة لكل طبق.</p>
+          </div>
+          <div class="mini-card image-card">
+            <img src="https://images.unsplash.com/photo-1496116218417-1a781b1c416c?auto=format&fit=crop&w=900&q=80"
+              alt="الشيف يضع اللمسات الأخيرة على طبق رئيسي" />
+          </div>
+        </aside>
+      </div>
+    </section>
 
-          <ul class="hero-meta" aria-label="معلومات سريعة">
-            <li>
-              <strong>4.8/5</strong>
-              <span>متوسط تقييم 1,900+ زيارة</span>
-            </li>
-            <li>
-              <strong>15 دقيقة</strong>
-              <span>متوسط تجهيز الطلبات السريعة</span>
-            </li>
-            <li>
-              <strong>غرفة خاصة</strong>
-              <span>لجلسات العائلة والمناسبات الصغيرة</span>
-            </li>
+    <section class="section featured-menu" id="menu" aria-labelledby="menu-title">
+      <div class="section-head reveal">
+        <p class="eyebrow">المينيو</p>
+        <h2 id="menu-title">أطباقنا الأكثر طلبًا</h2>
+        <p>
+          اختيارات مبنية على ما يعود إليه الضيوف باستمرار. الأسعار شاملة الضريبة.
+        </p>
+      </div>
+
+      <div class="menu-filters reveal" role="tablist" aria-label="تصنيفات المينيو">
+        <button class="filter-btn is-active" data-filter="all" role="tab">الكل</button>
+        <button class="filter-btn" data-filter="grill" role="tab">مشاوي</button>
+        <button class="filter-btn" data-filter="main" role="tab">أطباق رئيسية</button>
+        <button class="filter-btn" data-filter="starter" role="tab">مقبلات</button>
+        <button class="filter-btn" data-filter="dessert" role="tab">حلويات</button>
+      </div>
+
+      <div class="menu-grid">
+        <article class="dish-card hero-dish reveal" data-category="main grill">
+          <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1100&q=80"
+            alt="ريش غنم مشوية مع صوص دبس الرمان" />
+          <div class="dish-body">
+            <h3>ريش الغنم المدخنة</h3>
+            <p>تتبيلة سبع ساعات، فحم هادئ، صوص دبس رمان، وخضار مشوية.</p>
+            <div class="dish-foot">
+              <span>210 د.م</span>
+              <small>الأكثر طلبًا مساء الخميس</small>
+            </div>
+          </div>
+        </article>
+
+        <article class="dish-card reveal" data-category="starter">
+          <img src="https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=800&q=80"
+            alt="حمص دافئ مع زيت زيتون وبابريكا" />
+          <div class="dish-body">
+            <h3>حمص محمّص بالكمون</h3>
+            <p>يُقدّم دافئًا مع زيت زيتون بكر وخبز تنور طازج.</p>
+            <div class="dish-foot">
+              <span>48 د.م</span>
+              <small>مناسب للمشاركة</small>
+            </div>
+          </div>
+        </article>
+
+        <article class="dish-card reveal" data-category="main">
+          <img src="https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=900&q=80"
+            alt="مكرونة كريمية مع دجاج مشوي" />
+          <div class="dish-body">
+            <h3>مكرونة الكريمة المدخنة</h3>
+            <p>صوص بارميزان خفيف، دجاج مشوي، وفلفل أسود مطحون لحظيًا.</p>
+            <div class="dish-foot">
+              <span>125 د.م</span>
+              <small>خيار الغداء المفضل</small>
+            </div>
+          </div>
+        </article>
+
+        <article class="dish-card reveal" data-category="grill main">
+          <img src="https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&w=900&q=80"
+            alt="كباب مشوي على الفحم مع أرز بسمتي" />
+          <div class="dish-body">
+            <h3>كباب سدرة بالفحم</h3>
+            <p>خليط لحم طازج مع بصل مشوي وأرز بسمتي معطر.</p>
+            <div class="dish-foot">
+              <span>145 د.م</span>
+              <small>يصل ساخنًا حتى آخر لقمة</small>
+            </div>
+          </div>
+        </article>
+
+        <article class="dish-card reveal" data-category="starter">
+          <img src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=900&q=80"
+            alt="سلطة مشكلة مع جبن الماعز" />
+          <div class="dish-body">
+            <h3>سلطة الحديقة الدافئة</h3>
+            <p>جرجير، تين، جبن ماعز، وصوص عسل خردل متوازن.</p>
+            <div class="dish-foot">
+              <span>58 د.م</span>
+              <small>خفيفة قبل الطبق الرئيسي</small>
+            </div>
+          </div>
+        </article>
+
+        <article class="dish-card reveal" data-category="dessert">
+          <img src="https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=900&q=80"
+            alt="كيكة تمر مع صوص كراميل" />
+          <div class="dish-body">
+            <h3>كيكة التمر الساخنة</h3>
+            <p>كراميل مملح خفيف، آيسكريم فانيلا، وتقديم مباشر من الفرن.</p>
+            <div class="dish-foot">
+              <span>52 د.م</span>
+              <small>تنفد غالبًا قبل الإغلاق</small>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section experience" id="experience" aria-labelledby="experience-title">
+      <div class="section-head reveal">
+        <p class="eyebrow">الخدمة والتجربة</p>
+        <h2 id="experience-title">تفاصيل صغيرة تفرق في الزيارة</h2>
+      </div>
+
+      <div class="experience-layout">
+        <article class="experience-block reveal">
+          <h3>جلسات مرنة</h3>
+          <p>
+            طاولات هادئة للأفراد، جلسات عائلية، ومنطقة خارجية مهيأة لأمسيات نهاية
+            الأسبوع.
+          </p>
+        </article>
+
+        <article class="experience-block reveal">
+          <h3>مناسبات خاصة</h3>
+          <p>
+            غرفة خاصة تستوعب حتى 18 شخصًا مع قائمة مقترحة مسبقًا وخدمة مخصصة.
+          </p>
+        </article>
+
+        <article class="experience-block reveal">
+          <h3>طلبات الشركات</h3>
+          <p>
+            تجهيز بوكسات غداء واجتماعات مع تغليف أنيق وتسليم في الوقت داخل نطاق
+            المدينة.
+          </p>
+        </article>
+
+        <article class="experience-note reveal">
+          <h3>سياسة الحجز</h3>
+          <ul>
+            <li>تأكيد الحجز عبر واتساب خلال 5 دقائق.</li>
+            <li>الاحتفاظ بالطاولة 15 دقيقة من موعد الحجز.</li>
+            <li>للمجموعات +8 أشخاص، يفضّل الحجز قبل 24 ساعة.</li>
           </ul>
-        </div>
-      </section>
+        </article>
+      </div>
+    </section>
 
-      <section class="section story" id="story" aria-labelledby="story-title">
-        <div class="section-head reveal">
-          <p class="eyebrow">عن المطعم</p>
-          <h2 id="story-title">من مطبخ البيت إلى طاولة المدينة</h2>
-        </div>
+    <section class="section booking" id="booking" aria-labelledby="booking-title">
+      <div class="booking-info reveal">
+        <p class="eyebrow">الحجز والطلب</p>
+        <h2 id="booking-title">احجز في أقل من دقيقة</h2>
+        <p>
+          اختصر الوقت على الباب. اختر التاريخ والوقت، وسنتواصل مباشرة لتأكيد
+          تفاصيل الطاولة.
+        </p>
 
-        <div class="story-grid">
-          <article class="story-text reveal">
-            <p>
-              بدأت سدرة كفكرة بسيطة: أطباق نحبها فعلًا، لكن بتقديم أخف وأنظف يناسب
-              إيقاع اليوم. نعتمد على موردين محليين للخضار واللحم، ونحضّر الصلصات
-              يوميًا داخل المطبخ بدل المنتجات الجاهزة.
+        <div class="contact-grid">
+          <div>
+            <h3>للحجز السريع</h3>
+            <a href="tel:+212537445990" class="phone-link">+212 537 44 59 90</a>
+          </div>
+          <div>
+            <h3>واتساب</h3>
+            <a href="https://wa.me/212661223344" target="_blank" rel="noopener">راسلنا الآن</a>
+          </div>
+          <div>
+            <h3>طلبات أونلاين</h3>
+            <p class="delivery-links">
+              <a href="https://glovoapp.com/ma" target="_blank" rel="noopener">Glovo</a>
+              <a href="https://www.jumia.ma/" target="_blank" rel="noopener">Jumia</a>
+              <a href="https://www.careem.com/" target="_blank" rel="noopener">Careem</a>
             </p>
-            <p>
-              كل طبق في المينيو مرّ بتجارب تذوق فعلية مع ضيوفنا قبل اعتماده. لذلك
-              ستجد في كل طبق توازنًا واضحًا بين النكهة والملمس، وليس مجرد شكل جميل.
-            </p>
-            <blockquote>
-              "هدفنا أن يخرج الضيف شبعان وراضٍ، وليس فقط مع صورة لطيفة للطاولة."
-              <cite>الشيف التنفيذي: ريان السديري</cite>
-            </blockquote>
-          </article>
-
-          <aside class="story-cards reveal">
-            <div class="mini-card warm">
-              <h3>المكونات</h3>
-              <p>توريد يومي للخضار، خبز مخمر طبيعي، وتوابل مطحونة داخل المطعم.</p>
-            </div>
-            <div class="mini-card olive">
-              <h3>الطهو</h3>
-              <p>شواية فحم، أفران حجرية، وتحكم دقيق في الحرارة لكل طبق.</p>
-            </div>
-            <div class="mini-card image-card">
-              <img
-                src="https://images.unsplash.com/photo-1496116218417-1a781b1c416c?auto=format&fit=crop&w=900&q=80"
-                alt="الشيف يضع اللمسات الأخيرة على طبق رئيسي"
-              />
-            </div>
-          </aside>
-        </div>
-      </section>
-
-      <section class="section featured-menu" id="menu" aria-labelledby="menu-title">
-        <div class="section-head reveal">
-          <p class="eyebrow">المينيو</p>
-          <h2 id="menu-title">أطباقنا الأكثر طلبًا</h2>
-          <p>
-            اختيارات مبنية على ما يعود إليه الضيوف باستمرار. الأسعار شاملة الضريبة.
-          </p>
-        </div>
-
-        <div class="menu-filters reveal" role="tablist" aria-label="تصنيفات المينيو">
-          <button class="filter-btn is-active" data-filter="all" role="tab">الكل</button>
-          <button class="filter-btn" data-filter="grill" role="tab">مشاوي</button>
-          <button class="filter-btn" data-filter="main" role="tab">أطباق رئيسية</button>
-          <button class="filter-btn" data-filter="starter" role="tab">مقبلات</button>
-          <button class="filter-btn" data-filter="dessert" role="tab">حلويات</button>
-        </div>
-
-        <div class="menu-grid">
-          <article class="dish-card hero-dish reveal" data-category="main grill">
-            <img
-              src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1100&q=80"
-              alt="ريش غنم مشوية مع صوص دبس الرمان"
-            />
-            <div class="dish-body">
-              <h3>ريش الغنم المدخنة</h3>
-              <p>تتبيلة سبع ساعات، فحم هادئ، صوص دبس رمان، وخضار مشوية.</p>
-              <div class="dish-foot">
-                <span>92 ر.س</span>
-                <small>الأكثر طلبًا مساء الخميس</small>
-              </div>
-            </div>
-          </article>
-
-          <article class="dish-card reveal" data-category="starter">
-            <img
-              src="https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=800&q=80"
-              alt="حمص دافئ مع زيت زيتون وبابريكا"
-            />
-            <div class="dish-body">
-              <h3>حمص محمّص بالكمون</h3>
-              <p>يُقدّم دافئًا مع زيت زيتون بكر وخبز تنور طازج.</p>
-              <div class="dish-foot">
-                <span>28 ر.س</span>
-                <small>مناسب للمشاركة</small>
-              </div>
-            </div>
-          </article>
-
-          <article class="dish-card reveal" data-category="main">
-            <img
-              src="https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=900&q=80"
-              alt="مكرونة كريمية مع دجاج مشوي"
-            />
-            <div class="dish-body">
-              <h3>مكرونة الكريمة المدخنة</h3>
-              <p>صوص بارميزان خفيف، دجاج مشوي، وفلفل أسود مطحون لحظيًا.</p>
-              <div class="dish-foot">
-                <span>64 ر.س</span>
-                <small>خيار الغداء المفضل</small>
-              </div>
-            </div>
-          </article>
-
-          <article class="dish-card reveal" data-category="grill main">
-            <img
-              src="https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&w=900&q=80"
-              alt="كباب مشوي على الفحم مع أرز بسمتي"
-            />
-            <div class="dish-body">
-              <h3>كباب سدرة بالفحم</h3>
-              <p>خليط لحم طازج مع بصل مشوي وأرز بسمتي معطر.</p>
-              <div class="dish-foot">
-                <span>72 ر.س</span>
-                <small>يصل ساخنًا حتى آخر لقمة</small>
-              </div>
-            </div>
-          </article>
-
-          <article class="dish-card reveal" data-category="starter">
-            <img
-              src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=900&q=80"
-              alt="سلطة مشكلة مع جبن الماعز"
-            />
-            <div class="dish-body">
-              <h3>سلطة الحديقة الدافئة</h3>
-              <p>جرجير، تين، جبن ماعز، وصوص عسل خردل متوازن.</p>
-              <div class="dish-foot">
-                <span>34 ر.س</span>
-                <small>خفيفة قبل الطبق الرئيسي</small>
-              </div>
-            </div>
-          </article>
-
-          <article class="dish-card reveal" data-category="dessert">
-            <img
-              src="https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=900&q=80"
-              alt="كيكة تمر مع صوص كراميل"
-            />
-            <div class="dish-body">
-              <h3>كيكة التمر الساخنة</h3>
-              <p>كراميل مملح خفيف، آيسكريم فانيلا، وتقديم مباشر من الفرن.</p>
-              <div class="dish-foot">
-                <span>31 ر.س</span>
-                <small>تنفد غالبًا قبل الإغلاق</small>
-              </div>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section class="section experience" id="experience" aria-labelledby="experience-title">
-        <div class="section-head reveal">
-          <p class="eyebrow">الخدمة والتجربة</p>
-          <h2 id="experience-title">تفاصيل صغيرة تفرق في الزيارة</h2>
-        </div>
-
-        <div class="experience-layout">
-          <article class="experience-block reveal">
-            <h3>جلسات مرنة</h3>
-            <p>
-              طاولات هادئة للأفراد، جلسات عائلية، ومنطقة خارجية مهيأة لأمسيات نهاية
-              الأسبوع.
-            </p>
-          </article>
-
-          <article class="experience-block reveal">
-            <h3>مناسبات خاصة</h3>
-            <p>
-              غرفة خاصة تستوعب حتى 18 شخصًا مع قائمة مقترحة مسبقًا وخدمة مخصصة.
-            </p>
-          </article>
-
-          <article class="experience-block reveal">
-            <h3>طلبات الشركات</h3>
-            <p>
-              تجهيز بوكسات غداء واجتماعات مع تغليف أنيق وتسليم في الوقت داخل نطاق
-              المدينة.
-            </p>
-          </article>
-
-          <article class="experience-note reveal">
-            <h3>سياسة الحجز</h3>
-            <ul>
-              <li>تأكيد الحجز برسالة خلال 5 دقائق.</li>
-              <li>الاحتفاظ بالطاولة 15 دقيقة من موعد الحجز.</li>
-              <li>للمجموعات +8 أشخاص، يفضّل الحجز قبل 24 ساعة.</li>
-            </ul>
-          </article>
-        </div>
-      </section>
-
-      <section class="section booking" id="booking" aria-labelledby="booking-title">
-        <div class="booking-info reveal">
-          <p class="eyebrow">الحجز والطلب</p>
-          <h2 id="booking-title">احجز في أقل من دقيقة</h2>
-          <p>
-            اختصر الوقت على الباب. اختر التاريخ والوقت، وسنتواصل مباشرة لتأكيد
-            تفاصيل الطاولة.
-          </p>
-
-          <div class="contact-grid">
-            <div>
-              <h3>للحجز السريع</h3>
-              <a href="tel:+966114455990">+966 11 445 5990</a>
-            </div>
-            <div>
-              <h3>واتساب</h3>
-              <a href="https://wa.me/966114455990" target="_blank" rel="noopener">راسلنا الآن</a>
-            </div>
-            <div>
-              <h3>طلبات أونلاين</h3>
-              <p class="delivery-links">
-                <a href="https://jahez.net" target="_blank" rel="noopener">جاهز</a>
-                <a href="https://hungerstation.com" target="_blank" rel="noopener">هنقرستيشن</a>
-                <a href="https://toyou.io" target="_blank" rel="noopener">تويو</a>
-              </p>
-            </div>
           </div>
         </div>
+      </div>
 
-        <form class="booking-form reveal" id="booking-form" novalidate>
-          <label>
-            الاسم
-            <input type="text" name="name" placeholder="الاسم الكامل" required />
-          </label>
-          <label>
-            رقم الجوال
-            <input type="tel" name="phone" placeholder="05xxxxxxxx" required />
-          </label>
-          <label>
-            عدد الأشخاص
-            <select name="guests" required>
-              <option value="">اختر</option>
-              <option>1 - 2</option>
-              <option>3 - 4</option>
-              <option>5 - 8</option>
-              <option>9+</option>
-            </select>
-          </label>
-          <label>
-            التاريخ
-            <input type="date" name="date" id="booking-date" required />
-          </label>
-          <label>
-            الوقت
-            <select name="time" required>
-              <option value="">اختر الوقت</option>
-              <option>01:00 م</option>
-              <option>03:00 م</option>
-              <option>06:00 م</option>
-              <option>08:00 م</option>
-              <option>10:00 م</option>
-            </select>
-          </label>
-          <label>
-            ملاحظات (اختياري)
-            <textarea name="notes" rows="3" placeholder="مثلاً: كرسي أطفال / مناسبة خاصة"></textarea>
-          </label>
+      <!-- data-whatsapp-number lets JS build a direct wa.me booking message -->
+      <form class="booking-form reveal" id="booking-form" data-whatsapp-number="212661223344" novalidate>
+        <label>
+          الاسم
+          <input type="text" name="name" placeholder="الاسم الكامل" autocomplete="name" required />
+        </label>
+        <label>
+          رقم الهاتف (اختياري)
+          <input type="tel" name="phone" placeholder="06xxxxxxxx" autocomplete="tel" inputmode="tel" />
+        </label>
+        <label>
+          عدد الأشخاص
+          <select name="people" required>
+            <option value="">اختر</option>
+            <option>1 - 2</option>
+            <option>3 - 4</option>
+            <option>5 - 8</option>
+            <option>9+</option>
+          </select>
+        </label>
+        <label>
+          التاريخ
+          <input type="date" name="date" id="booking-date" required />
+        </label>
+        <label>
+          الوقت
+          <select name="time" required>
+            <option value="">اختر الوقت</option>
+            <option>01:00 م</option>
+            <option>03:00 م</option>
+            <option>06:00 م</option>
+            <option>08:00 م</option>
+            <option>10:00 م</option>
+          </select>
+        </label>
+        <label>
+          ملاحظات (اختياري)
+          <textarea name="notes" rows="3" placeholder="مثلاً: كرسي أطفال / مناسبة خاصة"></textarea>
+        </label>
 
-          <button type="submit" class="btn btn-primary">تأكيد طلب الحجز</button>
-          <p class="form-feedback" id="form-feedback" role="status" aria-live="polite"></p>
-        </form>
-      </section>
+        <button type="submit" class="btn btn-primary">أرسل طلب الحجز عبر واتساب</button>
+        <p class="form-feedback" id="form-feedback" role="status" aria-live="polite"></p>
+      </form>
+    </section>
 
-      <section class="section testimonials" id="reviews" aria-labelledby="reviews-title">
-        <div class="section-head reveal">
-          <p class="eyebrow">آراء الضيوف</p>
-          <h2 id="reviews-title">تقييمات من زيارات فعلية</h2>
-        </div>
+    <section class="section testimonials" id="reviews" aria-labelledby="reviews-title">
+      <div class="section-head reveal">
+        <p class="eyebrow">آراء الضيوف</p>
+        <h2 id="reviews-title">تقييمات من زيارات فعلية</h2>
+      </div>
 
-        <div class="reviews-grid">
-          <article class="review review-featured reveal">
-            <p>
-              "المكان هادئ رغم الزحمة، والطلب وصل بنفس المستوى اللي انقدم فيه داخل
-              المطعم. ريش الغنم ممتازة فعلًا وليست مجرد طبق موسمي."
-            </p>
-            <footer>
-              <strong>نوف العتيبي</strong>
-              <span>زيارة عشاء - تقييم 5/5</span>
-            </footer>
-          </article>
-
-          <article class="review reveal">
-            <p>
-              "حجزت لمناسبة صغيرة ووفّروا لنا غرفة خاصة مرتبة جدًا. الخدمة سريعة
-              بدون إزعاج، والأكل طلع على دفعات ممتازة."
-            </p>
-            <footer>
-              <strong>سلمان الحربي</strong>
-              <span>مناسبة عائلية - تقييم 4.9/5</span>
-            </footer>
-          </article>
-
-          <article class="review reveal">
-            <p>
-              "أجمل نقطة عندهم الثبات في المستوى. جربت الغداء أكثر من مرة وكل مرة
-              نفس الجودة والنكهة."
-            </p>
-            <footer>
-              <strong>لينا الشمري</strong>
-              <span>غداء عمل - تقييم 4.8/5</span>
-            </footer>
-          </article>
-        </div>
-      </section>
-
-      <section class="section gallery" id="gallery" aria-labelledby="gallery-title">
-        <div class="section-head reveal">
-          <p class="eyebrow">المعرض</p>
-          <h2 id="gallery-title">صور من الأطباق وأجواء المكان</h2>
-        </div>
-
-        <div class="gallery-grid">
-          <figure class="reveal tall">
-            <img
-              src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=900&q=80"
-              alt="بيتزا ساخنة تقدم على طاولة خشبية"
-            />
-          </figure>
-          <figure class="reveal wide">
-            <img
-              src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=1200&q=80"
-              alt="طبق رئيسي مزين بالخضار والأعشاب"
-            />
-          </figure>
-          <figure class="reveal">
-            <img
-              src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=900&q=80"
-              alt="قاعة مطعم بإضاءة دافئة"
-            />
-          </figure>
-          <figure class="reveal">
-            <img
-              src="https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&w=900&q=80"
-              alt="طبق مشاوي مشكلة مع خبز طازج"
-            />
-          </figure>
-          <figure class="reveal wide">
-            <img
-              src="https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?auto=format&fit=crop&w=1200&q=80"
-              alt="حلويات مقدمة مع القهوة"
-            />
-          </figure>
-        </div>
-      </section>
-
-      <section class="section location" id="location" aria-labelledby="location-title">
-        <div class="location-copy reveal">
-          <p class="eyebrow">الموقع وساعات العمل</p>
-          <h2 id="location-title">قريب منك في العليا</h2>
+      <div class="reviews-grid">
+        <article class="review review-featured reveal">
           <p>
-            طريق الأمير محمد بن عبدالعزيز، العليا، الرياض. مواقف متاحة أمام المطعم
-            وخدمة صف سيارات في المساء.
+            "المكان هادئ رغم الزحمة، والطلب وصل بنفس المستوى اللي انقدم فيه داخل
+            المطعم. ريش الغنم ممتازة فعلًا وليست مجرد طبق موسمي."
           </p>
+          <footer>
+            <strong>نوف العتيبي</strong>
+            <span>زيارة عشاء - تقييم 5/5</span>
+          </footer>
+        </article>
 
-          <ul class="hours-list">
-            <li><strong>السبت - الأربعاء:</strong> 1:00 م - 12:00 ص</li>
-            <li><strong>الخميس:</strong> 1:00 م - 1:00 ص</li>
-            <li><strong>الجمعة:</strong> 2:00 م - 1:00 ص</li>
-          </ul>
-
-          <a
-            href="https://maps.google.com/?q=Prince+Mohammed+Bin+Abdulaziz+Road+Riyadh"
-            target="_blank"
-            rel="noopener"
-            class="btn btn-outline"
-            >افتح في الخرائط</a
-          >
-        </div>
-
-        <div class="map-card reveal">
-          <iframe
-            title="موقع مطعم سدرة"
-            src="https://www.google.com/maps?q=Prince%20Mohammed%20Bin%20Abdulaziz%20Road%20Riyadh&output=embed"
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"
-          ></iframe>
-        </div>
-      </section>
-
-      <section class="section final-cta" id="cta" aria-labelledby="cta-title">
-        <div class="cta-box reveal">
-          <p class="eyebrow">جاهز للزيارة؟</p>
-          <h2 id="cta-title">اختر وقتك الآن ودع الباقي علينا</h2>
+        <article class="review reveal">
           <p>
-            إذا كنت مستعجلًا، اتصل مباشرة وسنثبت الحجز فورًا. وإذا كنت تبحث عن عشاء
-            هادئ، احجز أونلاين واختر الجلسة المناسبة لك.
+            "حجزت لمناسبة صغيرة ووفّروا لنا غرفة خاصة مرتبة جدًا. الخدمة سريعة
+            بدون إزعاج، والأكل طلع على دفعات ممتازة."
           </p>
-          <div class="hero-actions">
-            <a href="#booking" class="btn btn-primary">احجز طاولة</a>
-            <a href="tel:+966114455990" class="btn btn-outline">اتصل الآن</a>
-          </div>
+          <footer>
+            <strong>سلمان الحربي</strong>
+            <span>مناسبة عائلية - تقييم 4.9/5</span>
+          </footer>
+        </article>
+
+        <article class="review reveal">
+          <p>
+            "أجمل نقطة عندهم الثبات في المستوى. جربت الغداء أكثر من مرة وكل مرة
+            نفس الجودة والنكهة."
+          </p>
+          <footer>
+            <strong>لينا الشمري</strong>
+            <span>غداء عمل - تقييم 4.8/5</span>
+          </footer>
+        </article>
+      </div>
+    </section>
+
+    <section class="section gallery" id="gallery" aria-labelledby="gallery-title">
+      <div class="section-head reveal">
+        <p class="eyebrow">المعرض</p>
+        <h2 id="gallery-title">صور من الأطباق وأجواء المكان</h2>
+      </div>
+
+      <div class="gallery-grid">
+        <figure class="reveal tall">
+          <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=900&q=80"
+            alt="بيتزا ساخنة تقدم على طاولة خشبية" />
+        </figure>
+        <figure class="reveal wide">
+          <img src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=1200&q=80"
+            alt="طبق رئيسي مزين بالخضار والأعشاب" />
+        </figure>
+        <figure class="reveal">
+          <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=900&q=80"
+            alt="قاعة مطعم بإضاءة دافئة" />
+        </figure>
+        <figure class="reveal">
+          <img src="https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&w=900&q=80"
+            alt="طبق مشاوي مشكلة مع خبز طازج" />
+        </figure>
+        <figure class="reveal wide">
+          <img src="https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?auto=format&fit=crop&w=1200&q=80"
+            alt="حلويات مقدمة مع القهوة" />
+        </figure>
+      </div>
+    </section>
+
+    <section class="section location" id="location" aria-labelledby="location-title">
+      <div class="location-copy reveal">
+        <p class="eyebrow">الموقع وساعات العمل</p>
+        <h2 id="location-title">قريب منك في تمارة</h2>
+        <p>
+          شارع الحسن الثاني، تمارة، قرب الرباط. مواقف متاحة أمام المطعم وخدمة
+          استقبال سريعة في المساء.
+        </p>
+
+        <ul class="hours-list">
+          <li><strong>السبت - الأربعاء:</strong> 1:00 م - 12:00 ص</li>
+          <li><strong>الخميس:</strong> 1:00 م - 1:00 ص</li>
+          <li><strong>الجمعة:</strong> 2:00 م - 1:00 ص</li>
+        </ul>
+
+        <a href="https://maps.google.com/?q=Avenue+Hassan+II+Temara" target="_blank" rel="noopener"
+          class="btn btn-outline">افتح في الخرائط</a>
+      </div>
+
+      <div class="map-card reveal">
+        <iframe title="موقع مطعم سدرة" src="https://www.google.com/maps?q=Avenue%20Hassan%20II%20Temara&output=embed"
+          loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </section>
+
+    <section class="section final-cta" id="cta" aria-labelledby="cta-title">
+      <div class="cta-box reveal">
+        <p class="eyebrow">جاهز للزيارة؟</p>
+        <h2 id="cta-title">اختر وقتك الآن ودع الباقي علينا</h2>
+        <p>
+          إذا كنت مستعجلًا، اتصل مباشرة وسنثبت الحجز فورًا. وإذا كنت تبحث عن عشاء
+          هادئ، احجز أونلاين واختر الجلسة المناسبة لك.
+        </p>
+        <div class="hero-actions">
+          <a href="#booking" class="btn btn-primary">احجز طاولة</a>
+          <a href="tel:+212537445990" class="btn btn-outline">اتصل الآن</a>
         </div>
-      </section>
-    </main>
-
-    <footer class="site-footer">
-      <div>
-        <strong>مطعم سدرة</strong>
-        <p>مطبخ عربي معاصر | الرياض</p>
       </div>
-      <div>
-        <a href="#menu">المينيو</a>
-        <a href="#booking">الحجز</a>
-        <a href="#location">الموقع</a>
-      </div>
-      <div>
-        <a href="https://instagram.com" target="_blank" rel="noopener">Instagram</a>
-        <a href="https://x.com" target="_blank" rel="noopener">X</a>
-        <a href="mailto:hello@sidra.sa">hello@sidra.sa</a>
-      </div>
-    </footer>
+    </section>
+  </main>
 
-    <a href="#booking" class="floating-cta">احجز الآن</a>
+  <footer class="site-footer">
+    <div class="footer-brand">
+      <strong>مطعم سدرة</strong>
+      <p>مطبخ عربي معاصر | تمارة - الرباط</p>
+    </div>
+    <div class="footer-links" aria-label="روابط الموقع">
+      <a href="#menu">المينيو</a>
+      <a href="#booking">الحجز</a>
+      <a href="#location">الموقع</a>
+    </div>
+    <div class="footer-social" aria-label="روابط التواصل">
+      <a href="https://instagram.com" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://x.com" target="_blank" rel="noopener">X</a>
+      <a href="mailto:hello@sidra.ma">hello@sidra.ma</a>
+    </div>
+  </footer>
 
-    <script src="script.js"></script>
-  </body>
+  <a href="#booking" class="floating-cta">احجز الآن</a>
+
+  <script src="script.js?v=20260421-ux3"></script>
+</body>
+
 </html>
