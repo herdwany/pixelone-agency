@@ -30,18 +30,18 @@
 
 :root {
     /* الألوان الأساسية */
-    --brand-red: #E50914; 
+    --brand-red: #E50914;
     --brand-red-dark: #990000;
     --brand-red-light: #FF3333;
     --brand-red-glow: rgba(229, 9, 20, 0.5);
     --brand-red-transparent: rgba(229, 9, 20, 0.1);
-    
+
     /* تدرجات الأسود والخلفيات */
     --bg-obsidian: #030303;
     --bg-surface: #0a0a0a;
     --bg-surface-light: #121212;
     --bg-surface-lighter: #1a1a1a;
-    
+
     /* الألوان الزجاجية (Glassmorphism) */
     --glass-bg: rgba(15, 15, 15, 0.45);
     --glass-bg-heavy: rgba(5, 5, 5, 0.85);
@@ -50,18 +50,18 @@
     --glass-border-hover: rgba(229, 9, 20, 0.3);
     --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
     --glass-shadow-red: 0 8px 32px 0 rgba(229, 9, 20, 0.15);
-    
+
     /* الخطوط */
     --font-ar: 'Tajawal', sans-serif;
     --font-en: 'Changa', sans-serif;
     --font-loader: 'Caveat', cursive;
-    
+
     /* الترانزيشن والأنيميشن */
     --transition-fast: 0.2s ease;
     --transition-normal: 0.3s ease;
     --transition-smooth: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     --transition-water: 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    
+
     /* ألوان حالات النظام */
     --success-color: #10B981;
     --error-color: #EF4444;
@@ -72,7 +72,9 @@
 /* ==========================================================================
    2. الإعدادات الأساسية
    ========================================================================== */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -85,7 +87,7 @@ html {
 
 body {
     background-color: var(--bg-obsidian);
-    background-image: 
+    background-image:
         radial-gradient(circle at 15% 50%, rgba(229, 9, 20, 0.03), transparent 25%),
         radial-gradient(circle at 85% 30%, rgba(229, 9, 20, 0.04), transparent 25%),
         linear-gradient(to bottom, #030303, #0a0a0a);
@@ -98,7 +100,12 @@ body {
     min-height: 100vh;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     font-family: var(--font-en);
     font-weight: 800;
     letter-spacing: 0;
@@ -107,7 +114,12 @@ h1, h2, h3, h4, h5, h6 {
     overflow-wrap: break-word;
 }
 
-p, li, a, button, input, textarea {
+p,
+li,
+a,
+button,
+input,
+textarea {
     font-family: var(--font-ar);
 }
 
@@ -147,7 +159,8 @@ p {
 /* ==========================================================================
    4. التنسيقات العامة والطباعة
    ========================================================================== */
-.font-en, .number-font {
+.font-en,
+.number-font {
     font-family: var(--font-en);
 }
 
@@ -277,6 +290,70 @@ textarea:focus-visible {
     }
 }
 
+/* ==================================================================
+   Sticky WhatsApp CTA
+   ================================================================== */
+.floating-whatsapp-btn {
+    position: fixed;
+    inset-inline-end: 1rem;
+    bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+    z-index: 1160;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.92rem;
+    border-radius: 999px;
+    border: 1px solid rgba(91, 220, 130, 0.45);
+    background: linear-gradient(135deg, #16a34a 0%, #0e7f39 100%);
+    color: #ffffff;
+    text-decoration: none;
+    box-shadow: 0 14px 30px rgba(6, 59, 25, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), filter var(--transition-fast);
+}
+
+.floating-whatsapp-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 34px rgba(6, 59, 25, 0.55), 0 0 16px rgba(34, 197, 94, 0.35);
+    filter: brightness(1.05);
+}
+
+.floating-whatsapp-btn:focus-visible {
+    outline: 2px solid rgba(187, 247, 208, 0.95);
+    outline-offset: 2px;
+}
+
+.floating-whatsapp-btn__icon {
+    width: 1.32rem;
+    height: 1.32rem;
+    display: grid;
+    place-items: center;
+}
+
+.floating-whatsapp-btn__icon svg {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+}
+
+.floating-whatsapp-btn__label {
+    line-height: 1;
+}
+
+@media (max-width: 640px) {
+    .floating-whatsapp-btn {
+        inset-inline-end: 0.75rem;
+        bottom: calc(0.82rem + env(safe-area-inset-bottom, 0px));
+        padding: 0.58rem 0.75rem;
+    }
+
+    .floating-whatsapp-btn__label {
+        display: none;
+    }
+}
+
 /* ==========================================================================
    Global Branded Loader
    ========================================================================== */
@@ -284,7 +361,7 @@ textarea:focus-visible {
     overflow: hidden;
 }
 
-.app-loading-active > *:not(.pixel-loader-overlay) {
+.app-loading-active>*:not(.pixel-loader-overlay) {
     visibility: hidden;
 }
 
@@ -449,6 +526,7 @@ textarea:focus-visible {
     0% {
         transform: translateX(-130%);
     }
+
     100% {
         transform: translateX(320%);
     }
@@ -610,11 +688,11 @@ textarea:focus-visible {
     position: relative;
 }
 
-.mobile-nav-menu > summary {
+.mobile-nav-menu>summary {
     list-style: none;
 }
 
-.mobile-nav-menu > summary::-webkit-details-marker {
+.mobile-nav-menu>summary::-webkit-details-marker {
     display: none;
 }
 
@@ -699,17 +777,17 @@ textarea:focus-visible {
     padding-inline: clamp(1rem, 4vw, 1.5rem) !important;
 }
 
-.site-shell main > header h1 {
+.site-shell main>header h1 {
     font-size: clamp(2rem, 5vw, 3.4rem) !important;
     line-height: 1.2;
 }
 
-.site-shell main > header p {
+.site-shell main>header p {
     font-size: clamp(0.95rem, 2.2vw, 1.08rem);
 }
 
 .logo-container {
-    direction: ltr !important; 
+    direction: ltr !important;
     display: inline-flex;
     align-items: center;
     gap: 0.75rem;
@@ -738,9 +816,11 @@ textarea:focus-visible {
 .logo-p::after {
     content: '';
     position: absolute;
-    top: -50%; left: -50%;
-    width: 200%; height: 200%;
-    background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0) 100%);
     transform: rotate(45deg);
     animation: waterShimmer 3s infinite linear;
 }
@@ -760,8 +840,10 @@ textarea:focus-visible {
 .nav-link::after {
     content: '';
     position: absolute;
-    bottom: 0; right: 0;
-    width: 0; height: 2px;
+    bottom: 0;
+    right: 0;
+    width: 0;
+    height: 2px;
     background-color: var(--brand-red);
     transition: width var(--transition-smooth);
 }
@@ -826,9 +908,11 @@ textarea:focus-visible {
     0% {
         box-shadow: 0 0 0 0 rgba(229, 9, 20, 0.45);
     }
+
     70% {
         box-shadow: 0 0 0 8px rgba(229, 9, 20, 0);
     }
+
     100% {
         box-shadow: 0 0 0 0 rgba(229, 9, 20, 0);
     }
@@ -839,11 +923,14 @@ textarea:focus-visible {
    ========================================================================== */
 .hero-glow {
     position: absolute;
-    top: 40%; left: 50%;
+    top: 40%;
+    left: 50%;
     transform: translate(-50%, -50%);
-    width: 80vw; height: 80vw;
-    max-width: 800px; max-height: 800px;
-    background: radial-gradient(circle, rgba(229, 9, 20, 0.08) 0%, rgba(0,0,0,0) 65%);
+    width: 80vw;
+    height: 80vw;
+    max-width: 800px;
+    max-height: 800px;
+    background: radial-gradient(circle, rgba(229, 9, 20, 0.08) 0%, rgba(0, 0, 0, 0) 65%);
     filter: blur(80px);
     z-index: 0;
     pointer-events: none;
@@ -962,8 +1049,10 @@ textarea:focus-visible {
 .btn-filled-red::before {
     content: '';
     position: absolute;
-    top: 100%; left: 0;
-    width: 100%; height: 100%;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: rgba(0, 0, 0, 0.2);
     transition: var(--transition-water);
     z-index: -1;
@@ -1002,7 +1091,7 @@ textarea:focus-visible {
 }
 
 main section .btn-filled-red,
-main > header .btn-filled-red {
+main>header .btn-filled-red {
     background: linear-gradient(125deg, #ff2e38 0%, #ca0711 52%, #770208 100%);
     border-color: rgba(255, 103, 112, 0.7);
     border-radius: 1rem;
@@ -1031,6 +1120,7 @@ footer .btn-filled-red {
     cursor: pointer;
     transition: var(--transition-normal);
 }
+
 .btn-transparent-link:hover {
     text-decoration: underline;
     color: var(--brand-red-light);
@@ -1044,6 +1134,7 @@ footer .btn-filled-red {
     text-underline-offset: 3px;
     transition: var(--transition-normal);
 }
+
 .policy-link:hover {
     color: var(--brand-red-light);
     text-decoration-thickness: 2px;
@@ -1069,25 +1160,75 @@ footer .btn-filled-red {
     cursor: pointer;
     white-space: nowrap;
 }
+
 .share-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
+
 .share-btn svg {
     flex-shrink: 0;
 }
-.share-btn-facebook { border-color: rgba(24, 119, 242, 0.3); }
-.share-btn-facebook:hover { background: rgba(24, 119, 242, 0.15); color: #4599ff; border-color: rgba(24, 119, 242, 0.5); }
-.share-btn-x { border-color: rgba(255, 255, 255, 0.15); }
-.share-btn-x:hover { background: rgba(255, 255, 255, 0.08); color: #fff; border-color: rgba(255, 255, 255, 0.3); }
-.share-btn-linkedin { border-color: rgba(10, 102, 194, 0.3); }
-.share-btn-linkedin:hover { background: rgba(10, 102, 194, 0.15); color: #5bb5ff; border-color: rgba(10, 102, 194, 0.5); }
-.share-btn-whatsapp { border-color: rgba(37, 211, 102, 0.3); }
-.share-btn-whatsapp:hover { background: rgba(37, 211, 102, 0.12); color: #25d366; border-color: rgba(37, 211, 102, 0.5); }
-.share-btn-telegram { border-color: rgba(38, 165, 229, 0.3); }
-.share-btn-telegram:hover { background: rgba(38, 165, 229, 0.12); color: #26a5e5; border-color: rgba(38, 165, 229, 0.5); }
-.share-btn-copy { border-color: rgba(255, 255, 255, 0.12); }
-.share-btn-copy:hover { background: rgba(255, 255, 255, 0.06); color: #fff; border-color: rgba(255, 255, 255, 0.25); }
+
+.share-btn-facebook {
+    border-color: rgba(24, 119, 242, 0.3);
+}
+
+.share-btn-facebook:hover {
+    background: rgba(24, 119, 242, 0.15);
+    color: #4599ff;
+    border-color: rgba(24, 119, 242, 0.5);
+}
+
+.share-btn-x {
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.share-btn-x:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.share-btn-linkedin {
+    border-color: rgba(10, 102, 194, 0.3);
+}
+
+.share-btn-linkedin:hover {
+    background: rgba(10, 102, 194, 0.15);
+    color: #5bb5ff;
+    border-color: rgba(10, 102, 194, 0.5);
+}
+
+.share-btn-whatsapp {
+    border-color: rgba(37, 211, 102, 0.3);
+}
+
+.share-btn-whatsapp:hover {
+    background: rgba(37, 211, 102, 0.12);
+    color: #25d366;
+    border-color: rgba(37, 211, 102, 0.5);
+}
+
+.share-btn-telegram {
+    border-color: rgba(38, 165, 229, 0.3);
+}
+
+.share-btn-telegram:hover {
+    background: rgba(38, 165, 229, 0.12);
+    color: #26a5e5;
+    border-color: rgba(38, 165, 229, 0.5);
+}
+
+.share-btn-copy {
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.share-btn-copy:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.25);
+}
 
 /* ==========================================================================
    8. حقول الإدخال والنماذج
@@ -1150,9 +1291,11 @@ textarea.input-luxury {
 .water-card::before {
     content: '';
     position: absolute;
-    top: 0; left: -100%;
-    width: 50%; height: 100%;
-    background: linear-gradient(to right, transparent, rgba(255,255,255,0.03), transparent);
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.03), transparent);
     transform: skewX(-20deg);
     transition: 0.7s;
 }
@@ -1177,7 +1320,10 @@ textarea.input-luxury {
    ========================================================================== */
 .modal-overlay {
     position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background: rgba(0, 0, 0, 0.85);
     backdrop-filter: blur(15px);
     z-index: 9999;
@@ -1210,17 +1356,22 @@ textarea.input-luxury {
 
 .modal-close-btn {
     position: absolute;
-    top: 1.5rem; left: 1.5rem;
-    background: rgba(255,255,255,0.1);
+    top: 1.5rem;
+    left: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
     border: none;
     color: white;
-    width: 40px; height: 40px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     font-size: 1.2rem;
     cursor: pointer;
     transition: 0.3s;
-    display: flex; align-items: center; justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
+
 .modal-close-btn:hover {
     background: var(--brand-red);
     transform: rotate(90deg);
@@ -1243,7 +1394,7 @@ textarea.input-luxury {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
 .dashboard-main {
@@ -1252,7 +1403,7 @@ textarea.input-luxury {
 }
 
 .stat-card {
-    background: linear-gradient(145deg, rgba(30,30,30,0.8), rgba(10,10,10,0.9));
+    background: linear-gradient(145deg, rgba(30, 30, 30, 0.8), rgba(10, 10, 10, 0.9));
     border: 1px solid var(--glass-border);
     border-top: 2px solid transparent;
     padding: 1.5rem;
@@ -1263,7 +1414,7 @@ textarea.input-luxury {
 .stat-card:hover {
     border-top-color: var(--brand-red);
     transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 /* ==========================================================================
@@ -1303,23 +1454,51 @@ textarea.input-luxury {
    13. الحركات المتقدمة (Keyframes & Animations)
    ========================================================================== */
 @keyframes fadeInUp {
-    0% { opacity: 0; transform: translateY(40px); filter: blur(5px); }
-    100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+    0% {
+        opacity: 0;
+        transform: translateY(40px);
+        filter: blur(5px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
 }
 
 @keyframes fadeInRight {
-    0% { opacity: 0; transform: translateX(40px); }
-    100% { opacity: 1; transform: translateX(0); }
+    0% {
+        opacity: 0;
+        transform: translateX(40px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 @keyframes pulseGlow {
-    0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.7; }
-    100% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+    0% {
+        transform: translate(-50%, -50%) scale(0.9);
+        opacity: 0.7;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1.1);
+        opacity: 1;
+    }
 }
 
 @keyframes waterShimmer {
-    0% { transform: translateX(-100%) rotate(45deg); }
-    100% { transform: translateX(100%) rotate(45deg); }
+    0% {
+        transform: translateX(-100%) rotate(45deg);
+    }
+
+    100% {
+        transform: translateX(100%) rotate(45deg);
+    }
 }
 
 .animate-fade-up,
@@ -1340,11 +1519,25 @@ textarea.input-luxury {
 }
 
 /* تأخير الأنيميشن للتتابع */
-.delay-100 { animation-delay: 0.1s; }
-.delay-200 { animation-delay: 0.2s; }
-.delay-300 { animation-delay: 0.3s; }
-.delay-400 { animation-delay: 0.4s; }
-.delay-500 { animation-delay: 0.5s; }
+.delay-100 {
+    animation-delay: 0.1s;
+}
+
+.delay-200 {
+    animation-delay: 0.2s;
+}
+
+.delay-300 {
+    animation-delay: 0.3s;
+}
+
+.delay-400 {
+    animation-delay: 0.4s;
+}
+
+.delay-500 {
+    animation-delay: 0.5s;
+}
 
 /* ==========================================================================
    14. الاستجابة للشاشات (Media Queries)
@@ -1390,7 +1583,7 @@ textarea.input-luxury {
     .site-shell .water-card {
         border-radius: 1rem;
     }
-    
+
     .hero-title {
         font-size: clamp(2.1rem, 8.6vw, 2.75rem) !important;
         line-height: 1.25;
@@ -1404,7 +1597,7 @@ textarea.input-luxury {
     .hero-v2-actions a {
         width: 100%;
     }
-    
+
     .logo-p {
         font-size: 1.5rem;
         padding: 2px 10px;
@@ -1413,13 +1606,13 @@ textarea.input-luxury {
     .water-card {
         padding: 1.25rem !important;
     }
-    
+
     .hero-glow {
         width: 100vw;
         height: 100vw;
         filter: blur(50px);
     }
-    
+
     .dashboard-nav {
         flex-direction: column;
         gap: 1rem;
@@ -1471,7 +1664,7 @@ textarea.input-luxury {
     .hero-title {
         font-size: clamp(1.9rem, 9.2vw, 2.3rem) !important;
     }
-    
+
     .modal-content {
         padding: 1.5rem !important;
     }
@@ -1482,7 +1675,9 @@ textarea.input-luxury {
         scroll-behavior: auto;
     }
 
-    *, *::before, *::after {
+    *,
+    *::before,
+    *::after {
         animation: none !important;
         transition: none !important;
     }
@@ -1496,13 +1691,19 @@ textarea.input-luxury {
 
 /* إعدادات الطباعة */
 @media print {
-    .navbar-glass, .btn-filled-red, .hero-glow, .modal-overlay {
+
+    .navbar-glass,
+    .btn-filled-red,
+    .hero-glow,
+    .modal-overlay {
         display: none !important;
     }
+
     body {
         background: #FFF;
         color: #000;
     }
+
     .water-card {
         background: transparent;
         border: 1px solid #000;

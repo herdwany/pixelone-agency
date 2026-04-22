@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,24 +10,27 @@
     <link rel="icon" type="image/png" sizes="96x96" href="icone/favicon-96x96.png">
     <link rel="apple-touch-icon" sizes="180x180" href="icone/apple-touch-icon.png">
     <link rel="manifest" href="icone/site.webmanifest">
-    
+
     <meta name="robots" content="noindex, nofollow">
     <title>دخول العملاء - Pixel One</title>
-    <meta name="description" content="بوابة تسجيل الدخول الآمنة لعملاء Pixel One Visuals للوصول إلى الطلبات وسجل الخدمة.">
+    <meta name="description"
+        content="بوابة تسجيل الدخول الآمنة لعملاء Pixel One Visuals للوصول إلى الطلبات وسجل الخدمة.">
     <link rel="canonical" href="https://www.pixelonevisuals.tech/login.html">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <!-- استدعاء بيئة العمل -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.tailwindcss.com" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body class="view-centered">
 
     <div class="w-full max-w-md animate-fade-up">
         <!-- الشعار في الأعلى -->
-        <a href="../index.html" class="text-center mb-10 logo-container" style="display: flex; flex-direction: column; gap: 10px;">
+        <a href="../index.html" class="text-center mb-10 logo-container"
+            style="display: flex; flex-direction: column; gap: 10px;">
             <span class="logo-p" style="font-size: 2.5rem; padding: 5px 20px;">P</span>
             <h2 class="text-white font-black tracking-widest uppercase text-2xl font-en">Pixel One</h2>
         </a>
@@ -42,36 +46,47 @@
             <form id="authForm" class="space-y-6">
                 <div>
                     <label class="form-label">البريد الإلكتروني</label>
-                    <input type="email" id="email" name="email" autocomplete="email" required placeholder="client@domain.com" class="input-luxury font-en text-left" dir="ltr">
+                    <input type="email" id="email" name="email" autocomplete="email" required
+                        placeholder="client@domain.com" class="input-luxury font-en text-left" dir="ltr">
                 </div>
-                
+
                 <div>
                     <label class="form-label">كلمة المرور</label>
-                    <input type="password" id="password" name="password" autocomplete="current-password" required placeholder="••••••••" class="input-luxury font-en text-left" dir="ltr">
+                    <input type="password" id="password" name="password" autocomplete="current-password" required
+                        placeholder="••••••••" class="input-luxury font-en text-left" dir="ltr">
                 </div>
 
                 <div id="phoneFieldWrap" class="hidden">
                     <label class="form-label">رقم الهاتف</label>
-                    <input type="tel" id="signupPhone" name="phone" autocomplete="tel" placeholder="+212 6XX XXXXXX" class="input-luxury font-en text-left" dir="ltr">
+                    <input type="tel" id="signupPhone" name="phone" autocomplete="tel" placeholder="+212 6XX XXXXXX"
+                        class="input-luxury font-en text-left" dir="ltr">
                 </div>
 
-                <div id="policyConsentWrap" class="hidden space-y-3 rounded-xl border border-white/10 bg-white/[0.02] p-4">
+                <div id="policyConsentWrap"
+                    class="hidden space-y-3 rounded-xl border border-white/10 bg-white/[0.02] p-4">
                     <p class="text-xs text-gray-400">قبل إنشاء الحساب، يجب الموافقة على السياسات التالية:</p>
                     <label class="flex items-start gap-3 text-sm text-gray-200">
-                        <input type="checkbox" id="agreePrivacyPolicy" data-policy-consent="required" class="mt-1 accent-[#E50914]">
-                        <span>أوافق على <a href="privacy-policy.html" target="_blank" data-policy-link="privacy" class="policy-link">سياسة الخصوصية</a>.</span>
+                        <input type="checkbox" id="agreePrivacyPolicy" data-policy-consent="required"
+                            class="mt-1 accent-[#E50914]">
+                        <span>أوافق على <a href="privacy-policy.html" target="_blank" rel="noopener noreferrer"
+                                data-policy-link="privacy" class="policy-link">سياسة الخصوصية</a>.</span>
                     </label>
                     <label class="flex items-start gap-3 text-sm text-gray-200">
-                        <input type="checkbox" id="agreeTermsOfService" data-policy-consent="required" class="mt-1 accent-[#E50914]">
-                        <span>أوافق على <a href="terms-of-service.html" target="_blank" data-policy-link="terms" class="policy-link">شروط الاستخدام</a>.</span>
+                        <input type="checkbox" id="agreeTermsOfService" data-policy-consent="required"
+                            class="mt-1 accent-[#E50914]">
+                        <span>أوافق على <a href="terms-of-service.html" target="_blank" rel="noopener noreferrer"
+                                data-policy-link="terms" class="policy-link">شروط الاستخدام</a>.</span>
                     </label>
                     <label class="flex items-start gap-3 text-sm text-gray-200">
-                        <input type="checkbox" id="agreeRefundPolicy" data-policy-consent="required" class="mt-1 accent-[#E50914]">
-                        <span>أوافق على <a href="refund-policy.html" target="_blank" data-policy-link="refund" class="policy-link">سياسة الاسترجاع</a>.</span>
+                        <input type="checkbox" id="agreeRefundPolicy" data-policy-consent="required"
+                            class="mt-1 accent-[#E50914]">
+                        <span>أوافق على <a href="refund-policy.html" target="_blank" rel="noopener noreferrer"
+                                data-policy-link="refund" class="policy-link">سياسة الاسترجاع</a>.</span>
                     </label>
                 </div>
 
-                <button type="submit" id="btnSubmit" class="btn-filled-red w-full py-4 rounded-xl text-lg mt-6 font-black">
+                <button type="submit" id="btnSubmit"
+                    class="btn-filled-red w-full py-4 rounded-xl text-lg mt-6 font-black">
                     دخول المنصة
                 </button>
             </form>
@@ -82,22 +97,35 @@
                 <span class="flex-1 h-px bg-white/10"></span>
             </div>
 
-            <button type="button" id="btnGoogleAuth" class="w-full py-3 rounded-xl border border-white/15 bg-white/5 hover:bg-white/10 transition flex items-center justify-center gap-3 text-sm font-bold text-white">
-                <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+            <button type="button" id="btnGoogleAuth"
+                class="w-full py-3 rounded-xl border border-white/15 bg-white/5 hover:bg-white/10 transition flex items-center justify-center gap-3 text-sm font-bold text-white">
+                <svg class="w-5 h-5" viewBox="0 0 24 24">
+                    <path fill="#4285F4"
+                        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z" />
+                    <path fill="#34A853"
+                        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                    <path fill="#FBBC05"
+                        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                    <path fill="#EA4335"
+                        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                </svg>
                 الدخول عبر Google
             </button>
 
             <div id="authQuickActions" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
-                <button type="button" id="btnMagicLink" class="w-full py-3 rounded-lg border border-white/20 text-gray-200 hover:border-brand-red transition text-sm font-bold">
+                <button type="button" id="btnMagicLink"
+                    class="w-full py-3 rounded-lg border border-white/20 text-gray-200 hover:border-brand-red transition text-sm font-bold">
                     تسجيل عبر Magic Link
                 </button>
-                <button type="button" id="btnForgotPassword" class="w-full py-3 rounded-lg border border-white/20 text-gray-200 hover:border-brand-red transition text-sm font-bold">
+                <button type="button" id="btnForgotPassword"
+                    class="w-full py-3 rounded-lg border border-white/20 text-gray-200 hover:border-brand-red transition text-sm font-bold">
                     نسيت كلمة المرور
                 </button>
             </div>
 
             <div id="resendWrap" class="mt-4 text-center">
-                <button type="button" id="btnResendConfirmation" class="text-xs text-gray-400 hover:text-white transition font-bold">
+                <button type="button" id="btnResendConfirmation"
+                    class="text-xs text-gray-400 hover:text-white transition font-bold">
                     إعادة إرسال رسالة تأكيد البريد
                 </button>
             </div>
@@ -107,13 +135,15 @@
                 <p class="text-xs text-gray-500 text-center">أدخل بريدك الإلكتروني وسنرسل لك رابط إعادة التعيين.</p>
                 <div>
                     <label class="form-label">البريد الإلكتروني</label>
-                    <input type="email" id="forgotEmail" autocomplete="email" placeholder="client@domain.com" class="input-luxury font-en text-left" dir="ltr" required>
+                    <input type="email" id="forgotEmail" autocomplete="email" placeholder="client@domain.com"
+                        class="input-luxury font-en text-left" dir="ltr" required>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <button type="submit" id="btnForgotSubmit" class="btn-filled-red w-full py-3 rounded-xl font-black">
                         إرسال رابط الاسترجاع
                     </button>
-                    <button type="button" id="btnForgotCancel" class="w-full py-3 rounded-xl border border-white/20 text-gray-200 hover:border-brand-red transition font-bold">
+                    <button type="button" id="btnForgotCancel"
+                        class="w-full py-3 rounded-xl border border-white/20 text-gray-200 hover:border-brand-red transition font-bold">
                         إلغاء
                     </button>
                 </div>
@@ -124,11 +154,13 @@
                 <p class="text-xs text-gray-500 text-center">تم التعرف على رابط الاسترجاع. أدخل كلمة مرور جديدة.</p>
                 <div>
                     <label class="form-label">كلمة المرور الجديدة</label>
-                    <input type="password" id="recoveryPassword" autocomplete="new-password" placeholder="••••••••" class="input-luxury font-en text-left" dir="ltr" minlength="8">
+                    <input type="password" id="recoveryPassword" autocomplete="new-password" placeholder="••••••••"
+                        class="input-luxury font-en text-left" dir="ltr" minlength="8">
                 </div>
                 <div>
                     <label class="form-label">تأكيد كلمة المرور</label>
-                    <input type="password" id="recoveryPasswordConfirm" autocomplete="new-password" placeholder="••••••••" class="input-luxury font-en text-left" dir="ltr" minlength="8">
+                    <input type="password" id="recoveryPasswordConfirm" autocomplete="new-password"
+                        placeholder="••••••••" class="input-luxury font-en text-left" dir="ltr" minlength="8">
                 </div>
                 <button type="submit" id="btnRecoverySubmit" class="btn-filled-red w-full py-3 rounded-xl font-black">
                     حفظ كلمة المرور الجديدة
@@ -140,9 +172,10 @@
                 <button type="button" id="toggleBtn" class="btn-transparent-link text-sm mx-2">إنشاء حساب جديد</button>
             </div>
         </div>
-        
+
         <div class="text-center mt-8">
-            <a href="../index.html" class="text-gray-600 hover:text-white transition text-xs font-bold no-underline">← العودة للصفحة الرئيسية</a>
+            <a href="../index.html" class="text-gray-600 hover:text-white transition text-xs font-bold no-underline">←
+                العودة للصفحة الرئيسية</a>
         </div>
     </div>
 
@@ -151,4 +184,5 @@
     <script src="page-text-loader.js" defer></script>
     <script src="visual-system.js" defer></script>
 </body>
+
 </html>

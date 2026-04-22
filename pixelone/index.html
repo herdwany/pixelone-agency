@@ -111,9 +111,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preload" as="image"
+        href="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1400&q=80&fm=webp">
 
     <!-- استدعاء Tailwindcss عبر الـ CDN للعمل السريع -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com" defer></script>
 
     <!-- استدعاء مكتبة قاعدة البيانات Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
@@ -495,7 +497,7 @@
         !function (f, b, e, v, n, t, s) {
             if (f.fbq) return; n = f.fbq = function () {
                 n.callMethod ?
-                n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+                    n.callMethod.apply(n, arguments) : n.queue.push(arguments)
             };
             if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
             n.queue = []; t = b.createElement(e); t.async = !0;
@@ -506,7 +508,7 @@
         fbq('init', '812473931142774');
         fbq('track', 'PageView');
     </script>
-    <noscript><img height="1" width="1" style="display:none"
+    <noscript><img height="1" width="1" loading="lazy" decoding="async" style="display:none"
             src="https://www.facebook.com/tr?id=812473931142774&ev=PageView&noscript=1" /></noscript>
 </head>
 
@@ -816,7 +818,7 @@
                     <figure class="portfolio-media">
                         <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1400&q=80&fm=webp"
                             alt="واجهة مشروع وكالة سيارات فاخرة مع عرض سيارات رياضية وتصميم عصري" width="1200"
-                            height="750" loading="lazy" decoding="async">
+                            height="750" loading="eager" decoding="async" fetchpriority="high">
                     </figure>
                     <div class="portfolio-body">
                         <h3 data-portfolio-key="card.car.title">وكالة سيارات (Car Agency)</h3>
@@ -1100,7 +1102,8 @@
         <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
             <p class="font-en text-gray-600 text-xs font-bold">© 2026 PIXEL ONE VISUALS. ALL RIGHTS RESERVED.</p>
             <div class="flex gap-4">
-                <a href="https://wa.me/212751201626" target="_blank" rel="noopener noreferrer"
+                <a href="https://wa.me/212751201626?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%D8%8C%20%D9%85%D9%87%D8%AA%D9%85%20%D8%A8%D8%AE%D8%AF%D9%85%D8%A7%D8%AA%20Pixel%20One..."
+                    target="_blank" rel="noopener noreferrer"
                     class="text-gray-600 hover:text-white transition">WhatsApp</a>
             </div>
         </div>
