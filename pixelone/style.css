@@ -1544,7 +1544,10 @@ textarea.input-luxury {
    ========================================================================== */
 @media (max-width: 1024px) {
     .hero-title {
-        font-size: 4rem !important;
+        font-size: clamp(2.9rem, 5vw, 3.45rem) !important;
+        line-height: 1.12;
+        max-width: 12ch;
+        margin-inline: auto;
     }
 }
 
