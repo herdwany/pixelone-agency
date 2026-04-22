@@ -1591,15 +1591,17 @@ textarea.input-luxury {
     }
 
     .site-shell main {
-        padding-top: 4.5rem !important;
+        padding-top: 2.5rem !important;
         padding-bottom: 3rem !important;
         padding-left: 1rem !important;
         padding-right: 1rem !important;
     }
 
     #mainContent {
-        padding-top: 5.5rem !important;
-        padding-bottom: calc(7.4rem + env(safe-area-inset-bottom, 0px)) !important;
+        --hero-header-clearance: 5rem;
+        --hero-floating-cta-clearance: 6.5rem;
+        padding-top: var(--hero-header-clearance) !important;
+        padding-bottom: calc(var(--hero-floating-cta-clearance) + env(safe-area-inset-bottom, 0px)) !important;
     }
 
     .site-shell .water-card {
