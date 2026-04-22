@@ -141,6 +141,104 @@
         });
     }
 
+    function ensureMetaTag(attributeName, attributeValue) {
+        var selector = 'meta[' + attributeName + '="' + attributeValue + '"]';
+        var node = document.querySelector(selector);
+        if (node) return node;
+
+        node = document.createElement('meta');
+        node.setAttribute(attributeName, attributeValue);
+        document.head.appendChild(node);
+        return node;
+    }
+
+    function upsertMetaContent(attributeName, attributeValue, content) {
+        var value = String(content || '').trim();
+        if (!value) return;
+
+        var meta = ensureMetaTag(attributeName, attributeValue);
+        meta.setAttribute('content', value);
+    }
+
+    function upsertCanonical(href) {
+        var value = String(href || '').trim();
+        if (!value) return;
+
+        var canonical = document.querySelector('link[rel="canonical"]');
+        if (!canonical) {
+            canonical = document.createElement('link');
+            canonical.setAttribute('rel', 'canonical');
+            document.head.appendChild(canonical);
+        }
+        canonical.setAttribute('href', value);
+    }
+
+    function getCurrentCanonicalFallback() {
+        var canonical = document.querySelector('link[rel="canonical"]');
+        if (canonical && canonical.getAttribute('href')) {
+            return canonical.getAttribute('href');
+        }
+        return window.location.href;
+    }
+
+    function applySeoPayload(payload) {
+        if (!payload) return;
+
+        var seo = payload.seo && typeof payload.seo === 'object' ? payload.seo : {};
+
+        var title = String(seo.title || payload.title || '').trim();
+        var description = String(seo.description || payload.metaDescription || '').trim();
+        var keywords = String(seo.keywords || '').trim();
+        var canonicalUrl = String(seo.canonical || getCurrentCanonicalFallback() || '').trim();
+        var ogUrl = String(seo.ogUrl || canonicalUrl || '').trim();
+        var ogImage = String(seo.ogImage || '').trim();
+        var ogImageAlt = String(seo.ogImageAlt || '').trim();
+        var ogType = String(seo.ogType || 'website').trim();
+        var ogLocale = String(seo.ogLocale || 'ar_MA').trim();
+        var siteName = String(seo.siteName || 'Pixel One Visuals').trim();
+        var twitterCard = String(seo.twitterCard || 'summary_large_image').trim();
+
+        if (title) {
+            document.title = title;
+            upsertMetaContent('property', 'og:title', String(seo.ogTitle || title).trim());
+            upsertMetaContent('name', 'twitter:title', String(seo.twitterTitle || title).trim());
+        }
+
+        if (description) {
+            upsertMetaContent('name', 'description', description);
+            upsertMetaContent('property', 'og:description', String(seo.ogDescription || description).trim());
+            upsertMetaContent('name', 'twitter:description', String(seo.twitterDescription || description).trim());
+        }
+
+        if (keywords) {
+            upsertMetaContent('name', 'keywords', keywords);
+        }
+
+        if (canonicalUrl) {
+            upsertCanonical(canonicalUrl);
+        }
+
+        if (ogUrl) {
+            upsertMetaContent('property', 'og:url', ogUrl);
+        }
+
+        upsertMetaContent('property', 'og:type', ogType);
+        upsertMetaContent('property', 'og:locale', ogLocale);
+        upsertMetaContent('property', 'og:site_name', siteName);
+        upsertMetaContent('name', 'twitter:card', twitterCard);
+
+        if (ogImage) {
+            upsertMetaContent('property', 'og:image', ogImage);
+            upsertMetaContent('property', 'og:image:secure_url', ogImage);
+            upsertMetaContent('name', 'twitter:image', String(seo.twitterImage || ogImage).trim());
+        }
+
+        if (ogImageAlt) {
+            upsertMetaContent('property', 'og:image:alt', ogImageAlt);
+            upsertMetaContent('name', 'twitter:image:alt', ogImageAlt);
+        }
+    }
+
     async function loadLocaleFromFile(page, lang) {
         var url = 'content/' + page + '.' + lang + '.json';
         var response = await fetch(url, { cache: 'no-store' });
@@ -185,6 +283,7 @@
             metaDescription: base.metaDescription || override.metaDescription,
             texts: Array.isArray(base.texts) && base.texts.length > 0 ? base.texts : override.texts,
             attributes: Array.isArray(base.attributes) && base.attributes.length > 0 ? base.attributes : override.attributes,
+            seo: base.seo || override.seo || null,
         };
     }
 
@@ -222,16 +321,7 @@
             var finalPayload = mergeLocale(locale, override);
             if (!finalPayload || !Array.isArray(finalPayload.texts)) return;
 
-            if (typeof finalPayload.title === 'string' && finalPayload.title.trim()) {
-                document.title = finalPayload.title.trim();
-            }
-
-            if (typeof finalPayload.metaDescription === 'string') {
-                var metaDesc = document.querySelector('meta[name="description"]');
-                if (metaDesc) {
-                    metaDesc.setAttribute('content', finalPayload.metaDescription);
-                }
-            }
+            applySeoPayload(finalPayload);
 
             applyAttributes(finalPayload.attributes);
 

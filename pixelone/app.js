@@ -270,7 +270,7 @@ const DEFAULT_PORTFOLIO_ITEMS = [
         cardStyle: 'standard',
         isStaticCard: false,
         mediaType: 'image',
-        imageUrl: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1400&q=80',
+        imageUrl: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1400&q=80&fm=webp',
         imageAlt: 'واجهة مشروع وكالة سيارات فاخرة مع عرض سيارات رياضية وتصميم عصري',
         badgeText: '',
         actionType: 'external_link',
@@ -289,7 +289,7 @@ const DEFAULT_PORTFOLIO_ITEMS = [
         cardStyle: 'standard',
         isStaticCard: false,
         mediaType: 'image',
-        imageUrl: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1400&q=80',
+        imageUrl: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1400&q=80&fm=webp',
         imageAlt: 'واجهة مشروع مطعم راق مع أطباق فاخرة وتصميم دافئ عالي الجودة',
         badgeText: '',
         actionType: 'external_link',
@@ -308,7 +308,7 @@ const DEFAULT_PORTFOLIO_ITEMS = [
         cardStyle: 'standard',
         isStaticCard: false,
         mediaType: 'image',
-        imageUrl: 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?auto=format&fit=crop&w=1400&q=80',
+        imageUrl: 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?auto=format&fit=crop&w=1400&q=80&fm=webp',
         imageAlt: 'واجهة مشروع صالون حلاقة حديث مع ألوان داكنة ولمسات احترافية',
         badgeText: '',
         actionType: 'external_link',
@@ -3965,7 +3965,7 @@ async function loadServices() {
     renderServices(grid, managedServices.length > 0 ? managedServices : FALLBACK_SERVICES, discountContext);
 }
 
-window.openOrderModal = async function(serviceName, meta = {}) {
+window.openOrderModal = async function (serviceName, meta = {}) {
     const modal = document.getElementById('orderModal');
     const selectedServiceText = document.getElementById('selectedServiceText');
     const hiddenServiceName = document.getElementById('hiddenServiceName');
@@ -4035,7 +4035,7 @@ window.openOrderModal = async function(serviceName, meta = {}) {
     }
 };
 
-window.closeOrderModal = function() {
+window.closeOrderModal = function () {
     const modal = document.getElementById('orderModal');
     if (modal) {
         modal.classList.remove('active');
@@ -4102,7 +4102,7 @@ function setupHomeCspSafeBindings() {
                 navigator.clipboard.writeText(copyUrl).then(() => {
                     const span = actionEl.querySelector('span');
                     if (span) { const orig = span.textContent; span.textContent = 'تم النسخ ✓'; setTimeout(() => { span.textContent = orig; }, 2000); }
-                }).catch(() => {});
+                }).catch(() => { });
             }
             return;
         }
@@ -7702,70 +7702,49 @@ function bindAdminForms() {
         });
     }
 
-        const offerCancelEditBtn = document.getElementById('offerCancelEditBtn');
-        if (offerCancelEditBtn && !offerCancelEditBtn.dataset.bound) {
-            offerCancelEditBtn.dataset.bound = 'true';
-            offerCancelEditBtn.addEventListener('click', () => {
-                resetOfferForm();
-            });
-        }
+    const offerCancelEditBtn = document.getElementById('offerCancelEditBtn');
+    if (offerCancelEditBtn && !offerCancelEditBtn.dataset.bound) {
+        offerCancelEditBtn.dataset.bound = 'true';
+        offerCancelEditBtn.addEventListener('click', () => {
+            resetOfferForm();
+        });
+    }
 
-        const serviceForm = document.getElementById('serviceForm');
-        if (serviceForm && !serviceForm.dataset.bound) {
-            serviceForm.dataset.bound = 'true';
-            serviceForm.addEventListener('submit', (e) => {
-                e.preventDefault();
+    const serviceForm = document.getElementById('serviceForm');
+    if (serviceForm && !serviceForm.dataset.bound) {
+        serviceForm.dataset.bound = 'true';
+        serviceForm.addEventListener('submit', (e) => {
+            e.preventDefault();
 
-                const editId = document.getElementById('serviceEditId').value.trim();
-                const category = document.getElementById('serviceCategory').value.trim();
-                const title = document.getElementById('serviceTitle').value.trim();
-                const price = document.getElementById('servicePrice').value.trim();
-                const description = document.getElementById('serviceDescription').value.trim();
-                const imageUrl = document.getElementById('serviceImageUrl')?.value.trim() || '';
-                const imageAlt = document.getElementById('serviceImageAlt')?.value.trim() || '';
-                const deliverables = normalizeStringList(document.getElementById('serviceDeliverables')?.value || '');
-                const requirements = normalizeStringList(document.getElementById('serviceRequirements')?.value || '');
-                const workflow = normalizeStringList(document.getElementById('serviceWorkflow')?.value || '');
-                const turnaround = document.getElementById('serviceTurnaround')?.value.trim() || '';
-                const revisions = document.getElementById('serviceRevisions')?.value.trim() || '';
-                const popularity = Number.parseInt(document.getElementById('servicePopularity').value, 10);
-                const isComingSoon = document.getElementById('serviceComingSoon').checked;
-                const enabled = document.getElementById('serviceEnabled').checked;
+            const editId = document.getElementById('serviceEditId').value.trim();
+            const category = document.getElementById('serviceCategory').value.trim();
+            const title = document.getElementById('serviceTitle').value.trim();
+            const price = document.getElementById('servicePrice').value.trim();
+            const description = document.getElementById('serviceDescription').value.trim();
+            const imageUrl = document.getElementById('serviceImageUrl')?.value.trim() || '';
+            const imageAlt = document.getElementById('serviceImageAlt')?.value.trim() || '';
+            const deliverables = normalizeStringList(document.getElementById('serviceDeliverables')?.value || '');
+            const requirements = normalizeStringList(document.getElementById('serviceRequirements')?.value || '');
+            const workflow = normalizeStringList(document.getElementById('serviceWorkflow')?.value || '');
+            const turnaround = document.getElementById('serviceTurnaround')?.value.trim() || '';
+            const revisions = document.getElementById('serviceRevisions')?.value.trim() || '';
+            const popularity = Number.parseInt(document.getElementById('servicePopularity').value, 10);
+            const isComingSoon = document.getElementById('serviceComingSoon').checked;
+            const enabled = document.getElementById('serviceEnabled').checked;
 
-                if (!title || !price || !description || !category || !Number.isFinite(popularity) || popularity <= 0) {
-                    showInlineMessage(adminMsgBox, '❌ يرجى تعبئة جميع حقول الخدمة بشكل صحيح.', 'error');
-                    return;
-                }
+            if (!title || !price || !description || !category || !Number.isFinite(popularity) || popularity <= 0) {
+                showInlineMessage(adminMsgBox, '❌ يرجى تعبئة جميع حقول الخدمة بشكل صحيح.', 'error');
+                return;
+            }
 
-                const services = getStoredServices();
-                const now = new Date().toISOString();
+            const services = getStoredServices();
+            const now = new Date().toISOString();
 
-                if (editId) {
-                    const updated = services.map((service) => {
-                        if (service.id !== editId) return service;
-                        return {
-                            ...service,
-                            category,
-                            titles: { ar: title },
-                            price,
-                            descriptions: { ar: description },
-                            popularity,
-                            is_coming_soon: isComingSoon,
-                            enabled,
-                            imageUrl,
-                            imageAlt,
-                            deliverables,
-                            requirements,
-                            workflow,
-                            turnaround,
-                            revisions,
-                            updatedAt: now,
-                        };
-                    });
-                    saveStoredServices(updated);
-                } else {
-                    services.unshift(normalizeManagedService({
-                        id: createId('SVC'),
+            if (editId) {
+                const updated = services.map((service) => {
+                    if (service.id !== editId) return service;
+                    return {
+                        ...service,
                         category,
                         titles: { ar: title },
                         price,
@@ -7780,24 +7759,45 @@ function bindAdminForms() {
                         workflow,
                         turnaround,
                         revisions,
-                        createdAt: now,
                         updatedAt: now,
-                    }));
-                    saveStoredServices(services);
-                }
+                    };
+                });
+                saveStoredServices(updated);
+            } else {
+                services.unshift(normalizeManagedService({
+                    id: createId('SVC'),
+                    category,
+                    titles: { ar: title },
+                    price,
+                    descriptions: { ar: description },
+                    popularity,
+                    is_coming_soon: isComingSoon,
+                    enabled,
+                    imageUrl,
+                    imageAlt,
+                    deliverables,
+                    requirements,
+                    workflow,
+                    turnaround,
+                    revisions,
+                    createdAt: now,
+                    updatedAt: now,
+                }));
+                saveStoredServices(services);
+            }
 
-                resetServiceForm();
-                renderServicesAdminSection();
-            });
-        }
+            resetServiceForm();
+            renderServicesAdminSection();
+        });
+    }
 
-        const serviceCancelEditBtn = document.getElementById('serviceCancelEditBtn');
-        if (serviceCancelEditBtn && !serviceCancelEditBtn.dataset.bound) {
-            serviceCancelEditBtn.dataset.bound = 'true';
-            serviceCancelEditBtn.addEventListener('click', () => {
-                resetServiceForm();
-            });
-        }
+    const serviceCancelEditBtn = document.getElementById('serviceCancelEditBtn');
+    if (serviceCancelEditBtn && !serviceCancelEditBtn.dataset.bound) {
+        serviceCancelEditBtn.dataset.bound = 'true';
+        serviceCancelEditBtn.addEventListener('click', () => {
+            resetServiceForm();
+        });
+    }
 
     const portfolioForm = document.getElementById('portfolioForm');
     if (portfolioForm && !portfolioForm.dataset.bound) {
@@ -8164,7 +8164,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const modalOverlay = document.getElementById('orderModal');
             if (modalOverlay && modalOverlay.dataset.bound !== 'true') {
                 modalOverlay.dataset.bound = 'true';
-                modalOverlay.addEventListener('click', function(e) {
+                modalOverlay.addEventListener('click', function (e) {
                     if (e.target === this) closeOrderModal();
                 });
             }

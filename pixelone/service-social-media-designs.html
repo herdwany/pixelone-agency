@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,16 +11,19 @@
     <link rel="apple-touch-icon" sizes="180x180" href="icone/apple-touch-icon.png">
     <link rel="manifest" href="icone/site.webmanifest">
     <title>تصاميم سوشيال ميديا ثابتة | Pixel One Visuals</title>
-    <meta name="description" content="تصاميم سوشيال ميديا ثابتة احترافية جاهزة للنشر مع مقاسات المنصات وتسليم سريع للسوق المغربي.">
+    <meta name="description"
+        content="تصاميم سوشيال ميديا ثابتة احترافية جاهزة للنشر مع مقاسات المنصات وتسليم سريع للسوق المغربي.">
     <meta name="robots" content="index, follow">
     <meta property="og:type" content="website">
     <meta property="og:title" content="تصاميم سوشيال ميديا ثابتة | Pixel One Visuals">
-    <meta property="og:description" content="منشورات إعلانية احترافية لـ Instagram وFacebook وLinkedIn مع تسليم جاهز للنشر — اطلب الآن!">
+    <meta property="og:description"
+        content="منشورات إعلانية احترافية لـ Instagram وFacebook وLinkedIn مع تسليم جاهز للنشر — اطلب الآن!">
     <meta property="og:url" content="https://www.pixelonevisuals.tech/service-social-media-designs.html">
     <meta property="og:site_name" content="Pixel One Visuals">
     <meta property="og:locale" content="ar_MA">
     <meta property="og:image" content="https://www.pixelonevisuals.tech/og/social-media-designs-1200x630.png">
-    <meta property="og:image:secure_url" content="https://www.pixelonevisuals.tech/og/social-media-designs-1200x630.png">
+    <meta property="og:image:secure_url"
+        content="https://www.pixelonevisuals.tech/og/social-media-designs-1200x630.png">
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -28,6 +32,7 @@
     <meta name="twitter:title" content="تصاميم سوشيال ميديا ثابتة | Pixel One Visuals">
     <meta name="twitter:description" content="تصميم منشورات ثابتة احترافية جاهزة للنشر بسرعة وجودة عالية — اطلب الآن!">
     <meta name="twitter:image" content="https://www.pixelonevisuals.tech/og/social-media-designs-1200x630.png">
+    <meta name="twitter:image:alt" content="تصاميم سوشيال ميديا احترافية من Pixel One Visuals">
     <link rel="canonical" href="https://www.pixelonevisuals.tech/service-social-media-designs.html">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,33 +40,53 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="style.css">
 </head>
-<body id="view-service-detail" data-service-id="svc-social-media-designs" class="selection:bg-red-600 selection:text-white site-shell">
+
+<body id="view-service-detail" data-service-id="svc-social-media-designs"
+    class="selection:bg-red-600 selection:text-white site-shell">
     <a href="#mainContent" class="skip-link">تخطي إلى المحتوى الرئيسي</a>
     <main id="mainContent" class="max-w-7xl mx-auto px-6 py-16 relative z-10">
         <section id="serviceDetailRoot" class="animate-fade-up">
             <div class="water-card rounded-3xl p-8 text-center text-gray-400">جاري تحميل تفاصيل الخدمة...</div>
         </section>
     </main>
-    <div id="orderModal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="orderModalTitle">
-        <button type="button" class="modal-close-btn" data-action="close-order-modal" aria-label="إغلاق نافذة الطلب">✕</button>
+    <div id="orderModal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true"
+        aria-labelledby="orderModalTitle">
+        <button type="button" class="modal-close-btn" data-action="close-order-modal"
+            aria-label="إغلاق نافذة الطلب">✕</button>
         <div class="modal-content water-card p-8 md:p-10 rounded-[2rem] relative border border-white/10">
             <h3 id="orderModalTitle" class="text-3xl font-black mb-2 text-center text-white">طلب خدمة</h3>
-            <p class="text-gray-400 text-center mb-8">أنت تطلب الآن: <span id="selectedServiceText" class="text-brand-red font-black text-lg border-b border-brand-red/30 pb-1">...</span></p>
+            <p class="text-gray-400 text-center mb-8">أنت تطلب الآن: <span id="selectedServiceText"
+                    class="text-brand-red font-black text-lg border-b border-brand-red/30 pb-1">...</span></p>
             <div id="orderMsgBox" class="msg-box hidden" aria-live="polite"></div>
             <form id="orderForm" class="space-y-5">
                 <input type="hidden" id="hiddenServiceName" name="serviceName">
                 <input type="hidden" id="hiddenFinalPrice" name="finalPrice">
                 <input type="hidden" id="hiddenDiscountCode" name="discountCode">
-                <div><label for="orderName" class="form-label">الاسم الكامل</label><input type="text" id="orderName" name="name" required autocomplete="name" class="input-luxury"></div>
-                <div><label for="orderProjectName" class="form-label">اسم المشروع / الشركة / الوكالة</label><input type="text" id="orderProjectName" name="projectName" required placeholder="مثال: شركة النور، مقاولة الأمل..." class="input-luxury"></div>
-                <div><label for="orderPhone" class="form-label">رقم الهاتف</label><input type="tel" id="orderPhone" name="phone" required autocomplete="tel" class="input-luxury number-font text-right" dir="ltr"><p id="orderPhoneHint" class="text-xs text-emerald-400 mt-1 hidden">✓ تم ملء رقمك تلقائياً من حسابك — تأكد أنه صحيح.</p></div>
-                <div><label for="orderEmail" class="form-label">البريد الإلكتروني</label><input type="email" id="orderEmail" name="email" autocomplete="email" class="input-luxury font-en text-right" dir="ltr"></div>
-                <div><label for="orderSpecs" class="form-label">وصف تفصيلي لما تريده</label><textarea id="orderSpecs" name="specifications" required rows="4" placeholder="اشرح لنا بالتفصيل ما تحتاجه: فكرة المشروع، الألوان المفضلة، الجمهور المستهدف..." class="input-luxury"></textarea></div>
-                <button type="submit" id="btnOrderSubmit" class="btn-filled-red w-full py-5 rounded-xl text-lg mt-6 font-black tracking-wide">تأكيد وإرسال الطلب الآن</button>
+                <div><label for="orderName" class="form-label">الاسم الكامل</label><input type="text" id="orderName"
+                        name="name" required autocomplete="name" class="input-luxury"></div>
+                <div><label for="orderProjectName" class="form-label">اسم المشروع / الشركة / الوكالة</label><input
+                        type="text" id="orderProjectName" name="projectName" required
+                        placeholder="مثال: شركة النور، مقاولة الأمل..." class="input-luxury"></div>
+                <div><label for="orderPhone" class="form-label">رقم الهاتف</label><input type="tel" id="orderPhone"
+                        name="phone" required autocomplete="tel" class="input-luxury number-font text-right" dir="ltr">
+                    <p id="orderPhoneHint" class="text-xs text-emerald-400 mt-1 hidden">✓ تم ملء رقمك تلقائياً من حسابك
+                        — تأكد أنه صحيح.</p>
+                </div>
+                <div><label for="orderEmail" class="form-label">البريد الإلكتروني</label><input type="email"
+                        id="orderEmail" name="email" autocomplete="email" class="input-luxury font-en text-right"
+                        dir="ltr"></div>
+                <div><label for="orderSpecs" class="form-label">وصف تفصيلي لما تريده</label><textarea id="orderSpecs"
+                        name="specifications" required rows="4"
+                        placeholder="اشرح لنا بالتفصيل ما تحتاجه: فكرة المشروع، الألوان المفضلة، الجمهور المستهدف..."
+                        class="input-luxury"></textarea></div>
+                <button type="submit" id="btnOrderSubmit"
+                    class="btn-filled-red w-full py-5 rounded-xl text-lg mt-6 font-black tracking-wide">تأكيد وإرسال
+                    الطلب الآن</button>
             </form>
         </div>
     </div>
     <script src="app.js" defer></script>
     <script src="visual-system.js" defer></script>
 </body>
+
 </html>
