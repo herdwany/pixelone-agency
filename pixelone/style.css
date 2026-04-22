@@ -948,11 +948,28 @@ textarea:focus-visible {
     order: 1;
 }
 
+.hero-v2-copy .hero-title {
+    font-size: clamp(2.2rem, 5.8vw, 4.35rem) !important;
+    line-height: 1.18;
+    max-width: 14ch;
+    margin-inline: auto;
+}
+
+.hero-v2-copy p {
+    max-width: 48ch;
+}
+
 .hero-v2-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 0.9rem;
     justify-content: center;
+}
+
+.hero-v2-actions .btn-filled-red,
+.hero-v2-actions a {
+    min-height: 3.35rem;
+    font-size: clamp(1rem, 2vw, 1.12rem);
 }
 
 .hero-v2-metrics {
@@ -1577,19 +1594,32 @@ textarea.input-luxury {
     }
 
     .site-shell main {
-        padding-top: 1.5rem !important;
+        padding-top: 2.5rem !important;
         padding-bottom: 3rem !important;
         padding-left: 1rem !important;
         padding-right: 1rem !important;
+    }
+
+    #mainContent {
+        --hero-header-clearance: 5rem;
+        --hero-floating-cta-clearance: 6.5rem;
+        padding-top: var(--hero-header-clearance) !important;
+        padding-bottom: calc(var(--hero-floating-cta-clearance) + env(safe-area-inset-bottom, 0px)) !important;
     }
 
     .site-shell .water-card {
         border-radius: 1rem;
     }
 
-    .hero-title {
+    .hero-v2-copy .hero-title {
         font-size: clamp(2.1rem, 8.6vw, 2.75rem) !important;
         line-height: 1.25;
+    }
+
+    .hero-v2-copy p {
+        font-size: 1.02rem !important;
+        line-height: 1.85;
+        margin-bottom: 1.7rem !important;
     }
 
     .hero-v2-actions {
@@ -1664,8 +1694,8 @@ textarea.input-luxury {
 }
 
 @media (max-width: 480px) {
-    .hero-title {
-        font-size: clamp(1.9rem, 9.2vw, 2.3rem) !important;
+    .hero-v2-copy .hero-title {
+        font-size: clamp(1.9rem, 9.2vw, 2.35rem) !important;
     }
 
     .modal-content {
@@ -1722,6 +1752,10 @@ textarea.input-luxury {
 
     .hero-v2-actions {
         justify-content: flex-start;
+    }
+
+    .hero-v2-copy .hero-title {
+        margin-inline: 0;
     }
 
     .hero-v2-metrics {
