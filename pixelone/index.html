@@ -3,7 +3,7 @@
 
 <head>
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://connect.facebook.net https://flow.sokt.io; connect-src 'self' https://flow.sokt.io https://*.supabase.co wss://*.supabase.co https://cdn.jsdelivr.net https://www.facebook.com https://connect.facebook.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: https://www.facebook.com;">
+        content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://connect.facebook.net https://flow.sokt.io; connect-src 'self' https://flow.sokt.io https://*.supabase.co wss://*.supabase.co https://cdn.jsdelivr.net https://www.facebook.com https://connect.facebook.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: https://www.facebook.com; frame-src 'self' https://www.facebook.com;">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#030303">
@@ -115,7 +115,7 @@
         href="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1400&q=80&fm=webp">
 
     <!-- استدعاء Tailwindcss عبر الـ CDN للعمل السريع -->
-    <script src="https://cdn.tailwindcss.com" defer></script>
+    <link rel="stylesheet" href="tw.min.css">
 
     <!-- استدعاء مكتبة قاعدة البيانات Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
@@ -523,7 +523,7 @@
         class="sticky top-0 z-[1100] border-b border-white/10 bg-black/80 backdrop-blur-xl supports-[backdrop-filter]:bg-black/75">
         <nav class="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-3 md:px-6"
             aria-label="التنقل الرئيسي">
-            <a href="index.html" class="inline-flex items-center gap-3 no-underline" aria-label="Pixel One Home">
+            <a href="index.html" class="inline-flex items-center gap-3 no-underline" aria-label="Pixel One">
                 <span
                     class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-[#E50914] text-base font-black font-en text-black shadow-[0_0_18px_rgba(229,9,20,0.45)]">P</span>
                 <span class="text-xl font-black uppercase tracking-tight font-en text-white">Pixel One</span>
@@ -587,7 +587,7 @@
     <!-- ==================================================================
          واجهة الترحيب (Hero Section)
          ================================================================== -->
-    <header id="mainContent"
+    <main id="mainContent"
         class="relative pt-28 pb-20 px-6 overflow-hidden min-h-[90vh] flex flex-col justify-center">
         <!-- إضاءة الخلفية الحمراء -->
         <div class="hero-glow"></div>
@@ -646,9 +646,9 @@
                 <a href="#workflow" class="hero-proof-link">شاهد كيف نعمل</a>
             </aside>
         </div>
-    </header>
+    </main>
 
-    <!-- ==================================================================
+    <!-- ===
          شريط الثقة المهنية (Expert Positioning)
          ================================================================== -->
     <section class="border-y border-white/5 bg-black/50 py-10 relative z-10">
@@ -804,13 +804,13 @@
 
             <div class="portfolio-filters portfolio-reveal" role="tablist" aria-label="فلترة معرض الأعمال">
                 <button type="button" class="portfolio-filter-btn is-active" role="tab" data-filter="all"
-                    aria-selected="true" aria-pressed="true" data-portfolio-key="filter.all">الكل</button>
+                    aria-selected="true"  data-portfolio-key="filter.all">الكل</button>
                 <button type="button" class="portfolio-filter-btn" role="tab" data-filter="web" aria-selected="false"
-                    aria-pressed="false" data-portfolio-key="filter.web">مواقع وصفحات هبوط</button>
+                     data-portfolio-key="filter.web">مواقع وصفحات هبوط</button>
                 <button type="button" class="portfolio-filter-btn" role="tab" data-filter="design" aria-selected="false"
-                    aria-pressed="false" data-portfolio-key="filter.design">تصميم جرافيك وشعارات</button>
+                     data-portfolio-key="filter.design">تصميم جرافيك وشعارات</button>
                 <button type="button" class="portfolio-filter-btn" role="tab" data-filter="video" aria-selected="false"
-                    aria-pressed="false" data-portfolio-key="filter.video">مونتاج فيديوهات</button>
+                     data-portfolio-key="filter.video">مونتاج فيديوهات</button>
             </div>
 
             <div class="portfolio-grid" role="list" aria-label="مشاريع Pixel One التجريبية" aria-live="polite">
@@ -1349,3 +1349,6 @@
 </body>
 
 </html>
+
+
+
