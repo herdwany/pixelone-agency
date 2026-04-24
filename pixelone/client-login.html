@@ -1,21 +1,22 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#030303">
+    <meta name="theme-color" content="#0b1218">
     <link rel="icon" href="icone/favicon.ico" sizes="any">
     <link rel="icon" type="image/svg+xml" href="icone/favicon.svg">
     <link rel="icon" type="image/png" sizes="96x96" href="icone/favicon-96x96.png">
     <link rel="apple-touch-icon" sizes="180x180" href="icone/apple-touch-icon.png">
     <link rel="manifest" href="icone/site.webmanifest">
-    
-    <title>دخول العملاء | Pixel One Visuals</title>
-    <meta name="description" content="صفحة دخول العملاء في Pixel One Visuals لمتابعة الطلبات، حالة التنفيذ، وتسليم الملفات بشكل منظم وآمن.">
+    <title>دخول العملاء | بيكسل ون</title>
+    <meta name="description"
+        content="بوابة عملاء بيكسل ون لمتابعة الطلبات، الوصول إلى العروض والفواتير، ومراجعة المستندات والتحديثات داخل تجربة آمنة ومنظمة.">
     <meta name="robots" content="index, follow">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="دخول العملاء | Pixel One Visuals">
-    <meta property="og:description" content="سجّل دخولك لإدارة طلبات التصميم ومتابعة مشروعك لحظة بلحظة.">
+    <meta property="og:title" content="دخول العملاء | بيكسل ون">
+    <meta property="og:description" content="بوابة منظمة وآمنة لمتابعة المشاريع والوثائق وحالة التنفيذ من مكان واحد.">
     <meta property="og:url" content="https://www.pixelonevisuals.tech/client-login.html">
     <meta property="og:site_name" content="Pixel One Visuals">
     <meta property="og:locale" content="ar_MA">
@@ -24,10 +25,10 @@
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:width" content="512">
     <meta property="og:image:height" content="512">
-    <meta property="og:image:alt" content="شعار Pixel One Visuals بهوية سوداء وحمراء">
+    <meta property="og:image:alt" content="بوابة عملاء بيكسل ون">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="دخول العملاء | Pixel One Visuals">
-    <meta name="twitter:description" content="بوابة العملاء لمتابعة الطلبات والحالة والتحديثات بشكل منظم وآمن.">
+    <meta name="twitter:title" content="دخول العملاء | بيكسل ون">
+    <meta name="twitter:description" content="واجهة عربية مرتبة لمتابعة المشروع، حالة الطلب، الوثائق والفواتير.">
     <meta name="twitter:image" content="https://www.pixelonevisuals.tech/icone/web-app-manifest-512x512.png">
     <link rel="canonical" href="https://www.pixelonevisuals.tech/client-login.html">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -37,25 +38,25 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="selection:bg-red-600 selection:text-white site-shell">
+
+<body data-page-text-mode="off" class="site-shell">
     <a href="#mainContent" class="skip-link">تخطي إلى المحتوى الرئيسي</a>
 
     <nav class="navbar-glass site-nav" aria-label="التنقل الرئيسي">
-        <a href="../index.html" class="logo-container">
+        <a href="index.html" class="logo-container">
             <span class="logo-p text-3xl">P</span>
             <span class="text-xl font-black tracking-tighter hidden sm:block uppercase font-en text-white">Pixel One</span>
         </a>
         <div class="site-nav-links hidden md:flex items-center gap-8">
             <a href="about.html" class="text-sm font-bold nav-link">من نحن</a>
-            <a href="services.html" class="text-sm font-bold nav-link">خدماتنا</a>
-            <a href="how-we-work.html" class="text-sm font-bold nav-link">كيف نعمل</a>
+            <a href="services.html" class="text-sm font-bold nav-link">الخدمات</a>
+            <a href="how-we-work.html" class="text-sm font-bold nav-link">آلية العمل</a>
             <a href="privacy-policy.html" class="text-sm font-bold nav-link">الخصوصية</a>
         </div>
         <div class="site-nav-cta hidden md:flex gap-4 items-center">
-            <a href="client-login.html" class="text-sm font-bold text-emerald-300">دخول العملاء</a>
+            <a href="client-login.html" class="text-sm font-bold text-gray-300 hover:text-white transition">دخول العملاء</a>
             <a href="login.html" class="btn-filled-red px-6 py-2 rounded-md text-sm font-bold hidden sm:block">تسجيل الدخول</a>
         </div>
-
         <details class="mobile-nav-menu md:hidden">
             <summary class="mobile-nav-toggle" aria-label="فتح القائمة">
                 <span></span>
@@ -64,8 +65,8 @@
             </summary>
             <div class="mobile-nav-panel">
                 <a href="about.html" class="mobile-nav-link">من نحن</a>
-                <a href="services.html" class="mobile-nav-link">خدماتنا</a>
-                <a href="how-we-work.html" class="mobile-nav-link">كيف نعمل</a>
+                <a href="services.html" class="mobile-nav-link">الخدمات</a>
+                <a href="how-we-work.html" class="mobile-nav-link">آلية العمل</a>
                 <a href="privacy-policy.html" class="mobile-nav-link">الخصوصية</a>
                 <a href="client-login.html" class="mobile-nav-link mobile-nav-link-accent">دخول العملاء</a>
                 <a href="login.html" class="btn-filled-red mobile-nav-btn">تسجيل الدخول</a>
@@ -73,45 +74,80 @@
         </details>
     </nav>
 
-    <main id="mainContent" class="max-w-5xl mx-auto px-6 py-20 relative z-10">
-        <header class="mb-10 text-center animate-fade-up">
-            <p class="text-brand-red tracking-widest uppercase text-sm font-bold mb-3">دخول العملاء</p>
-            <h1 class="text-4xl md:text-5xl font-black text-white mb-5">بوابتك لمتابعة المشروع</h1>
-            <p class="text-gray-400 max-w-3xl mx-auto leading-relaxed">
-                من خلال لوحة العملاء يمكنك متابعة حالة الطلب، معرفة آخر التحديثات، والرجوع إلى تاريخ المشروع بشكل منظم.
-            </p>
-        </header>
-
-        <section class="water-card p-8 md:p-10 rounded-3xl mb-8">
-            <h2 class="text-white text-2xl font-black mb-4">ماذا يمكنك فعله داخل الحساب؟</h2>
-            <ul class="space-y-3 text-gray-300">
-                <li>تسجيل الدخول الآمن بالبريد الإلكتروني وكلمة المرور.</li>
-                <li>إرسال طلبات جديدة ومتابعة الحالة الحالية لكل طلب.</li>
-                <li>استلام التحديثات من فريق التنفيذ بشكل واضح.</li>
-                <li>تجهيز كل مشروع بطريقة سهلة للرجوع والمراجعة.</li>
-            </ul>
+    <main id="mainContent">
+        <section class="page-frame page-hero">
+            <div class="page-hero__copy animate-fade-up">
+                <span class="hero-kicker">بوابة العملاء</span>
+                <h1 class="page-hero__headline">مكان واحد لمتابعة <span class="hero-accent">الطلب، الوثائق، والحالة</span>.</h1>
+                <p class="page-hero__body">
+                    إذا كان لديك مشروع قائم مع بيكسل ون فهذه هي البوابة التي تمنحك صورة أوضح عن التنفيذ: الطلبات،
+                    العروض، الفواتير، والوثائق، داخل واجهة منظمة وسهلة المراجعة.
+                </p>
+                <div class="hero-actions">
+                    <a href="login.html" class="btn-filled-red">تسجيل الدخول</a>
+                    <a href="services.html" class="btn-outline">استعرض الخدمات</a>
+                </div>
+            </div>
+            <aside class="page-hero__panel animate-fade-up">
+                <p class="section-eyebrow">ماذا ستجد داخل البوابة</p>
+                <ul class="panel-list">
+                    <li>متابعة حالة الطلبات الحالية والسابقة.</li>
+                    <li>الوصول إلى عروض الأسعار والفواتير المربوطة بحسابك.</li>
+                    <li>روابط ومستندات آمنة يسهل الرجوع إليها لاحقاً.</li>
+                    <li>إدارة البريد، الهاتف، وكلمة المرور من نفس المكان.</li>
+                </ul>
+            </aside>
         </section>
 
-        <section class="water-card p-8 md:p-10 rounded-3xl text-center">
-            <h2 class="text-white text-2xl font-black mb-3">جاهز للدخول؟</h2>
-            <p class="text-gray-400 mb-6">اضغط الزر التالي للانتقال مباشرة إلى صفحة تسجيل الدخول الرسمية.</p>
-            <a href="login.html" class="btn-filled-red px-10 py-4 rounded-xl font-black text-lg inline-block">الانتقال إلى تسجيل الدخول</a>
+        <section class="page-section">
+            <div class="section-shell grid grid-cols-1 md:grid-cols-3 gap-5">
+                <article class="water-card p-6 rounded-3xl">
+                    <p class="text-xs text-gray-400 mb-2">وضوح</p>
+                    <h2 class="text-white text-xl font-black mb-3">ما الذي يحدث الآن؟</h2>
+                    <p class="text-gray-300 text-sm leading-7">الواجهة مصممة لتعرض الحالة والخطوة التالية دون إرباك أو ازدحام.</p>
+                </article>
+                <article class="water-card p-6 rounded-3xl">
+                    <p class="text-xs text-gray-400 mb-2">أمان</p>
+                    <h2 class="text-white text-xl font-black mb-3">من يصل إلى ماذا؟</h2>
+                    <p class="text-gray-300 text-sm leading-7">كل شيء مبني على صلاحيات واضحة وروابط ووثائق آمنة.</p>
+                </article>
+                <article class="water-card p-6 rounded-3xl">
+                    <p class="text-xs text-gray-400 mb-2">استمرارية</p>
+                    <h2 class="text-white text-xl font-black mb-3">الرجوع للمعلومات لاحقاً</h2>
+                    <p class="text-gray-300 text-sm leading-7">يمكنك الرجوع إلى السجل والوثائق من نفس الحساب وفي أي وقت.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="page-section">
+            <div class="section-shell">
+                <div class="cta-panel text-center">
+                    <span class="section-eyebrow">دخول آمن</span>
+                    <h2 class="section-heading">إذا كان لديك حساب عميل، يمكنك الدخول من هنا مباشرة.</h2>
+                    <p class="section-copy mx-auto">وإذا لم يكن لديك حساب بعد، يمكنك البدء من الخدمات أو التواصل لتهيئة الوصول المناسب.</p>
+                    <div class="hero-actions justify-center">
+                        <a href="login.html" class="btn-filled-red">الانتقال إلى تسجيل الدخول</a>
+                        <a href="how-we-work.html" class="btn-outline">كيف نعمل</a>
+                    </div>
+                </div>
+            </div>
         </section>
     </main>
 
-    <footer class="bg-black border-t border-white/10 py-8 px-6">
-        <div class="max-w-6xl mx-auto flex flex-col md:flex-row gap-4 justify-between items-center">
-            <p class="font-en text-gray-600 text-xs font-bold">© 2026 PIXEL ONE VISUALS. ALL RIGHTS RESERVED.</p>
-            <div class="flex gap-4 text-sm">
-                <a href="privacy-policy.html" class="text-gray-500 hover:text-brand-red transition">الخصوصية</a>
-                <a href="refund-policy.html" class="text-gray-500 hover:text-brand-red transition">سياسة الاسترجاع</a>
-                <a href="../index.html" class="text-gray-500 hover:text-brand-red transition">الرئيسية</a>
+    <footer class="bg-black/50 border-t border-white/10 py-10 px-6">
+        <div class="page-frame flex flex-col md:flex-row items-center justify-between gap-4">
+            <p class="text-xs text-gray-500">© 2026 Pixel One Visuals. جميع الحقوق محفوظة.</p>
+            <div class="flex items-center gap-4 text-sm text-gray-400">
+                <a href="privacy-policy.html" class="hover:text-white transition">الخصوصية</a>
+                <a href="refund-policy.html" class="hover:text-white transition">الاسترجاع</a>
+                <a href="terms-of-service.html" class="hover:text-white transition">الشروط</a>
             </div>
         </div>
     </footer>
+
     <script src="app.js" defer></script>
     <script src="page-text-loader.js" defer></script>
     <script src="visual-system.js" defer></script>
 </body>
-</html>
 
+</html>

@@ -1,8 +1,31 @@
 (function () {
     'use strict';
 
+    var PORTFOLIO_COPY_EVENT = 'pixelone:portfolio-copy';
+
     function isPlainObject(value) {
         return value !== null && typeof value === 'object' && !Array.isArray(value);
+    }
+
+    function cachePortfolioCopy(payload) {
+        if (!payload || !isPlainObject(payload.texts)) {
+            return;
+        }
+
+        window.__PIXELONE_PORTFOLIO_COPY__ = {
+            page: String(payload.page || 'index'),
+            section: String(payload.section || 'portfolio'),
+            lang: String(payload.lang || document.documentElement.getAttribute('lang') || 'ar'),
+            texts: payload.texts,
+        };
+
+        try {
+            window.dispatchEvent(new CustomEvent(PORTFOLIO_COPY_EVENT, {
+                detail: window.__PIXELONE_PORTFOLIO_COPY__,
+            }));
+        } catch (_err) {
+            // Keep the section usable even if CustomEvent is unavailable.
+        }
     }
 
     async function loadPortfolioSectionTexts() {
@@ -37,6 +60,8 @@
         if (!payload || !isPlainObject(payload.texts)) {
             return;
         }
+
+        cachePortfolioCopy(payload);
 
         var texts = payload.texts;
         var keyedNodes = section.querySelectorAll('[data-portfolio-key]');

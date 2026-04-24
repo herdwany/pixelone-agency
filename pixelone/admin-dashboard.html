@@ -11,7 +11,7 @@
     <link rel="manifest" href="icone/site.webmanifest">
 
     <meta name="robots" content="noindex, nofollow">
-    <title>لوحة تحكم - Pixel One</title>
+    <title>لوحة الإدارة | بيكسل ون</title>
     <meta name="description" content="لوحة تحكم المدير لإدارة الطلبات، النزاعات المالية، العروض، والخصومات في Pixel One Visuals.">
     <link rel="canonical" href="https://www.pixelonevisuals.tech/admin-dashboard.html">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,7 +28,7 @@
             </button>
             <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='../index.html'">
                 <span class="logo-p text-xl">P</span>
-                <span class="text-lg font-black tracking-widest text-white uppercase font-en hidden sm:inline">Admin Dashboard</span>
+                <span class="text-lg font-black tracking-widest text-white hidden sm:inline">لوحة الإدارة</span>
             </div>
         </div>
         <div class="flex items-center gap-2 sm:gap-4 flex-wrap justify-end">
@@ -43,9 +43,19 @@
 
     <main class="dashboard-main">
         <div class="max-w-7xl mx-auto animate-fade-up space-y-8">
-            <section>
-                <h1 class="text-4xl font-black text-white mb-2">لوحة تحكم المدير</h1>
-                <p class="text-gray-400">تحكم كامل في الطلبات، النزاعات المالية، العروض، والخصومات.</p>
+            <section class="dashboard-hero grid grid-cols-1 lg:grid-cols-[1.08fr_.92fr] gap-6">
+                <div class="dashboard-hero__meta">
+                    <h1 class="text-white">مساحة تشغيل الإدارة</h1>
+                    <p>تحكم كامل في الطلبات، العروض، الفواتير، الخصومات، والنزاعات ضمن واجهة تشغيل موحدة وواضحة.</p>
+                </div>
+                <div class="surface-card p-6">
+                    <p class="text-xs text-gray-400 mb-3">نظرة سريعة</p>
+                    <ul class="space-y-3 text-sm text-gray-300">
+                        <li>إدارة الطلبات والحالات من نفس الشاشة.</li>
+                        <li>إنشاء عروض أسعار وفواتير وروابط آمنة.</li>
+                        <li>ضبط الخدمات والعروض وعناصر معرض الأعمال.</li>
+                    </ul>
+                </div>
             </section>
 
             <section class="bg-[#121212] border border-[#222] rounded-2xl p-6 md:p-8">
@@ -61,8 +71,8 @@
                 <form id="inviteUserForm" class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                     <input id="inviteEmail" type="email" class="input-luxury font-en text-left md:col-span-2" dir="ltr" placeholder="new.user@domain.com" required>
                     <select id="inviteRole" class="input-luxury" required>
-                        <option value="client">Client</option>
-                        <option value="admin">Admin</option>
+                        <option value="client">عميل</option>
+                        <option value="admin">مدير</option>
                     </select>
                     <button id="inviteSubmitBtn" class="btn-filled-red py-3 rounded-lg font-black md:col-span-3" type="submit">إرسال دعوة</button>
                 </form>
@@ -196,10 +206,10 @@
                         <input id="disputeAmount" type="number" step="0.01" class="input-luxury" placeholder="المبلغ" required>
                         <input id="disputeCurrency" class="input-luxury font-en" value="MAD" placeholder="العملة" dir="ltr" required>
                         <select id="disputeChannel" class="input-luxury" required>
-                            <option value="stripe">Stripe</option>
-                            <option value="bank">Bank Transfer</option>
-                            <option value="cash">Cash</option>
-                            <option value="other">Other</option>
+                            <option value="stripe">بطاقة / Stripe</option>
+                            <option value="bank">تحويل بنكي</option>
+                            <option value="cash">نقدي</option>
+                            <option value="other">أخرى</option>
                         </select>
                         <select id="disputeStatus" class="input-luxury" required>
                             <option value="open">مفتوح</option>
@@ -289,7 +299,7 @@
             </section>
 
             <section class="bg-[#121212] border border-[#222] rounded-2xl p-6 md:p-8">
-                <h2 class="text-2xl font-black text-white mb-2">إدارة معرض الأعمال Portfolio</h2>
+                <h2 class="text-2xl font-black text-white mb-2">إدارة معرض الأعمال</h2>
                 <p class="text-sm text-gray-500 mb-6">أضف نماذج صفحات هبوط، تصميم، أو فيديو لتظهر تلقائياً في قسم PORTFOLIO بالصفحة الرئيسية.</p>
 
                 <div id="portfolioAdminMsgBox" class="msg-box mb-4" aria-live="polite"></div>
@@ -305,8 +315,8 @@
                     </select>
 
                     <select id="portfolioCardStyle" class="input-luxury" required>
-                        <option value="standard">Standard Card</option>
-                        <option value="cta">CTA Card</option>
+                        <option value="standard">بطاقة عادية</option>
+                        <option value="cta">بطاقة دعوة للإجراء</option>
                     </select>
 
                     <input id="portfolioTitle" class="input-luxury md:col-span-2" placeholder="عنوان العنصر" required>

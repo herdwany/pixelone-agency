@@ -11,7 +11,7 @@
     <link rel="manifest" href="icone/site.webmanifest">
     
     <meta name="robots" content="noindex, nofollow">
-    <title>لوحة تحكم الوكالة - Pixel One</title>
+    <title>لوحة العميل | بيكسل ون</title>
     <meta name="description" content="لوحة العميل في Pixel One Visuals لمتابعة الطلبات، الحالات، وتحديثات الأمان الخاصة بالحساب.">
     <link rel="canonical" href="https://www.pixelonevisuals.tech/dashboard.html">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,7 +33,7 @@
             </button>
             <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='../index.html'">
                 <span class="logo-p text-xl">P</span>
-                <span class="text-lg font-black tracking-widest text-white uppercase font-en hidden sm:inline">Dashboard</span>
+                <span class="text-lg font-black tracking-widest text-white hidden sm:inline">لوحة العميل</span>
             </div>
         </div>
         
@@ -54,11 +54,21 @@
     <main class="dashboard-main">
         <div class="max-w-6xl mx-auto animate-fade-up">
             
-            <div class="mb-10">
-                <h2 class="text-4xl font-black mb-2 text-white">مرحباً بك مجدداً!</h2>
-                <p class="text-gray-400">هنا يمكنك تتبع طلباتك فقط وإدارة بريدك وكلمة مرورك.</p>
-                <p id="dashboardRoleHint" class="text-xs text-gray-500 mt-2">وضع المستخدم: تتبع الطلبات وتحديث بيانات الحساب فقط.</p>
-            </div>
+            <section class="dashboard-hero grid grid-cols-1 lg:grid-cols-[1.08fr_.92fr] gap-6 mb-10">
+                <div class="dashboard-hero__meta">
+                    <h2 class="text-white">متابعة المشروع من مكان واحد</h2>
+                    <p>هنا تجد طلباتك، عروض الأسعار، الفواتير، وتحديثات الحساب داخل مساحة واضحة وسهلة المراجعة.</p>
+                    <p id="dashboardRoleHint" class="text-xs text-gray-500 mt-3">وضع المستخدم: تتبع الطلبات وتحديث بيانات الحساب فقط.</p>
+                </div>
+                <div class="surface-card p-6">
+                    <p class="text-xs text-gray-400 mb-3">ما الذي يمكنك فعله هنا</p>
+                    <ul class="space-y-3 text-sm text-gray-300">
+                        <li>متابعة حالة الطلبات الحالية والسابقة.</li>
+                        <li>الوصول إلى عروض الأسعار والفواتير المرتبطة بحسابك.</li>
+                        <li>تحديث البريد الإلكتروني والهاتف وكلمة المرور بأمان.</li>
+                    </ul>
+                </div>
+            </section>
             
             <!-- جدول الطلبات -->
             <div id="dashboardOrdersSection" class="mt-12 bg-[#121212] border border-[#222] rounded-2xl p-6 md:p-8 animate-fade-up delay-200">

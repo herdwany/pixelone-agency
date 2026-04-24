@@ -28,11 +28,11 @@ const I18N_MANAGED_PAGES = [
 
 const UI_TEXT = {
     ar: {
-        navDashboard: 'لوحة التحكم',
+        navDashboard: 'لوحة العميل',
         navClientLogin: 'دخول العملاء',
         offerEmpty: 'لا توجد عروض نشطة حالياً.',
         offerTitleFallback: 'عرض خاص',
-        offerBadgeFallback: 'SPECIAL',
+        offerBadgeFallback: 'مميز',
         serviceSoon: 'قريباً',
         serviceAvailable: 'متاح الآن',
         serviceOrderNow: 'اطلب الخدمة الآن',
@@ -2945,7 +2945,8 @@ function normalizePortfolioCategory(value) {
 
 function normalizePortfolioCardStyle(value) {
     const safe = String(value || '').trim().toLowerCase();
-    return safe === 'cta' ? 'cta' : 'standard';
+    const allowed = ['standard', 'featured', 'medium', 'compact', 'cta'];
+    return allowed.includes(safe) ? safe : 'standard';
 }
 
 function normalizePortfolioMediaType(value) {
@@ -3460,7 +3461,7 @@ function renderPortfolioActionMarkup(item, isCtaCard) {
     const className = isExternal ? 'portfolio-link-btn' : 'portfolio-secondary-btn';
     const targetAttrs = openInNewTab ? ' target="_blank" rel="noopener noreferrer"' : '';
     const suffix = openInNewTab
-        ? ' <span aria-hidden="true">↗</span><span class="portfolio-visually-hidden">يفتح في علامة تبويب جديدة</span>'
+        ? '<span class="portfolio-visually-hidden"> يفتح في نافذة جديدة</span>'
         : '';
 
     return `
@@ -3476,10 +3477,14 @@ function renderPortfolioCardMarkup(item, options = {}) {
     const safeDescription = escapeHtml(resolveLocalizedInlineText(item.description));
     const staticAttr = item.isStaticCard ? ' data-static-card="true"' : '';
     const isCtaCard = item.cardStyle === 'cta';
+    const layoutTier = String(options.layoutTier || item.cardStyle || 'standard').trim().toLowerCase();
+    const tierClass = isCtaCard
+        ? ' portfolio-card--cta'
+        : (['featured', 'medium', 'compact'].includes(layoutTier) ? ` portfolio-card--${layoutTier}` : ' portfolio-card--standard');
 
     if (isCtaCard) {
         return `
-            <article class="portfolio-card portfolio-item portfolio-cta-card portfolio-reveal" role="listitem" data-category="${escapeHtml(category)}"${staticAttr}>
+            <article class="portfolio-card portfolio-item portfolio-cta-card portfolio-reveal${tierClass}" role="listitem" data-category="${escapeHtml(category)}"${staticAttr}>
                 <div class="portfolio-body">
                     <h3>${safeTitle}</h3>
                     <p>${safeDescription}</p>
@@ -3494,14 +3499,15 @@ function renderPortfolioCardMarkup(item, options = {}) {
     const prioritizeImage = Boolean(options.prioritizeImage) && useImage;
     const loadingMode = prioritizeImage ? 'eager' : 'lazy';
     const fetchPriority = prioritizeImage ? 'high' : 'auto';
+    const mediaMod = layoutTier === 'featured' ? ' portfolio-media--featured' : (layoutTier === 'compact' ? ' portfolio-media--compact' : '');
     const mediaMarkup = useImage
         ? `
-            <figure class="portfolio-media">
-                <img src="${escapeHtml(normalizedImageUrl)}" alt="${escapeHtml(item.imageAlt || item.title || 'Portfolio item')}" width="1200" height="750" loading="${loadingMode}" decoding="async" fetchpriority="${fetchPriority}">
+            <figure class="portfolio-media${mediaMod}">
+                <img src="${escapeHtml(normalizedImageUrl)}" alt="${escapeHtml(item.imageAlt || item.title || 'عنصر من معرض الأعمال')}" width="1200" height="750" loading="${loadingMode}" decoding="async" fetchpriority="${fetchPriority}">
             </figure>
         `
         : `
-            <figure class="portfolio-media">
+            <figure class="portfolio-media${mediaMod}">
                 <div class="portfolio-media-placeholder" aria-hidden="true">
                     <span>${escapeHtml(resolveLocalizedInlineText(item.badgeText) || 'Preview')}</span>
                 </div>
@@ -3509,7 +3515,7 @@ function renderPortfolioCardMarkup(item, options = {}) {
         `;
 
     return `
-        <article class="portfolio-card portfolio-item portfolio-reveal" role="listitem" data-category="${escapeHtml(category)}"${staticAttr}>
+        <article class="portfolio-card portfolio-item portfolio-reveal${tierClass}" role="listitem" data-category="${escapeHtml(category)}"${staticAttr}>
             ${mediaMarkup}
             <div class="portfolio-body">
                 <h3>${safeTitle}</h3>
@@ -3553,16 +3559,40 @@ function renderPortfolioForHome() {
     filtersContainer.innerHTML = filtersMarkup;
     filtersContainer.hidden = orderedCategories.length === 0;
 
+    const staticItems = activeItems.filter((item) => item.isStaticCard);
+    const projects = activeItems.filter((item) => !item.isStaticCard).slice(0, 5);
+
     let imagePriorityAssigned = false;
-    grid.innerHTML = activeItems.map((item) => {
+    const renderProject = (item, layoutTier) => {
         const hasImage = item.mediaType === 'image' && Boolean(item.imageUrl);
         const prioritizeImage = hasImage && !imagePriorityAssigned;
         if (prioritizeImage) {
             imagePriorityAssigned = true;
         }
 
-        return renderPortfolioCardMarkup(item, { prioritizeImage });
-    }).join('');
+        return renderPortfolioCardMarkup(item, { prioritizeImage, layoutTier });
+    };
+
+    const rows = [];
+    if (projects[0]) {
+        rows.push(`<div class="portfolio-bento-row portfolio-bento-row--featured">${renderProject(projects[0], 'featured')}</div>`);
+    }
+
+    const mediumSlice = projects.slice(1, 3);
+    if (mediumSlice.length) {
+        rows.push(`<div class="portfolio-bento-row portfolio-bento-row--medium">${mediumSlice.map((item) => renderProject(item, 'medium')).join('')}</div>`);
+    }
+
+    const compactSlice = projects.slice(3, 5);
+    if (compactSlice.length) {
+        rows.push(`<div class="portfolio-bento-row portfolio-bento-row--compact">${compactSlice.map((item) => renderProject(item, 'compact')).join('')}</div>`);
+    }
+
+    staticItems.forEach((item) => {
+        rows.push(`<div class="portfolio-bento-row portfolio-bento-row--cta">${renderPortfolioCardMarkup(item, {})}</div>`);
+    });
+
+    grid.innerHTML = rows.join('');
 
     if (typeof window.initPortfolioInteractions === 'function') {
         window.initPortfolioInteractions();
@@ -3598,12 +3628,16 @@ function renderOffersForHome() {
         const safeDescription = escapeHtml(resolveLocalizedInlineText(offer.description) || '');
         const safeBadge = escapeHtml(resolveLocalizedInlineText(offer.badge) || t('offerBadgeFallback'));
         container.insertAdjacentHTML('beforeend', `
-            <article class="water-card rounded-2xl p-6 border border-emerald-500/25 bg-emerald-500/5">
-                <div class="flex justify-between items-start gap-3 mb-3">
+            <article class="water-card offer-card rounded-2xl p-6">
+                <div class="flex justify-between items-start gap-3 mb-4">
                     <h4 class="text-white font-black text-lg">${safeTitle}</h4>
-                    <span class="text-[10px] font-en px-2 py-1 rounded-full border border-emerald-400/40 text-emerald-300">${safeBadge}</span>
+                    <span class="text-[10px] font-en px-3 py-1 rounded-full border border-emerald-400/40 text-emerald-300">${safeBadge}</span>
                 </div>
-                <p class="text-gray-300 text-sm leading-relaxed">${safeDescription}</p>
+                <p class="text-gray-300 text-sm leading-relaxed mb-4">${safeDescription}</p>
+                <div class="flex items-center gap-2 text-xs text-gray-500">
+                    <span class="inline-flex h-2 w-2 rounded-full bg-emerald-300"></span>
+                    <span>يُطبّق العرض تلقائياً داخل الطلب دون أي خطوة إضافية.</span>
+                </div>
             </article>
         `);
     });
@@ -3787,23 +3821,24 @@ function renderServices(grid, services, discountContext) {
             : '';
 
         const cardHTML = `
-            <div class="p-10 flex flex-col justify-between water-card animate-fade-up ${delayClass} ${isSoon ? 'coming-soon-card' : ''}">
+            <article class="p-8 md:p-9 flex flex-col justify-between water-card service-card animate-fade-up ${delayClass} ${isSoon ? 'coming-soon-card' : ''}">
                 <div>
-                    <div class="flex justify-between items-start mb-8 gap-4">
-                        <div class="flex flex-col gap-2">
-                            <span class="text-[10px] font-bold tracking-[0.2em] text-red-500 uppercase">${safeCategory}</span>
+                    <div class="service-card__head flex justify-between items-start gap-4 mb-6">
+                        <div class="flex flex-col gap-3">
+                            <span class="text-[11px] font-bold tracking-[0.18em] text-red-500 uppercase">${safeCategory}</span>
                             <div class="flex gap-2 items-center flex-wrap">
-                                <span class="text-[10px] px-2 py-1 rounded-full border w-fit ${statusClass}">${statusLabel}</span>
-                                <span class="text-[10px] px-2 py-1 rounded-full border border-white/10 bg-white/5 text-gray-300">${safeType}</span>
+                                <span class="text-[10px] px-3 py-1 rounded-full border w-fit ${statusClass}">${statusLabel}</span>
+                                <span class="text-[10px] px-3 py-1 rounded-full border border-white/10 bg-white/5 text-gray-300">${safeType}</span>
                                 ${discountBadgeHtml}
                             </div>
                         </div>
-                        ${priceHtml}
+                        <div class="service-card__price text-left">${priceHtml}</div>
                     </div>
-                    <h3 class="text-2xl font-black mb-4">${safeName}</h3>
-                    <a href="${safeServiceDetailUrl}" class="block text-gray-400 text-sm leading-relaxed mb-4 hover:text-gray-200 transition">${safeDesc}</a>
+                    <h3 class="text-2xl font-black mb-3">${safeName}</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-5">${safeDesc}</p>
+                    <div class="text-xs text-gray-500">نطاق واضح، تواصل مباشر، وتسليم جاهز للتشغيل خلال مسار عمل منظم.</div>
                 </div>
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6">
                     <a href="${safeServiceDetailUrl}" class="w-full py-4 rounded-lg font-black transition text-sm text-center border border-white/20 text-gray-200 hover:bg-white/10">${escapeHtml(moreLabel)}</a>
                     <button ${isSoon ? 'disabled' : ''}
                         data-action="open-order-modal"
@@ -3816,7 +3851,7 @@ function renderServices(grid, services, discountContext) {
                         ${isSoon ? escapeHtml(t('serviceComingSoonBtn')) : escapeHtml(t('serviceOrderNow'))}
                     </button>
                 </div>
-            </div>
+            </article>
         `;
         grid.insertAdjacentHTML('beforeend', cardHTML);
     });
@@ -3831,7 +3866,7 @@ function renderServiceDetailPage() {
     const serviceParam = params.get('service') || document.body?.dataset.serviceId || routeServiceId || '';
     const targetId = resolveServiceDetailId(serviceParam);
     const services = getStoredServices();
-    const catalog = services.length > 0 ? services : [];
+    const catalog = getRenderableMarketingServices(services);
     const service = catalog.find((item) => resolveServiceDetailId(item.id) === targetId);
 
     if (!service) {
@@ -3863,65 +3898,92 @@ function renderServiceDetailPage() {
     const detailPath = SERVICE_DETAIL_ROUTES[resolvedId] || `service-detail.html?service=${encodeURIComponent(resolvedId || '')}`;
     const shareUrl = `https://www.pixelonevisuals.tech/${detailPath}`;
     const shareTitle = `${localized.title || 'تفاصيل الخدمة'} | Pixel One Visuals`;
-    const shareText = `${localized.description || 'تفاصيل الخدمة والمخرجات والمتطلبات.'} \n🔥 اطلب الآن من Pixel One Visuals واحصل على تنفيذ احترافي!`;
+    const shareText = `${localized.description || 'تفاصيل الخدمة والمخرجات والمتطلبات.'}\nاطلع على التفاصيل وابدأ الخدمة عبر Pixel One Visuals.`;
     const fallbackImage = getServiceOgImageLocal(service.id);
+    const deliverablesMarkup = details.deliverables.map((item) => `<li>• ${escapeHtml(item)}</li>`).join('');
+    const requirementsMarkup = details.requirements.map((item) => `<li>• ${escapeHtml(item)}</li>`).join('');
+    const workflowMarkup = details.workflow.map((item, index) => `<li>${index + 1}. ${escapeHtml(item)}</li>`).join('');
+    const orderButtonLabel = isSoon ? 'الخدمة قيد التجهيز' : 'اطلب الخدمة الآن';
 
     root.innerHTML = `
-        <article class="water-card rounded-3xl overflow-hidden">
-            <img src="${escapeHtml(details.image)}" alt="${escapeHtml(details.imageAlt)}" class="w-full h-[260px] md:h-[360px] object-cover" width="1600" height="900" loading="eager" decoding="async" referrerpolicy="no-referrer" data-role="service-hero-image" data-fallback-image="${escapeHtml(fallbackImage)}">
-            <div class="p-7 md:p-10">
-                <div class="flex flex-wrap items-center gap-2 mb-4">
-                    <span class="text-[11px] px-3 py-1 rounded-full border ${statusClass}">${statusLabel}</span>
-                    <span class="text-[11px] px-3 py-1 rounded-full border border-white/10 bg-white/5 text-gray-300">${serviceType}</span>
-                    <span class="text-[11px] px-3 py-1 rounded-full border border-white/10 bg-white/5 text-gray-300">${serviceCategory}</span>
-                </div>
-                <h1 class="text-3xl md:text-4xl font-black text-white mb-3">${serviceName}</h1>
-                <p class="text-gray-300 leading-relaxed mb-6">${serviceDesc}</p>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                    <div class="water-card rounded-2xl p-4">
-                        <p class="text-xs text-gray-500 mb-1">السعر</p>
-                        <p class="text-2xl font-black text-white number-font">${servicePrice} <span class="text-xs text-gray-500 font-en">MAD</span></p>
+        <div class="grid grid-cols-1 gap-6">
+            <section class="grid grid-cols-1 xl:grid-cols-[1.08fr_.92fr] gap-6 items-stretch">
+                <article class="page-hero__copy">
+                    <div class="flex flex-wrap items-center gap-2 mb-5">
+                        <span class="text-[11px] px-3 py-1 rounded-full border ${statusClass}">${statusLabel}</span>
+                        <span class="text-[11px] px-3 py-1 rounded-full border border-white/10 bg-white/5 text-gray-300">${serviceType}</span>
+                        <span class="text-[11px] px-3 py-1 rounded-full border border-white/10 bg-white/5 text-gray-300">${serviceCategory}</span>
                     </div>
-                    <div class="water-card rounded-2xl p-4">
-                        <p class="text-xs text-gray-500 mb-1">مدة التنفيذ المتوقعة</p>
-                        <p class="text-sm font-bold text-white">${escapeHtml(details.turnaround)}</p>
+                    <h1 class="page-hero__headline !max-w-none !text-[clamp(2.4rem,5vw,4.3rem)]">${serviceName}</h1>
+                    <p class="page-hero__body">${serviceDesc}</p>
+                    <div class="hero-actions">
+                        <button id="serviceDetailOrderBtn" type="button" data-action="open-order-modal" data-service-id="${escapeHtml(String(service.id || ''))}" data-service-name="${serviceName}" data-final-price="${servicePrice}" class="btn-filled-red px-8 py-4 rounded-xl font-black ${isSoon ? 'btn-disabled' : ''}" ${isSoon ? 'disabled' : ''}>
+                            ${orderButtonLabel}
+                        </button>
+                        <a href="services.html" class="btn-outline">كل الخدمات</a>
                     </div>
-                    <div class="water-card rounded-2xl p-4">
-                        <p class="text-xs text-gray-500 mb-1">سياسة المراجعات</p>
-                        <p class="text-sm font-bold text-white">${escapeHtml(details.revisions)}</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+                        <div class="surface-card p-5">
+                            <p class="text-xs text-gray-500 mb-1">السعر</p>
+                            <p class="text-2xl font-black text-white number-font">${servicePrice} <span class="text-xs text-gray-500 font-en">MAD</span></p>
+                        </div>
+                        <div class="surface-card p-5">
+                            <p class="text-xs text-gray-500 mb-1">مدة التنفيذ المتوقعة</p>
+                            <p class="text-sm font-bold text-white">${escapeHtml(details.turnaround)}</p>
+                        </div>
+                        <div class="surface-card p-5">
+                            <p class="text-xs text-gray-500 mb-1">سياسة المراجعات</p>
+                            <p class="text-sm font-bold text-white">${escapeHtml(details.revisions)}</p>
+                        </div>
                     </div>
-                </div>
+                </article>
 
-                <div class="grid grid-cols-1 xl:grid-cols-3 gap-5">
-                    <section class="water-card rounded-2xl p-5">
-                        <h2 class="text-white font-black mb-4">ماذا ستحصل عليه</h2>
-                        <ul class="space-y-2 text-sm text-gray-300">
-                            ${details.deliverables.map((item) => `<li>• ${escapeHtml(item)}</li>`).join('')}
-                        </ul>
-                    </section>
-                    <section class="water-card rounded-2xl p-5">
-                        <h2 class="text-white font-black mb-4">ماذا نحتاج منك</h2>
-                        <ul class="space-y-2 text-sm text-gray-300">
-                            ${details.requirements.map((item) => `<li>• ${escapeHtml(item)}</li>`).join('')}
-                        </ul>
-                    </section>
-                    <section class="water-card rounded-2xl p-5">
-                        <h2 class="text-white font-black mb-4">كيف سنشتغل</h2>
-                        <ol class="space-y-2 text-sm text-gray-300">
-                            ${details.workflow.map((item, index) => `<li>${index + 1}) ${escapeHtml(item)}</li>`).join('')}
-                        </ol>
-                    </section>
-                </div>
+                <aside class="page-hero__panel">
+                    <div class="overflow-hidden rounded-[1.6rem] border border-white/10 mb-5 bg-black/20">
+                        <img src="${escapeHtml(details.image)}" alt="${escapeHtml(details.imageAlt)}" class="w-full h-[280px] md:h-[360px] object-cover" width="1600" height="900" loading="eager" decoding="async" referrerpolicy="no-referrer" data-role="service-hero-image" data-fallback-image="${escapeHtml(fallbackImage)}">
+                    </div>
+                    <h2 class="panel-title">لمحة سريعة عن الخدمة</h2>
+                    <p class="panel-copy">هذه الصفحة مصممة لتوضح المخرجات والمتطلبات وطريقة التنفيذ قبل اتخاذ القرار، حتى يعرف العميل ما الذي سيبدأ به بالضبط.</p>
+                    <ul class="panel-list">
+                        <li>خدمة مناسبة للشركات التي تريد قراراً سريعاً وواضحاً.</li>
+                        <li>تفاصيل التنفيذ موضحة قبل إرسال الطلب.</li>
+                        <li>بعد الطلب تنتقل المتابعة إلى مساحة تشغيل منظمة وآمنة.</li>
+                    </ul>
+                </aside>
+            </section>
 
-                <div class="mt-8 flex flex-col sm:flex-row gap-3">
-                    <button id="serviceDetailOrderBtn" type="button" data-action="open-order-modal" data-service-id="${escapeHtml(String(service.id || ''))}" data-service-name="${serviceName}" data-final-price="${servicePrice}" class="btn-filled-red px-8 py-4 rounded-xl font-black ${isSoon ? 'btn-disabled' : ''}" ${isSoon ? 'disabled' : ''}>
-                        ${isSoon ? 'قريباً جداً' : 'اطلب الخدمة الآن'}
-                    </button>
-                    <a href="services.html" class="px-8 py-4 rounded-xl font-black border border-white/20 text-gray-200 hover:bg-white/10 text-center">كل الخدمات</a>
-                </div>
+            <section class="grid grid-cols-1 xl:grid-cols-3 gap-5">
+                <article class="water-card rounded-3xl p-6">
+                    <h2 class="text-white font-black text-xl mb-4">المخرجات المتوقعة</h2>
+                    <ul class="space-y-2 text-sm text-gray-300">${deliverablesMarkup}</ul>
+                </article>
+                <article class="water-card rounded-3xl p-6">
+                    <h2 class="text-white font-black text-xl mb-4">ما نحتاجه منك</h2>
+                    <ul class="space-y-2 text-sm text-gray-300">${requirementsMarkup}</ul>
+                </article>
+                <article class="water-card rounded-3xl p-6">
+                    <h2 class="text-white font-black text-xl mb-4">خطوات التنفيذ</h2>
+                    <ol class="space-y-2 text-sm text-gray-300">${workflowMarkup}</ol>
+                </article>
+            </section>
 
-                <div class="mt-6 water-card rounded-2xl p-5">
+            <section class="grid grid-cols-1 lg:grid-cols-[.92fr_1.08fr] gap-6">
+                <article class="summary-panel">
+                    <span class="section-eyebrow">قبل الطلب</span>
+                    <h2 class="section-heading !text-[clamp(1.8rem,3.4vw,2.7rem)]">قرار أوضح وتجربة أكثر ثقة.</h2>
+                    <p class="section-copy max-w-none">
+                        صممنا صفحة الخدمة لتجيب بسرعة عن الأسئلة الأساسية: ماذا ستستلم، ما الذي نحتاجه منك، كم يستغرق التنفيذ،
+                        وما الذي سيحدث بعد إرسال الطلب. هذا الوضوح يقلل التردد ويجعل التحويل أكثر مهنية.
+                    </p>
+                    <div class="hero-actions">
+                        <button type="button" data-action="open-order-modal" data-service-id="${escapeHtml(String(service.id || ''))}" data-service-name="${serviceName}" data-final-price="${servicePrice}" class="btn-filled-red ${isSoon ? 'btn-disabled' : ''}" ${isSoon ? 'disabled' : ''}>
+                            ${orderButtonLabel}
+                        </button>
+                        <a href="client-login.html" class="btn-outline">دخول العملاء</a>
+                    </div>
+                </article>
+
+                <article class="water-card rounded-3xl p-6">
                     <h2 class="text-white font-black mb-4 text-sm">شارك هذه الخدمة</h2>
                     <div class="flex flex-wrap gap-3">
                         <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}" target="_blank" rel="noopener noreferrer" class="share-btn share-btn-facebook" aria-label="مشاركة على فيسبوك">
@@ -3949,9 +4011,9 @@ function renderServiceDetailPage() {
                             <span>نسخ الرابط</span>
                         </button>
                     </div>
-                </div>
-            </div>
-        </article>
+                </article>
+            </section>
+        </div>
     `;
 
     const heroImage = root.querySelector('[data-role="service-hero-image"]');
@@ -4309,6 +4371,9 @@ async function handleOrderSubmit(e) {
     }
 
     msgBox.className = 'msg-box msg-success active';
+    showToast(`تم إرسال الطلب بنجاح. رمز التتبع: ${orderId}.`, 'success', {
+        title: 'تم استلام الطلب',
+    });
     if (btnTextNode) btnTextNode.textContent = ' تم الإرسال ✓';
 
     setTimeout(() => {
@@ -6094,10 +6159,10 @@ function ensureAdminQuoteInvoiceSections() {
         section.innerHTML = `
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-5">
                 <div>
-                    <h2 class="text-2xl font-black text-white">Create Manual Order</h2>
+                    <h2 class="text-2xl font-black text-white">إنشاء طلب يدوي</h2>
                     <p class="text-sm text-gray-500">إنشاء طلب يدوي ثم توليد عرض السعر تلقائياً.</p>
                 </div>
-                <button id="adminCreateManualOrderBtn" type="button" class="btn-filled-red px-5 py-3 rounded-lg text-sm font-black">Create Manual Order</button>
+                <button id="adminCreateManualOrderBtn" type="button" class="btn-filled-red px-5 py-3 rounded-lg text-sm font-black">فتح النموذج</button>
             </div>
             <div id="adminManualOrderMsgBox" class="msg-box" aria-live="polite"></div>
             <form id="adminManualOrderForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 hidden mt-4">
@@ -6131,17 +6196,17 @@ function ensureAdminQuoteInvoiceSections() {
             <article id="adminQuotesSection" class="bg-[#121212] border border-[#222] rounded-2xl p-6 md:p-8">
                 <div class="flex items-center justify-between gap-3 mb-5">
                     <div>
-                        <h2 class="text-2xl font-black text-white">Quotes</h2>
+                        <h2 class="text-2xl font-black text-white">عروض الأسعار</h2>
                         <p class="text-sm text-gray-500">متابعة عروض الأسعار وتحويلها لفواتير.</p>
                     </div>
                     <select id="adminQuotesStatusFilter" class="input-luxury !py-2 !px-3 !text-xs !w-[170px]">
                         <option value="all">كل الحالات</option>
-                        <option value="draft">draft</option>
-                        <option value="sent">sent</option>
-                        <option value="accepted">accepted</option>
-                        <option value="rejected">rejected</option>
-                        <option value="expired">expired</option>
-                        <option value="converted">converted</option>
+                        <option value="draft">مسودة</option>
+                        <option value="sent">مرسل</option>
+                        <option value="accepted">مقبول</option>
+                        <option value="rejected">مرفوض</option>
+                        <option value="expired">منتهي</option>
+                        <option value="converted">محوّل</option>
                     </select>
                 </div>
                 <div id="adminQuotesMsgBox" class="msg-box" aria-live="polite"></div>
@@ -6149,13 +6214,13 @@ function ensureAdminQuoteInvoiceSections() {
                     <table class="w-full min-w-[980px] text-sm">
                         <thead class="bg-black/50 text-gray-300">
                             <tr>
-                                <th class="px-4 py-3 text-right">Quote #</th>
-                                <th class="px-4 py-3 text-right">Order #</th>
-                                <th class="px-4 py-3 text-right">Client</th>
-                                <th class="px-4 py-3 text-right">Total</th>
-                                <th class="px-4 py-3 text-right">Valid Until</th>
-                                <th class="px-4 py-3 text-right">Status</th>
-                                <th class="px-4 py-3 text-right">Actions</th>
+                                <th class="px-4 py-3 text-right">رقم العرض</th>
+                                <th class="px-4 py-3 text-right">رقم الطلب</th>
+                                <th class="px-4 py-3 text-right">العميل</th>
+                                <th class="px-4 py-3 text-right">الإجمالي</th>
+                                <th class="px-4 py-3 text-right">صالح حتى</th>
+                                <th class="px-4 py-3 text-right">الحالة</th>
+                                <th class="px-4 py-3 text-right">الإجراءات</th>
                             </tr>
                         </thead>
                         <tbody id="adminQuotesTableBody" class="divide-y divide-white/10 text-gray-200 bg-black/20">
@@ -6168,14 +6233,14 @@ function ensureAdminQuoteInvoiceSections() {
             <article id="adminInvoicesSection" class="bg-[#121212] border border-[#222] rounded-2xl p-6 md:p-8">
                 <div class="flex items-center justify-between gap-3 mb-5">
                     <div>
-                        <h2 class="text-2xl font-black text-white">Invoices</h2>
+                        <h2 class="text-2xl font-black text-white">الفواتير</h2>
                         <p class="text-sm text-gray-500">إدارة الفواتير وحالة الدفع.</p>
                     </div>
                     <select id="adminInvoicesStatusFilter" class="input-luxury !py-2 !px-3 !text-xs !w-[170px]">
                         <option value="all">كل الحالات</option>
-                        <option value="unpaid">unpaid</option>
-                        <option value="paid">paid</option>
-                        <option value="cancelled">cancelled</option>
+                        <option value="unpaid">غير مدفوعة</option>
+                        <option value="paid">مدفوعة</option>
+                        <option value="cancelled">ملغاة</option>
                     </select>
                 </div>
                 <div id="adminInvoicesMsgBox" class="msg-box" aria-live="polite"></div>
@@ -6183,13 +6248,13 @@ function ensureAdminQuoteInvoiceSections() {
                     <table class="w-full min-w-[980px] text-sm">
                         <thead class="bg-black/50 text-gray-300">
                             <tr>
-                                <th class="px-4 py-3 text-right">Invoice #</th>
-                                <th class="px-4 py-3 text-right">Order #</th>
-                                <th class="px-4 py-3 text-right">Quote #</th>
-                                <th class="px-4 py-3 text-right">Total</th>
-                                <th class="px-4 py-3 text-right">Issued</th>
-                                <th class="px-4 py-3 text-right">Status</th>
-                                <th class="px-4 py-3 text-right">Actions</th>
+                                <th class="px-4 py-3 text-right">رقم الفاتورة</th>
+                                <th class="px-4 py-3 text-right">رقم الطلب</th>
+                                <th class="px-4 py-3 text-right">رقم العرض</th>
+                                <th class="px-4 py-3 text-right">الإجمالي</th>
+                                <th class="px-4 py-3 text-right">تاريخ الإصدار</th>
+                                <th class="px-4 py-3 text-right">الحالة</th>
+                                <th class="px-4 py-3 text-right">الإجراءات</th>
                             </tr>
                         </thead>
                         <tbody id="adminInvoicesTableBody" class="divide-y divide-white/10 text-gray-200 bg-black/20">
@@ -6335,7 +6400,7 @@ function renderAdminQuotesSection() {
             const statusMeta = getQuoteStatusMeta(quote.status);
             const statusOptions = QUOTE_STATUS_OPTIONS.map((status) => {
                 const selected = status === quote.status ? 'selected' : '';
-                return `<option value="${escapeHtml(status)}" ${selected}>${escapeHtml(status)}</option>`;
+                return `<option value="${escapeHtml(status)}" ${selected}>${escapeHtml(getQuoteStatusLabel(status))}</option>`;
             }).join('');
 
             body.insertAdjacentHTML('beforeend', `
@@ -6465,7 +6530,7 @@ function renderAdminInvoicesSection() {
             const statusMeta = getInvoiceStatusMeta(invoice.status);
             const statusOptions = INVOICE_STATUS_OPTIONS.map((status) => {
                 const selected = status === invoice.status ? 'selected' : '';
-                return `<option value="${escapeHtml(status)}" ${selected}>${escapeHtml(status)}</option>`;
+                return `<option value="${escapeHtml(status)}" ${selected}>${escapeHtml(getInvoiceStatusLabel(status))}</option>`;
             }).join('');
 
             body.insertAdjacentHTML('beforeend', `
@@ -6488,7 +6553,7 @@ function renderAdminInvoicesSection() {
                             <button type="button" class="admin-invoice-details text-xs px-2 py-1 rounded border border-white/20 text-gray-200" data-invoice-id="${escapeHtml(invoice.id)}">تفاصيل</button>
                             <button type="button" class="admin-invoice-pdf text-xs px-2 py-1 rounded border border-emerald-400/40 text-emerald-200" data-invoice-id="${escapeHtml(invoice.id)}">PDF</button>
                             <button type="button" class="admin-invoice-link text-xs px-2 py-1 rounded border border-blue-400/40 text-blue-200" data-invoice-id="${escapeHtml(invoice.id)}">رابط</button>
-                            <button type="button" class="admin-invoice-resend text-xs px-2 py-1 rounded border border-white/20 text-gray-200" data-invoice-id="${escapeHtml(invoice.id)}">Resend PDF</button>
+                            <button type="button" class="admin-invoice-resend text-xs px-2 py-1 rounded border border-white/20 text-gray-200" data-invoice-id="${escapeHtml(invoice.id)}">إعادة إرسال PDF</button>
                         </div>
                     </td>
                 </tr>
@@ -6567,7 +6632,7 @@ function ensureDashboardQuoteInvoiceSections() {
         section.innerHTML = `
             <div class="mb-6 flex flex-col md:flex-row md:items-start md:justify-between gap-3">
                 <div>
-                    <h3 class="text-2xl font-black text-white">My Quotes</h3>
+                    <h3 class="text-2xl font-black text-white">عروض الأسعار</h3>
                     <p class="text-sm text-gray-500">عروض الأسعار الخاصة بك مع رابط آمن وPDF.</p>
                 </div>
                 ${getDocumentLanguageSelectMarkup('dashboardDocsLanguageSelect', true)}
@@ -6591,7 +6656,7 @@ function ensureDashboardQuoteInvoiceSections() {
         section.className = 'mt-12 bg-[#121212] border border-[#222] rounded-2xl p-6 md:p-8 animate-fade-up delay-240';
         section.innerHTML = `
             <div class="mb-6">
-                <h3 class="text-2xl font-black text-white">My Invoices</h3>
+                <h3 class="text-2xl font-black text-white">الفواتير</h3>
                 <p class="text-sm text-gray-500">حالة الدفع والفواتير القابلة للتحميل.</p>
             </div>
             <div id="dashboardInvoicesList" class="space-y-4">
@@ -6741,7 +6806,7 @@ function renderDashboardInvoices(user) {
                 <div class="flex flex-wrap items-start justify-between gap-3 mb-3">
                     <div>
                         <h4 class="text-white font-bold text-sm font-en">${safeNumber}</h4>
-                        <p class="text-xs text-gray-400 mt-1">Quote: <span class="font-en">${safeQuote}</span></p>
+                        <p class="text-xs text-gray-400 mt-1">عرض السعر: <span class="font-en">${safeQuote}</span></p>
                     </div>
                     <span class="text-[11px] px-2 py-1 rounded-full border ${statusMeta.className}">${safeStatus}</span>
                 </div>
@@ -7197,7 +7262,7 @@ function renderPortfolioAdminSection() {
     const items = getStoredPortfolioItems().sort((a, b) => (a.sortOrder || 999) - (b.sortOrder || 999));
 
     if (items.length === 0) {
-        list.innerHTML = '<div class="text-gray-500 text-sm">لا توجد عناصر Portfolio بعد.</div>';
+        list.innerHTML = '<div class="text-gray-500 text-sm">لا توجد عناصر في معرض الأعمال بعد.</div>';
         return;
     }
 
@@ -7902,7 +7967,7 @@ function bindAdminForms() {
 
             resetPortfolioForm();
             renderPortfolioAdminSection();
-            showInlineMessage(portfolioMsgBox, '✅ تم حفظ عنصر Portfolio بنجاح.', 'success');
+            showInlineMessage(portfolioMsgBox, '✅ تم حفظ عنصر معرض الأعمال بنجاح.', 'success');
         });
 
         ['portfolioCardStyle', 'portfolioMediaType', 'portfolioActionType'].forEach((id) => {
@@ -8147,12 +8212,1161 @@ function injectStickyWhatsappButton() {
     document.body.appendChild(stickyButton);
 }
 
+const HOME_RENDER_SCHEMA_SCRIPT_ID = 'pixelone-home-structured-data';
+const HOME_RENDER_PORTFOLIO_EVENT = 'pixelone:portfolio-copy';
+const HOME_RENDER_SERVICE_ORDER = [
+    'svc-social-media-designs',
+    'svc-logo-design',
+    'svc-digital-banners',
+    'svc-pitch-deck',
+    'svc-short-video',
+    'svc-professional-design',
+    'svc-brand-identity',
+    'svc-short-videos-premium',
+    'svc-advanced-promo-video',
+    'svc-web-landing-page',
+];
+const HOME_RENDER_SERVICE_ALIASES = {
+    'svc-social-media-post': 'svc-social-media-designs',
+    'svc-digital-banner': 'svc-digital-banners',
+    'svc-banner-design': 'svc-digital-banners',
+    'svc-presentation': 'svc-pitch-deck',
+    'svc-reels-tiktok': 'svc-short-video',
+    'svc-monthly-content': 'svc-professional-design',
+    'svc-brand-identity-basic': 'svc-brand-identity',
+};
+const HOME_RENDER_SERVICE_FALLBACKS = [
+    {
+        id: 'svc-social-media-designs',
+        titles: { ar: 'تصاميم سوشيال ميديا ثابتة' },
+        price: '60',
+        descriptions: { ar: 'منشورات إعلانية احترافية جاهزة للنشر على Instagram وFacebook وLinkedIn.' },
+        category: 'سوشيال ميديا',
+        serviceType: 'خدمة لمرة واحدة',
+        is_coming_soon: false,
+        popularity: 1,
+        enabled: true,
+    },
+    {
+        id: 'svc-logo-design',
+        titles: { ar: 'تصميم شعار احترافي' },
+        price: '150',
+        descriptions: { ar: 'شعار واضح وقابل للاستخدام على جميع المنصات مع تصدير بخلفية شفافة.' },
+        category: 'هوية بصرية',
+        serviceType: 'خدمة لمرة واحدة',
+        is_coming_soon: false,
+        popularity: 2,
+        enabled: true,
+    },
+    {
+        id: 'svc-digital-banners',
+        titles: { ar: 'بانرات وإعلانات رقمية' },
+        price: '80',
+        descriptions: { ar: 'بانرات جاهزة للحملات الإعلانية بمقاسات النشر المعتمدة.' },
+        category: 'إعلانات رقمية',
+        serviceType: 'خدمة لمرة واحدة',
+        is_coming_soon: false,
+        popularity: 3,
+        enabled: true,
+    },
+    {
+        id: 'svc-pitch-deck',
+        titles: { ar: 'تصميم عرض تقديمي' },
+        price: '200',
+        descriptions: { ar: 'شرائح احترافية للأعمال والمستثمرين بتسلسل بصري قوي يعكس هوية مشروعك.' },
+        category: 'أعمال تجارية',
+        serviceType: 'خدمة لمرة واحدة',
+        is_coming_soon: false,
+        popularity: 4,
+        enabled: true,
+    },
+    {
+        id: 'svc-short-video',
+        titles: { ar: 'فيديو قصير (Reels/TikTok)' },
+        price: '120',
+        descriptions: { ar: 'مونتاج خفيف وسريع لمحتوى يومي قصير يناسب جميع المنصات.' },
+        category: 'مونتاج فيديو',
+        serviceType: 'خدمة لمرة واحدة',
+        is_coming_soon: false,
+        popularity: 5,
+        enabled: true,
+    },
+    {
+        id: 'svc-professional-design',
+        titles: { ar: 'خدمة تصميم احترافية' },
+        price: '500',
+        descriptions: { ar: 'باقة تصميم متقدمة تشمل الهوية البصرية وصناعة المحتوى المتكامل.' },
+        category: 'تصميم احترافي',
+        serviceType: 'باقة تنفيذ احترافية',
+        is_coming_soon: false,
+        popularity: 6,
+        enabled: true,
+    },
+    {
+        id: 'svc-brand-identity',
+        titles: { ar: 'هوية بصرية أساسية' },
+        price: '400',
+        descriptions: { ar: 'تصميم شعار احترافي مع لوحة ألوان وهوية تطبيقية مبدئية للمنصات الأساسية.' },
+        category: 'هوية بصرية',
+        serviceType: 'خدمة لمرة واحدة',
+        is_coming_soon: false,
+        popularity: 7,
+        enabled: true,
+    },
+    {
+        id: 'svc-short-videos-premium',
+        titles: { ar: 'فيديوهات قصيرة (أقل من دقيقة)' },
+        price: '300',
+        descriptions: { ar: 'مونتاج فيديو قصير عالي الجودة لمنصات التواصل الاجتماعي.' },
+        category: 'مونتاج فيديو',
+        serviceType: 'خدمة لمرة واحدة',
+        is_coming_soon: false,
+        popularity: 8,
+        enabled: true,
+    },
+    {
+        id: 'svc-advanced-promo-video',
+        titles: { ar: 'فيديو ترويجي متقدم' },
+        price: '0',
+        descriptions: { ar: 'خدمة إنتاج فيديو احترافي بجودة إنتاجية عالية للمشاريع التي تحتاج إخراجاً إعلانياً متقدماً.' },
+        category: 'فيديو متقدم',
+        serviceType: 'خدمة مخصصة',
+        is_coming_soon: true,
+        popularity: 9,
+        enabled: true,
+    },
+    {
+        id: 'svc-web-landing-page',
+        titles: { ar: 'تصميم مواقع وصفحات هبوط' },
+        price: '1500',
+        descriptions: { ar: 'تصميم صفحات هبوط ومواقع احترافية عالية التحويل.' },
+        category: 'تصميم مواقع',
+        serviceType: 'مشروع كامل',
+        is_coming_soon: false,
+        popularity: 10,
+        enabled: true,
+    },
+];
+const HOME_RENDER_SERVICE_FALLBACK_MAP = new Map(
+    HOME_RENDER_SERVICE_FALLBACKS.map((service, index) => [service.id, normalizeManagedService(service, index)])
+);
+let homeRevealObserver = null;
+
+function isSimpleObject(value) {
+    return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
+function stripStatusGlyphs(value) {
+    return String(value || '')
+        .replace(/^[\s\u2705\u274C\u26A0\uFE0F]+/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+function appendUiChildren(parent, children) {
+    if (!parent || !Array.isArray(children)) return;
+    children.forEach((child) => {
+        if (!child) return;
+        parent.appendChild(child);
+    });
+}
+
+function createUiElement(tagName, options = {}) {
+    const element = document.createElement(tagName);
+
+    if (options.className) {
+        element.className = options.className;
+    }
+
+    if (options.text !== undefined) {
+        element.textContent = String(options.text);
+    }
+
+    if (options.html !== undefined) {
+        element.innerHTML = String(options.html);
+    }
+
+    if (isSimpleObject(options.dataset)) {
+        Object.entries(options.dataset).forEach(([key, value]) => {
+            if (value === undefined || value === null) return;
+            element.dataset[key] = String(value);
+        });
+    }
+
+    if (isSimpleObject(options.attrs)) {
+        Object.entries(options.attrs).forEach(([name, value]) => {
+            if (value === undefined || value === null || value === false) return;
+            if (value === true) {
+                element.setAttribute(name, '');
+                return;
+            }
+            element.setAttribute(name, String(value));
+        });
+    }
+
+    appendUiChildren(element, options.children || []);
+    return element;
+}
+
+function ensureToastViewport() {
+    let viewport = document.getElementById('pixelToastViewport');
+    if (viewport) return viewport;
+
+    viewport = createUiElement('div', {
+        className: 'pixel-toast-viewport',
+        attrs: {
+            id: 'pixelToastViewport',
+            'aria-live': 'polite',
+            'aria-atomic': 'false',
+        },
+    });
+
+    document.body.appendChild(viewport);
+    return viewport;
+}
+
+function showToast(message, type = 'info', options = {}) {
+    if (!document.body) return;
+
+    const toastType = ['success', 'error', 'info'].includes(type) ? type : 'info';
+    const safeMessage = stripStatusGlyphs(message);
+    if (!safeMessage) return;
+
+    const titleMap = {
+        success: 'تم التحديث',
+        error: 'حدث خطأ',
+        info: 'تنبيه',
+    };
+
+    const toast = createUiElement('article', {
+        className: `pixel-toast pixel-toast--${toastType}`,
+        attrs: {
+            role: toastType === 'error' ? 'alert' : 'status',
+            tabindex: '0',
+        },
+        children: [
+            createUiElement('button', {
+                className: 'pixel-toast__close',
+                text: '×',
+                attrs: {
+                    type: 'button',
+                    'aria-label': 'إغلاق الإشعار',
+                },
+            }),
+            createUiElement('strong', {
+                className: 'pixel-toast__title',
+                text: options.title || titleMap[toastType],
+            }),
+            createUiElement('p', {
+                className: 'pixel-toast__body',
+                text: safeMessage,
+            }),
+        ],
+    });
+
+    const removeToast = () => {
+        if (!toast.isConnected) return;
+        toast.classList.remove('is-visible');
+        window.setTimeout(() => {
+            toast.remove();
+        }, 220);
+    };
+
+    toast.querySelector('.pixel-toast__close')?.addEventListener('click', removeToast);
+    toast.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            removeToast();
+        }
+    });
+
+    ensureToastViewport().appendChild(toast);
+
+    window.requestAnimationFrame(() => {
+        toast.classList.add('is-visible');
+    });
+
+    window.setTimeout(removeToast, Math.max(3200, Number(options.duration) || 4200));
+}
+
+function showInlineMessage(msgBox, text, type = 'success') {
+    if (!msgBox) return;
+    msgBox.textContent = text;
+    msgBox.className = `msg-box ${type === 'error' ? 'msg-error' : 'msg-success'} active`;
+    showToast(text, type === 'error' ? 'error' : 'success');
+}
+
+function getPortfolioCopyMap() {
+    const payload = window.__PIXELONE_PORTFOLIO_COPY__;
+    return isSimpleObject(payload?.texts) ? payload.texts : {};
+}
+
+function getPortfolioCopyText(key, fallback = '') {
+    const texts = getPortfolioCopyMap();
+    const value = Object.prototype.hasOwnProperty.call(texts, key) ? texts[key] : fallback;
+    return resolveLocalizedInlineText(value || fallback || '');
+}
+
+function resolveRenderableServiceId(serviceId) {
+    const raw = String(serviceId || '').trim();
+    if (!raw) return '';
+
+    if (HOME_RENDER_SERVICE_ALIASES[raw]) {
+        return HOME_RENDER_SERVICE_ALIASES[raw];
+    }
+
+    const resolved = resolveServiceDetailId(raw);
+    return HOME_RENDER_SERVICE_ALIASES[resolved] || resolved || raw;
+}
+
+function mergeRenderableServiceRecords(base, incoming, serviceId) {
+    const safeBase = base ? normalizeManagedService(base, 0) : null;
+    const safeIncoming = incoming ? normalizeManagedService(incoming, 0) : null;
+
+    return normalizeManagedService({
+        ...(safeBase || {}),
+        ...(safeIncoming || {}),
+        id: serviceId || safeIncoming?.id || safeBase?.id || createId('SVC'),
+        titles: {
+            ...(safeBase?.titles || {}),
+            ...(safeIncoming?.titles || {}),
+        },
+        descriptions: {
+            ...(safeBase?.descriptions || {}),
+            ...(safeIncoming?.descriptions || {}),
+        },
+        imageUrl: safeIncoming?.imageUrl || safeBase?.imageUrl || '',
+        imageAlt: safeIncoming?.imageAlt || safeBase?.imageAlt || '',
+        deliverables: Array.isArray(safeIncoming?.deliverables) && safeIncoming.deliverables.length > 0
+            ? safeIncoming.deliverables
+            : (safeBase?.deliverables || []),
+        requirements: Array.isArray(safeIncoming?.requirements) && safeIncoming.requirements.length > 0
+            ? safeIncoming.requirements
+            : (safeBase?.requirements || []),
+        workflow: Array.isArray(safeIncoming?.workflow) && safeIncoming.workflow.length > 0
+            ? safeIncoming.workflow
+            : (safeBase?.workflow || []),
+        turnaround: safeIncoming?.turnaround || safeBase?.turnaround || '',
+        revisions: safeIncoming?.revisions || safeBase?.revisions || '',
+    }, 0);
+}
+
+function getRenderableMarketingServices(services = getStoredServices()) {
+    const merged = new Map();
+
+    HOME_RENDER_SERVICE_ORDER.forEach((serviceId, index) => {
+        const fallback = HOME_RENDER_SERVICE_FALLBACK_MAP.get(serviceId);
+        if (!fallback) return;
+        merged.set(serviceId, normalizeManagedService({ ...fallback, id: serviceId, popularity: index + 1 }, index));
+    });
+
+    if (Array.isArray(services)) {
+        services.forEach((service, index) => {
+            const normalized = normalizeManagedService(service, index);
+            const renderId = resolveRenderableServiceId(normalized.id);
+            if (!renderId || !HOME_RENDER_SERVICE_ORDER.includes(renderId)) return;
+
+            const current = merged.get(renderId);
+            merged.set(renderId, mergeRenderableServiceRecords(current, { ...normalized, id: renderId }, renderId));
+        });
+    }
+
+    return HOME_RENDER_SERVICE_ORDER
+        .map((serviceId, index) => {
+            const service = merged.get(serviceId);
+            if (!service) return null;
+            return normalizeManagedService({ ...service, id: serviceId, popularity: index + 1 }, index);
+        })
+        .filter(Boolean)
+        .filter((service) => service.enabled !== false);
+}
+
+function buildPriceLabel(amount, toneClass = '') {
+    const wrapper = createUiElement('span', {
+        className: `text-2xl font-black number-font ${toneClass}`.trim(),
+    });
+    wrapper.appendChild(document.createTextNode(String(amount)));
+    wrapper.appendChild(document.createTextNode(' '));
+    wrapper.appendChild(createUiElement('span', {
+        className: 'text-xs font-normal text-gray-500 uppercase font-en',
+        text: 'MAD',
+    }));
+    return wrapper;
+}
+
+function buildServicePriceBlock(numericPrice, discountResult, hasDiscount) {
+    if (!hasDiscount) {
+        return buildPriceLabel(numericPrice);
+    }
+
+    return createUiElement('div', {
+        className: 'flex flex-col items-end leading-tight',
+        children: [
+            createUiElement('span', {
+                className: 'text-xs text-gray-500 line-through number-font',
+                text: `${numericPrice} MAD`,
+            }),
+            buildPriceLabel(discountResult.finalPrice.toFixed(2), 'text-emerald-300'),
+        ],
+    });
+}
+
+function buildDiscountChip(rule) {
+    const label = rule.type === 'percent'
+        ? `${rule.value}%`
+        : `${rule.value} MAD`;
+
+    return createUiElement('span', {
+        className: 'text-[10px] px-2 py-1 rounded-full border border-emerald-400/40 bg-emerald-500/10 text-emerald-200',
+        text: `${t('discountLabel')} ${label}`,
+    });
+}
+
+function buildServiceCard(service, index, bestRule) {
+    const currentLang = getCurrentLanguage();
+    const localized = getLocalizedServiceContent(service);
+    const isSoon = Boolean(service.is_coming_soon);
+    const numericPrice = parsePrice(service.price);
+    const discountResult = (!isSoon && numericPrice !== null && bestRule)
+        ? applyDiscount(numericPrice, bestRule)
+        : { finalPrice: numericPrice, discountAmount: 0 };
+    const hasDiscount = Number.isFinite(numericPrice) && discountResult.discountAmount > 0;
+    const finalPrice = hasDiscount ? discountResult.finalPrice.toFixed(2) : String(service.price || '0');
+    const statusClass = isSoon
+        ? 'bg-white/5 border-white/10 text-gray-400'
+        : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300';
+    const metaChips = [
+        createUiElement('span', {
+            className: `text-[10px] px-3 py-1 rounded-full border w-fit ${statusClass}`.trim(),
+            text: isSoon ? t('serviceSoon') : t('serviceAvailable'),
+        }),
+        createUiElement('span', {
+            className: 'text-[10px] px-3 py-1 rounded-full border border-white/10 bg-white/5 text-gray-300',
+            text: localized.serviceType || 'خدمة لمرة واحدة',
+        }),
+    ];
+
+    if (hasDiscount && bestRule) {
+        metaChips.push(buildDiscountChip(bestRule));
+    }
+
+    return createUiElement('article', {
+        className: `p-8 md:p-9 flex flex-col justify-between water-card service-card ${isSoon ? 'coming-soon-card' : ''}`.trim(),
+        attrs: {
+            'data-reveal': 'service',
+            'data-reveal-index': index,
+        },
+        children: [
+            createUiElement('div', {
+                children: [
+                    createUiElement('div', {
+                        className: 'service-card__head flex justify-between items-start gap-4 mb-6',
+                        children: [
+                            createUiElement('div', {
+                                className: 'flex flex-col gap-3',
+                                children: [
+                                    createUiElement('span', {
+                                        className: 'text-[11px] font-bold tracking-[0.18em] text-red-500 uppercase',
+                                        text: localized.category || 'خدمة رقمية',
+                                    }),
+                                    createUiElement('div', {
+                                        className: 'flex gap-2 items-center flex-wrap',
+                                        children: metaChips,
+                                    }),
+                                ],
+                            }),
+                            createUiElement('div', {
+                                className: 'service-card__price text-left',
+                                children: [
+                                    buildServicePriceBlock(numericPrice ?? String(service.price || '0'), discountResult, hasDiscount),
+                                ],
+                            }),
+                        ],
+                    }),
+                    createUiElement('h3', {
+                        className: 'text-2xl font-black mb-3',
+                        text: localized.title || 'خدمة',
+                    }),
+                    createUiElement('p', {
+                        className: 'text-gray-400 text-sm leading-relaxed mb-5',
+                        text: localized.description || '',
+                    }),
+                    createUiElement('div', {
+                        className: 'text-xs text-gray-500',
+                        text: 'نطاق واضح، تواصل مباشر، وتسليم جاهز للتشغيل خلال مسار عمل منظم.',
+                    }),
+                ],
+            }),
+            createUiElement('div', {
+                className: 'grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6',
+                children: [
+                    createUiElement('a', {
+                        className: 'w-full py-4 rounded-lg font-black transition text-sm text-center border border-white/20 text-gray-200 hover:bg-white/10',
+                        text: currentLang === 'en' ? 'More' : currentLang === 'fr' ? 'Plus' : 'المزيد',
+                        attrs: {
+                            href: getServiceDetailUrl(service.id),
+                        },
+                    }),
+                    createUiElement('button', {
+                        className: `w-full py-4 rounded-lg font-black transition text-sm ${isSoon ? 'btn-disabled' : 'btn-filled-red'}`.trim(),
+                        text: isSoon ? t('serviceComingSoonBtn') : t('serviceOrderNow'),
+                        attrs: {
+                            type: 'button',
+                            disabled: isSoon ? true : null,
+                        },
+                        dataset: {
+                            action: 'open-order-modal',
+                            serviceId: String(service.id || ''),
+                            serviceName: localized.title || 'خدمة',
+                            finalPrice,
+                            discountCode: hasDiscount ? (bestRule?.code || '') : '',
+                            serviceLang: currentLang,
+                        },
+                    }),
+                ],
+            }),
+        ],
+    });
+}
+
+function initHomeScrollReveals(scope = document) {
+    const nodes = Array.from(scope.querySelectorAll('[data-reveal]'));
+    if (!nodes.length) return;
+
+    if (!('IntersectionObserver' in window)) {
+        nodes.forEach((node) => node.classList.add('is-visible'));
+        return;
+    }
+
+    if (homeRevealObserver) {
+        homeRevealObserver.disconnect();
+    }
+
+    homeRevealObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            const node = entry.target;
+            const delay = Number.parseInt(node.dataset.revealIndex || '0', 10) % 6;
+            window.setTimeout(() => {
+                node.classList.add('is-visible');
+            }, delay * 60);
+            homeRevealObserver.unobserve(node);
+        });
+    }, {
+        threshold: 0.15,
+        rootMargin: '0px 0px -10% 0px',
+    });
+
+    nodes.forEach((node) => {
+        node.classList.remove('is-visible');
+        homeRevealObserver.observe(node);
+    });
+}
+
+function buildSkeletonCard(type = 'service') {
+    const bodyChildren = [
+        createUiElement('span', { className: 'po-skeleton-line po-skeleton-line--short' }),
+        createUiElement('span', { className: 'po-skeleton-line po-skeleton-line--headline' }),
+        createUiElement('span', { className: 'po-skeleton-line po-skeleton-line--wide' }),
+        createUiElement('span', { className: 'po-skeleton-line po-skeleton-line--medium' }),
+    ];
+
+    if (type === 'portfolio') {
+        bodyChildren.unshift(createUiElement('div', { className: 'po-skeleton-media' }));
+    }
+
+    return createUiElement('article', {
+        className: `water-card po-skeleton-card po-skeleton-card--${type}`,
+        attrs: {
+            'aria-hidden': 'true',
+        },
+        children: bodyChildren,
+    });
+}
+
+function renderHomeLoadingSkeletons() {
+    const servicesGrid = document.getElementById('servicesGrid');
+    const offersGrid = document.getElementById('offersGrid');
+    const portfolioGrid = document.querySelector('#portfolio .portfolio-grid');
+
+    if (servicesGrid) {
+        servicesGrid.classList.add('is-loading');
+        servicesGrid.setAttribute('aria-busy', 'true');
+        servicesGrid.replaceChildren(
+            ...Array.from({ length: 3 }, () => buildSkeletonCard('service'))
+        );
+    }
+
+    if (offersGrid) {
+        offersGrid.classList.add('is-loading');
+        offersGrid.setAttribute('aria-busy', 'true');
+        offersGrid.replaceChildren(
+            ...Array.from({ length: 2 }, () => buildSkeletonCard('service'))
+        );
+    }
+
+    if (portfolioGrid) {
+        portfolioGrid.classList.add('is-loading');
+        portfolioGrid.setAttribute('aria-busy', 'true');
+        portfolioGrid.replaceChildren(
+            ...Array.from({ length: 3 }, () => buildSkeletonCard('portfolio'))
+        );
+    }
+}
+
+function renderServices(grid, services, discountContext) {
+    if (!grid) return;
+
+    const catalog = getRenderableMarketingServices(Array.isArray(services) && services.length > 0 ? services : getStoredServices());
+    const bestRule = getBestDiscountRule(discountContext);
+    const available = catalog.filter((service) => !service.is_coming_soon);
+    const comingSoon = catalog.filter((service) => service.is_coming_soon);
+    const orderedServices = [...available, ...comingSoon];
+
+    grid.classList.remove('is-loading');
+    grid.setAttribute('aria-busy', 'false');
+
+    if (!orderedServices.length) {
+        grid.replaceChildren(createUiElement('article', {
+            className: 'water-card p-6 rounded-3xl text-gray-300',
+            children: [
+                createUiElement('p', {
+                    className: 'text-white font-black text-lg mb-3',
+                    text: 'لا توجد خدمات متاحة حالياً',
+                }),
+                createUiElement('p', {
+                    className: 'text-sm text-gray-400',
+                    text: 'جرّب تحديث الصفحة أو أضف الخدمات من لوحة الإدارة.',
+                }),
+            ],
+        }));
+        return;
+    }
+
+    const fragment = document.createDocumentFragment();
+    orderedServices.forEach((service, index) => {
+        fragment.appendChild(buildServiceCard(service, index, bestRule));
+    });
+
+    grid.replaceChildren(fragment);
+    initHomeScrollReveals(grid);
+}
+
+async function loadServices() {
+    const grid = document.getElementById('servicesGrid');
+    if (!grid) return;
+
+    const discountContext = getDiscountContextForUser(currentSessionUser?.email);
+    renderServices(grid, getRenderableMarketingServices(getStoredServices()), discountContext);
+    refreshHomeStructuredData();
+}
+
+function buildPortfolioActionElement(item, isCtaCard) {
+    const actionType = normalizePortfolioActionType(item.actionType);
+    const actionLabel = resolveLocalizedInlineText(item.actionLabel)
+        || (actionType === 'open_order_modal' ? 'تواصل معنا' : 'معاينة');
+    const sharedClassName = isCtaCard
+        ? 'btn-filled-red portfolio-cta-action'
+        : 'btn-filled-red portfolio-action-btn';
+
+    if (actionType === 'open_order_modal') {
+        return createUiElement('button', {
+            className: sharedClassName,
+            text: actionLabel,
+            attrs: {
+                type: 'button',
+            },
+            dataset: {
+                action: 'open-order-modal',
+                serviceName: resolveLocalizedInlineText(item.orderServiceName)
+                    || resolveLocalizedInlineText(item.title)
+                    || t('customServiceName'),
+            },
+        });
+    }
+
+    const href = sanitizePortfolioActionUrl(item.actionUrl);
+    const attrs = {
+        href,
+    };
+
+    if (actionType === 'external_link' && item.openInNewTab) {
+        attrs.target = '_blank';
+        attrs.rel = 'noopener noreferrer';
+    }
+
+    return createUiElement('a', {
+        className: sharedClassName,
+        text: actionLabel,
+        attrs,
+    });
+}
+
+function resolvePortfolioField(item, primaryKey, fallbackKey) {
+    const primary = resolveLocalizedInlineText(item?.[primaryKey]);
+    if (primary) return primary;
+    return resolveLocalizedInlineText(item?.[fallbackKey]);
+}
+
+function renderPortfolioCardTemplate(item, options = {}) {
+    const category = normalizePortfolioCategory(item.category);
+    const categoryText = escapeHtml(resolvePortfolioField(item, 'category_ar', 'category') || getPortfolioCategoryLabel(category));
+    const titleText = escapeHtml(resolvePortfolioField(item, 'title_ar', 'title') || 'مشروع بدون عنوان');
+    const descriptionText = escapeHtml(resolvePortfolioField(item, 'description_ar', 'description') || '');
+    const normalizedImageUrl = normalizeServiceImageUrl(item.imageUrl || item.image_url || '');
+    const actionUrl = escapeHtml(sanitizePortfolioActionUrl(item.actionUrl || item.action_url));
+    const imageAlt = escapeHtml(item.imageAlt || item.image_alt || titleText || 'عنصر من معرض الأعمال');
+    const loadingMode = options.prioritizeImage ? 'eager' : 'lazy';
+    const fetchPriority = options.prioritizeImage ? 'high' : 'auto';
+    const staticAttr = item.isStaticCard ? ' data-static-card="true"' : '';
+    const revealIndex = Number.isFinite(options.revealIndex) ? options.revealIndex : 0;
+
+    return `
+        <article class="portfolio-card portfolio-item water-card group flex h-full w-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl transition-all duration-300 transform-gpu hover:-translate-y-2 hover:shadow-2xl hover:border-red-500/30" role="listitem" data-category="${escapeHtml(category)}" data-reveal="portfolio" data-reveal-index="${escapeHtml(String(revealIndex))}"${staticAttr}>
+            <div class="portfolio-media relative h-56 overflow-hidden rounded-2xl">
+                ${normalizedImageUrl
+            ? `<img src="${escapeHtml(normalizedImageUrl)}" alt="${imageAlt}" width="1200" height="750" loading="${loadingMode}" decoding="async" fetchpriority="${fetchPriority}" referrerpolicy="no-referrer" class="h-full w-full object-cover transition-transform duration-500 ease-out transform-gpu group-hover:scale-110">`
+            : `<div class="portfolio-media-placeholder h-full w-full bg-gradient-to-br from-slate-900 to-slate-800" aria-hidden="true"></div>`}
+                <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent"></div>
+                <div class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 [padding-inline:1rem]">
+                    <span class="inline-flex rounded-full border border-white/25 bg-black/35 px-3 py-1 text-xs font-bold text-white/90">${categoryText}</span>
+                </div>
+            </div>
+            <div class="portfolio-body flex grow flex-col gap-3 p-5 [padding-inline:1.25rem]">
+                <h3 class="text-lg font-extrabold leading-snug text-white">${titleText}</h3>
+                <p class="text-sm leading-7 text-gray-200">${descriptionText}</p>
+                <a href="${actionUrl}" class="btn-filled-red portfolio-action-btn mt-auto inline-flex min-h-11 items-center justify-center rounded-xl px-4 py-2 text-sm font-extrabold" target="_blank" rel="noopener noreferrer">معاينة حية</a>
+            </div>
+        </article>
+    `;
+}
+
+function buildPortfolioCardElement(item, options = {}) {
+    const category = normalizePortfolioCategory(item.category);
+    const isCtaCard = item.cardStyle === 'cta';
+    const layoutTier = String(options.layoutTier || item.cardStyle || 'standard').trim().toLowerCase();
+    const tierClass = isCtaCard
+        ? 'portfolio-card--cta'
+        : (['featured', 'medium', 'compact'].includes(layoutTier) ? `portfolio-card--${layoutTier}` : 'portfolio-card--standard');
+    const article = createUiElement('article', {
+        className: `portfolio-card portfolio-item portfolio-reveal ${tierClass} ${isCtaCard ? 'portfolio-cta-card' : ''}`.trim(),
+        attrs: {
+            role: 'listitem',
+            'data-category': category,
+            'data-static-card': item.isStaticCard ? 'true' : null,
+            'data-reveal': 'portfolio',
+            'data-reveal-index': options.revealIndex ?? 0,
+        },
+    });
+
+    if (!isCtaCard) {
+        const normalizedImageUrl = normalizeServiceImageUrl(item.imageUrl || '');
+        const media = createUiElement('figure', {
+            className: `portfolio-media ${layoutTier === 'featured' ? 'portfolio-media--featured' : layoutTier === 'compact' ? 'portfolio-media--compact' : ''}`.trim(),
+        });
+
+        if (item.mediaType === 'image' && normalizedImageUrl) {
+            media.appendChild(createUiElement('img', {
+                attrs: {
+                    src: normalizedImageUrl,
+                    alt: item.imageAlt || item.title || 'عنصر من معرض الأعمال',
+                    width: '1200',
+                    height: '750',
+                    loading: options.prioritizeImage ? 'eager' : 'lazy',
+                    decoding: 'async',
+                    fetchpriority: options.prioritizeImage ? 'high' : 'auto',
+                    referrerpolicy: 'no-referrer',
+                },
+            }));
+        } else {
+            media.appendChild(createUiElement('div', {
+                className: 'portfolio-media-placeholder',
+                attrs: {
+                    'aria-hidden': 'true',
+                },
+                children: [
+                    createUiElement('span', {
+                        text: resolveLocalizedInlineText(item.badgeText) || 'Preview',
+                    }),
+                ],
+            }));
+        }
+
+        article.appendChild(media);
+    }
+
+    article.appendChild(createUiElement('div', {
+        className: 'portfolio-body',
+        children: [
+            createUiElement('h3', {
+                text: resolveLocalizedInlineText(item.title),
+            }),
+            createUiElement('p', {
+                text: resolveLocalizedInlineText(item.description),
+            }),
+            buildPortfolioActionElement(item, isCtaCard),
+        ],
+    }));
+
+    return article;
+}
+
+function renderPortfolioForHome() {
+    const section = document.getElementById('portfolio');
+    if (!section) return;
+
+    const grid = section.querySelector('.portfolio-grid');
+    const filtersContainer = section.querySelector('.portfolio-filters');
+    if (!grid || !filtersContainer) return;
+
+    const activeItems = getStoredPortfolioItems()
+        .filter((item) => item.enabled !== false)
+        .sort((a, b) => (a.sortOrder || 999) - (b.sortOrder || 999));
+
+    grid.classList.remove('is-loading');
+    grid.setAttribute('aria-busy', 'false');
+
+    if (!activeItems.length) {
+        grid.className = 'portfolio-grid grid w-full grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3';
+        grid.innerHTML = `
+            <article class="portfolio-card portfolio-item water-card rounded-3xl p-6" role="listitem" data-category="all">
+                <div class="portfolio-body">
+                    <h3>لا توجد عناصر في المعرض حالياً</h3>
+                    <p>أضف عناصر معرض الأعمال من لوحة الإدارة أو فعّل العناصر الحالية.</p>
+                </div>
+            </article>
+        `;
+        filtersContainer.replaceChildren();
+        filtersContainer.hidden = true;
+        return;
+    }
+
+    const filterableItems = activeItems.filter((item) => !item.isStaticCard);
+    const categories = Array.from(new Set(filterableItems.map((item) => normalizePortfolioCategory(item.category))));
+    const orderedCategories = ['web', 'design', 'video', 'custom'].filter((category) => categories.includes(category));
+    const filtersFragment = document.createDocumentFragment();
+
+    const allFilterButton = createUiElement('button', {
+        className: 'portfolio-filter-btn is-active',
+        text: getPortfolioCopyText('filter.all', 'الكل'),
+        attrs: {
+            type: 'button',
+            role: 'tab',
+            'aria-selected': 'true',
+            'aria-pressed': 'true',
+            'data-filter': 'all',
+        },
+    });
+    filtersFragment.appendChild(allFilterButton);
+
+    orderedCategories.forEach((category) => {
+        filtersFragment.appendChild(createUiElement('button', {
+            className: 'portfolio-filter-btn',
+            text: getPortfolioCopyText(`filter.${category}`, getPortfolioCategoryLabel(category)),
+            attrs: {
+                type: 'button',
+                role: 'tab',
+                'aria-selected': 'false',
+                'aria-pressed': 'false',
+                'data-filter': category,
+            },
+        }));
+    });
+
+    filtersContainer.replaceChildren(filtersFragment);
+    filtersContainer.hidden = orderedCategories.length === 0;
+
+    const projects = activeItems.filter((item) => !item.isStaticCard).slice(0, 9);
+    const staticItems = activeItems.filter((item) => item.isStaticCard);
+    const itemsToRender = [...projects, ...staticItems];
+    let imagePriorityAssigned = false;
+    const cardsMarkup = itemsToRender.map((item, index) => {
+        const normalizedImageUrl = normalizeServiceImageUrl(item.imageUrl || item.image_url || '');
+        const prioritizeImage = !imagePriorityAssigned && item.mediaType === 'image' && Boolean(normalizedImageUrl);
+        if (prioritizeImage) {
+            imagePriorityAssigned = true;
+        }
+
+        return renderPortfolioCardTemplate(item, {
+            prioritizeImage,
+            revealIndex: index,
+        });
+    }).join('');
+
+    grid.className = 'portfolio-grid grid w-full grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3';
+    grid.style.paddingInline = '0.25rem';
+    grid.innerHTML = cardsMarkup;
+
+    if (typeof window.initPortfolioInteractions === 'function') {
+        window.initPortfolioInteractions();
+    }
+
+    initHomeScrollReveals(section);
+    refreshHomeStructuredData();
+}
+
+window.initPortfolioInteractions = function initPortfolioInteractions() {
+    const section = document.getElementById('portfolio');
+    if (!section) return;
+
+    const buttons = Array.from(section.querySelectorAll('.portfolio-filter-btn'));
+    const items = Array.from(section.querySelectorAll('.portfolio-item'));
+    if (!buttons.length || !items.length) return;
+
+    const setActive = (button) => {
+        buttons.forEach((candidate) => {
+            const isActive = candidate === button;
+            candidate.classList.toggle('is-active', isActive);
+            candidate.setAttribute('aria-selected', isActive ? 'true' : 'false');
+            candidate.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        });
+    };
+
+    const applyFilter = (filterValue) => {
+        items.forEach((item) => {
+            const category = item.getAttribute('data-category') || '';
+            const isStatic = item.getAttribute('data-static-card') === 'true';
+            const shouldShow = filterValue === 'all' || category === filterValue || isStatic;
+            item.hidden = !shouldShow;
+        });
+
+    };
+
+    buttons.forEach((button) => {
+        if (button.dataset.bound === 'true') return;
+        button.dataset.bound = 'true';
+        button.addEventListener('click', () => {
+            setActive(button);
+            applyFilter(button.getAttribute('data-filter') || 'all');
+        });
+    });
+
+    setActive(buttons[0]);
+    applyFilter(buttons[0].getAttribute('data-filter') || 'all');
+};
+
+function toPublicAbsoluteUrl(pathname) {
+    try {
+        return new URL(pathname || '', 'https://www.pixelonevisuals.tech/').href;
+    } catch {
+        return 'https://www.pixelonevisuals.tech/';
+    }
+}
+
+function refreshHomeStructuredData() {
+    if (!document.getElementById('servicesGrid')) return;
+
+    const services = getRenderableMarketingServices(getStoredServices());
+    const portfolioItems = getStoredPortfolioItems()
+        .filter((item) => item.enabled !== false)
+        .sort((a, b) => (a.sortOrder || 999) - (b.sortOrder || 999))
+        .slice(0, 8);
+
+    const organizationId = 'https://www.pixelonevisuals.tech/#organization';
+    const websiteId = 'https://www.pixelonevisuals.tech/#website';
+    const organization = {
+        '@type': ['Organization', 'ProfessionalService'],
+        '@id': organizationId,
+        name: siteSettings.brand?.name || 'Pixel One Visuals',
+        url: 'https://www.pixelonevisuals.tech/',
+        email: siteSettings.contact?.email || siteSettings.brand?.supportEmail || 'contact@pixelonevisuals.tech',
+        telephone: `+${String(siteSettings.contact?.whatsappNumber || DEFAULT_SITE_SETTINGS.contact.whatsappNumber).replace(/\D/g, '')}`,
+        priceRange: 'MAD',
+        areaServed: [
+            { '@type': 'Country', name: 'Morocco' },
+            { '@type': 'Place', name: 'Gulf Cooperation Council' },
+        ],
+    };
+
+    const website = {
+        '@type': 'WebSite',
+        '@id': websiteId,
+        url: 'https://www.pixelonevisuals.tech/',
+        name: siteSettings.brand?.name || 'Pixel One Visuals',
+        inLanguage: 'ar',
+        publisher: { '@id': organizationId },
+    };
+
+    const serviceNodes = services.map((service) => {
+        const localized = getLocalizedServiceContent(service);
+        const numericPrice = parsePrice(service.price);
+        const offers = Number.isFinite(numericPrice)
+            ? {
+                '@type': 'Offer',
+                priceCurrency: 'MAD',
+                price: numericPrice,
+                availability: service.is_coming_soon
+                    ? 'https://schema.org/PreOrder'
+                    : 'https://schema.org/InStock',
+                url: toPublicAbsoluteUrl(getServiceDetailUrl(service.id)),
+            }
+            : undefined;
+
+        return {
+            '@type': 'Service',
+            '@id': `https://www.pixelonevisuals.tech/#service-${service.id}`,
+            name: localized.title || service.id,
+            description: localized.description || '',
+            serviceType: localized.category || localized.title || '',
+            provider: { '@id': organizationId },
+            areaServed: organization.areaServed,
+            offers,
+        };
+    });
+
+    const itemList = {
+        '@type': 'ItemList',
+        '@id': 'https://www.pixelonevisuals.tech/#portfolio',
+        name: 'معرض أعمال Pixel One',
+        itemListElement: portfolioItems.map((item, index) => ({
+            '@type': item.category === 'web' ? 'WebSite' : 'CreativeWork',
+            position: index + 1,
+            name: resolveLocalizedInlineText(item.title),
+            description: resolveLocalizedInlineText(item.description),
+            url: toPublicAbsoluteUrl(sanitizePortfolioActionUrl(item.actionUrl)),
+            image: normalizeServiceImageUrl(item.imageUrl || '') || undefined,
+        })),
+    };
+
+    const payload = {
+        '@context': 'https://schema.org',
+        '@graph': [
+            organization,
+            website,
+            ...serviceNodes,
+            itemList,
+        ],
+    };
+
+    let script = document.getElementById(HOME_RENDER_SCHEMA_SCRIPT_ID);
+    if (!script) {
+        script = createUiElement('script', {
+            attrs: {
+                id: HOME_RENDER_SCHEMA_SCRIPT_ID,
+                type: 'application/ld+json',
+            },
+        });
+        document.head.appendChild(script);
+    }
+
+    script.textContent = JSON.stringify(payload);
+}
+
+function ensureSiteNavBackdrop() {
+    let backdrop = document.getElementById('siteNavBackdrop');
+    if (backdrop) return backdrop;
+
+    backdrop = createUiElement('button', {
+        className: 'site-nav-backdrop',
+        attrs: {
+            id: 'siteNavBackdrop',
+            type: 'button',
+            hidden: true,
+            'aria-label': 'إغلاق القائمة الرئيسية',
+        },
+    });
+
+    backdrop.addEventListener('click', () => {
+        closeAllMobileNavMenus();
+    });
+
+    document.body.appendChild(backdrop);
+    return backdrop;
+}
+
+function closeAllMobileNavMenus() {
+    document.querySelectorAll('.mobile-nav-menu[open]').forEach((menu) => {
+        menu.removeAttribute('open');
+    });
+    syncMobileNavState();
+}
+
+function syncMobileNavState() {
+    const backdrop = ensureSiteNavBackdrop();
+    const openMenu = document.querySelector('.mobile-nav-menu[open]');
+    const isOpen = Boolean(openMenu);
+
+    document.body.classList.toggle('site-nav-menu-open', isOpen);
+    backdrop.hidden = !isOpen;
+
+    document.querySelectorAll('.mobile-nav-menu').forEach((menu) => {
+        const toggle = menu.querySelector('.mobile-nav-toggle');
+        if (!toggle) return;
+        toggle.setAttribute('aria-expanded', menu.hasAttribute('open') ? 'true' : 'false');
+    });
+}
+
+function wrapSiteNav(nav) {
+    const existingShell = nav.querySelector(':scope > .site-nav-shell');
+    if (existingShell) return existingShell;
+
+    const shell = createUiElement('div', {
+        className: 'site-nav-shell',
+    });
+
+    while (nav.firstChild) {
+        shell.appendChild(nav.firstChild);
+    }
+
+    nav.appendChild(shell);
+    return shell;
+}
+
+function upgradeSiteNavigation() {
+    if (!document.body) return;
+
+    ensureSiteNavBackdrop();
+
+    document.querySelectorAll('nav.navbar-glass.site-nav').forEach((nav, index) => {
+        wrapSiteNav(nav);
+
+        const menu = nav.querySelector('.mobile-nav-menu');
+        const panel = nav.querySelector('.mobile-nav-panel');
+        const toggle = nav.querySelector('.mobile-nav-toggle');
+
+        if (panel && !panel.id) {
+            panel.id = `mobileNavPanel${index + 1}`;
+        }
+
+        if (toggle && panel) {
+            toggle.setAttribute('aria-controls', panel.id);
+            toggle.setAttribute('aria-expanded', menu?.hasAttribute('open') ? 'true' : 'false');
+        }
+
+        if (menu && !menu.dataset.navBound) {
+            menu.dataset.navBound = 'true';
+            menu.addEventListener('toggle', syncMobileNavState);
+        }
+    });
+
+    if (document.body.dataset.siteNavBound !== 'true') {
+        document.body.dataset.siteNavBound = 'true';
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                closeAllMobileNavMenus();
+            }
+        });
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768) {
+                closeAllMobileNavMenus();
+            }
+        });
+    }
+
+    syncMobileNavState();
+}
+
+window.addEventListener(HOME_RENDER_PORTFOLIO_EVENT, () => {
+    renderPortfolioForHome();
+});
+
 document.addEventListener('DOMContentLoaded', async () => {
     injectSiteNavIfMissing();
+    upgradeSiteNavigation();
+    renderHomeLoadingSkeletons();
     ensurePageLoader();
 
     try {
-        setPageLoaderStatus('Loading brand settings...');
+        setPageLoaderStatus('جاري تجهيز الهوية وإعدادات المنصة...');
         await loadSiteSettings();
         injectStickyWhatsappButton();
 
@@ -8168,18 +9382,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         const hasOrderForm = Boolean(document.getElementById('orderForm'));
 
         if (hasAuthCallbackView) {
-            setPageLoaderStatus('Verifying your secure callback link...');
+            setPageLoaderStatus('جاري التحقق من الرابط الآمن...');
             await setupAuthCallbackPage();
             return;
         }
 
         if (hasAuthForm) {
-            setPageLoaderStatus('Preparing secure sign-in flow...');
+            setPageLoaderStatus('جاري تجهيز تدفق تسجيل الدخول...');
             await setupAuthentication();
             return;
         }
 
-        setPageLoaderStatus('Connecting to data source...');
+        setPageLoaderStatus('جاري ربط البيانات وتحديث المحتوى...');
         await loadAdminEmailsFromDatabase();
         await hydrateDataStores();
 
@@ -8192,15 +9406,27 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         if (hasServicesGrid) {
-            setPageLoaderStatus('Rendering services and dynamic pricing...');
+            setPageLoaderStatus('جاري عرض الخدمات والأسعار...');
             await hydrateDataStores();
             await loadServices();
             renderOffersForHome();
+            const offersGrid = document.getElementById('offersGrid');
+            if (offersGrid) {
+                offersGrid.classList.remove('is-loading');
+                offersGrid.setAttribute('aria-busy', 'false');
+                Array.from(offersGrid.children).forEach((node, index) => {
+                    node.setAttribute('data-reveal', 'offer');
+                    node.setAttribute('data-reveal-index', String(index));
+                    node.classList.add('offer-card');
+                });
+                initHomeScrollReveals(offersGrid);
+            }
             renderPortfolioForHome();
+            refreshHomeStructuredData();
         }
 
         if (hasServiceDetailView) {
-            setPageLoaderStatus('Preparing service details...');
+            setPageLoaderStatus('جاري تجهيز تفاصيل الخدمة...');
             await hydrateDataStores();
             renderServiceDetailPage();
         }
@@ -8233,7 +9459,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         if (hasDashboardView) {
-            setPageLoaderStatus('Checking account access and loading orders...');
+            setPageLoaderStatus('جاري التحقق من الصلاحيات وتحميل الطلبات...');
             const user = await protectDashboardRoute();
             if (user) {
                 await hydrateDataStores();
@@ -8247,7 +9473,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         if (hasAdminDashboardView) {
-            setPageLoaderStatus('Syncing admin workspace and controls...');
+            setPageLoaderStatus('جاري مزامنة مساحة الإدارة وأدوات التحكم...');
             const user = await protectAdminDashboardRoute();
             if (user) {
                 await hydrateDataStores();

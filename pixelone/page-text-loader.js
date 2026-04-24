@@ -91,6 +91,14 @@
         return fileName.toLowerCase();
     }
 
+    function getPageTextMode() {
+        var body = document.body;
+        if (!body) return 'auto';
+        var mode = String(body.getAttribute('data-page-text-mode') || '').toLowerCase();
+        if (mode === 'off' || mode === 'seo-only') return mode;
+        return 'auto';
+    }
+
     function replaceTrimmedText(node, newText) {
         var raw = String(node.nodeValue || '');
         var match = raw.match(/^(\s*)([\s\S]*?)(\s*)$/);
@@ -302,6 +310,9 @@
 
     async function initPageTexts() {
         try {
+            var mode = getPageTextMode();
+            if (mode === 'off') return;
+
             var page = getPageName();
             var lang = 'ar';
 
@@ -324,6 +335,11 @@
             applySeoPayload(finalPayload);
 
             applyAttributes(finalPayload.attributes);
+
+            if (mode === 'seo-only') {
+                createLanguageSwitcher(lang);
+                return;
+            }
 
             var nodes = collectTextNodes(document.body);
             var len = Math.min(nodes.length, finalPayload.texts.length);
