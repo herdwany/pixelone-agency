@@ -263,37 +263,37 @@ const DEFAULT_MANAGED_SERVICES = [
 
 const DEFAULT_PORTFOLIO_ITEMS = [
     {
-        id: 'pfs-car-agency',
-        title: 'وكالة سيارات (Car Agency)',
-        description: 'تجربة رقمية فاخرة لعرض السيارات المميزة مع تنظيم بصري أنيق، مسارات تحويل واضحة، وأسلوب عرض يرفع ثقة العميل من اللحظة الأولى.',
+        id: 'pfs-local-landing',
+        title: 'صفحة هبوط لمشروع محلي',
+        description: 'تخطيط صفحة هبوط يشرح العرض بسرعة، يعرض المزايا الأساسية، ويقود الزائر إلى واتساب أو نموذج الطلب.',
         category: 'web',
         cardStyle: 'standard',
         isStaticCard: false,
-        mediaType: 'image',
-        imageUrl: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1400&q=80&fm=webp',
-        imageAlt: 'واجهة مشروع وكالة سيارات فاخرة مع عرض سيارات رياضية وتصميم عصري',
-        badgeText: '',
-        actionType: 'external_link',
-        actionLabel: 'معاينة حية',
-        actionUrl: '/car',
-        openInNewTab: true,
+        mediaType: 'placeholder',
+        imageUrl: '',
+        imageAlt: '',
+        badgeText: 'Landing Page',
+        actionType: 'internal_link',
+        actionLabel: 'شاهد الخدمة',
+        actionUrl: 'service-web-landing-page.html',
+        openInNewTab: false,
         orderServiceName: '',
         sortOrder: 1,
         enabled: true,
     },
     {
-        id: 'pfs-premium-restaurant',
-        title: 'مطعم سدرة (Premium Restaurant)',
-        description: 'تصميم يقدم تجربة ضيافة رقمية راقية، يبرز قوائم الطعام والصور بأسلوب يرفع الرغبة بالزيارة والحجز ويعكس هوية مطعم فاخر.',
+        id: 'pfs-restaurant-preview',
+        title: 'معاينة صفحة مطعم',
+        description: 'نموذج واجهة يبرز الصور، العروض، وطلب التواصل بطريقة واضحة تناسب المطاعم والمقاهي.',
         category: 'web',
         cardStyle: 'standard',
         isStaticCard: false,
-        mediaType: 'image',
-        imageUrl: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1400&q=80&fm=webp',
-        imageAlt: 'واجهة مشروع مطعم راق مع أطباق فاخرة وتصميم دافئ عالي الجودة',
-        badgeText: '',
+        mediaType: 'placeholder',
+        imageUrl: '',
+        imageAlt: '',
+        badgeText: 'Web Preview',
         actionType: 'external_link',
-        actionLabel: 'معاينة حية',
+        actionLabel: 'معاينة المشروع',
         actionUrl: '/food',
         openInNewTab: true,
         orderServiceName: '',
@@ -301,57 +301,57 @@ const DEFAULT_PORTFOLIO_ITEMS = [
         enabled: true,
     },
     {
-        id: 'pfs-barbershop-demo',
-        title: 'صالون حلاقة (Barbershop Demo)',
-        description: 'واجهة قوية لعلامة حلاقة عصرية، تجمع بين جمالية التفاصيل وسهولة التصفح لتقديم الخدمات والحجوزات بشكل مباشر واحترافي.',
-        category: 'web',
-        cardStyle: 'standard',
-        isStaticCard: false,
-        mediaType: 'image',
-        imageUrl: 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?auto=format&fit=crop&w=1400&q=80&fm=webp',
-        imageAlt: 'واجهة مشروع صالون حلاقة حديث مع ألوان داكنة ولمسات احترافية',
-        badgeText: '',
-        actionType: 'external_link',
-        actionLabel: 'معاينة حية',
-        actionUrl: '/barbershop',
-        openInNewTab: true,
-        orderServiceName: '',
-        sortOrder: 3,
-        enabled: true,
-    },
-    {
-        id: 'pfs-brand-identity',
-        title: 'هوية بصرية فاخرة',
-        description: 'نموذج لهوية متكاملة يشمل الشعار، الألوان، وأنماط المنشورات لضمان حضور بصري متناسق وقابل للتوسع.',
-        category: 'design',
+        id: 'pfs-social-launch-kit',
+        title: 'منشورات إطلاق عرض',
+        description: 'تصاميم مربعة ومقاسات قصص مناسبة لإعلان منتج أو عرض أسبوعي على Instagram وFacebook.',
+        category: 'social',
         cardStyle: 'standard',
         isStaticCard: false,
         mediaType: 'placeholder',
         imageUrl: '',
         imageAlt: '',
-        badgeText: 'Design Preview',
+        badgeText: 'Social Media',
         actionType: 'internal_link',
-        actionLabel: 'تكبير الصورة',
-        actionUrl: 'service-brand-identity.html',
+        actionLabel: 'شاهد الخدمة',
+        actionUrl: 'service-social-media-designs.html',
+        openInNewTab: false,
+        orderServiceName: '',
+        sortOrder: 3,
+        enabled: true,
+    },
+    {
+        id: 'pfs-logo-social-kit',
+        title: 'شعار وهوية بسيطة',
+        description: 'لوحة هوية مبدئية تشمل الشعار، الألوان، ونبرة تصميم قابلة للاستخدام في المنشورات والبانرات.',
+        category: 'identity',
+        cardStyle: 'standard',
+        isStaticCard: false,
+        mediaType: 'placeholder',
+        imageUrl: '',
+        imageAlt: '',
+        badgeText: 'Logo & Identity',
+        actionType: 'internal_link',
+        actionLabel: 'شاهد الخدمة',
+        actionUrl: 'service-logo-design.html',
         openInNewTab: false,
         orderServiceName: '',
         sortOrder: 4,
         enabled: true,
     },
     {
-        id: 'pfs-logo-social-kit',
-        title: 'تصميم جرافيك وشعارات',
-        description: 'عينات لأعمال شعار وبوستات سوشيال تستهدف رفع وضوح العلامة وبناء صورة احترافية موحدة عبر المنصات.',
-        category: 'design',
+        id: 'pfs-brand-board',
+        title: 'لوحة هوية للعلامة',
+        description: 'تنسيق بصري يوضح الشعار، الألوان، ونماذج الاستخدام حتى تظهر العلامة بشكل متماسك.',
+        category: 'identity',
         cardStyle: 'standard',
         isStaticCard: false,
         mediaType: 'placeholder',
         imageUrl: '',
         imageAlt: '',
-        badgeText: 'Logo & Social Kit',
+        badgeText: 'Brand Board',
         actionType: 'internal_link',
-        actionLabel: 'تكبير الصورة',
-        actionUrl: 'service-logo-design.html',
+        actionLabel: 'شاهد الخدمة',
+        actionUrl: 'service-brand-identity.html',
         openInNewTab: false,
         orderServiceName: '',
         sortOrder: 5,
@@ -367,9 +367,9 @@ const DEFAULT_PORTFOLIO_ITEMS = [
         mediaType: 'placeholder',
         imageUrl: '',
         imageAlt: '',
-        badgeText: 'Reels Motion Sample',
+        badgeText: 'Short Reel',
         actionType: 'internal_link',
-        actionLabel: 'مشاهدة الفيديو',
+        actionLabel: 'شاهد الخدمة',
         actionUrl: 'service-short-video.html',
         openInNewTab: false,
         orderServiceName: '',
@@ -377,29 +377,10 @@ const DEFAULT_PORTFOLIO_ITEMS = [
         enabled: true,
     },
     {
-        id: 'pfs-premium-editing',
-        title: 'مونتاج فيديوهات احترافي',
-        description: 'نموذج لمونتاج مخصص للإعلانات القصيرة على TikTok وInstagram مع إخراج بصري يركز على الرسالة البيعية.',
-        category: 'video',
-        cardStyle: 'standard',
-        isStaticCard: false,
-        mediaType: 'placeholder',
-        imageUrl: '',
-        imageAlt: '',
-        badgeText: 'Premium Editing Reel',
-        actionType: 'internal_link',
-        actionLabel: 'مشاهدة الفيديو',
-        actionUrl: 'service-short-videos-premium.html',
-        openInNewTab: false,
-        orderServiceName: '',
-        sortOrder: 7,
-        enabled: true,
-    },
-    {
         id: 'pfs-cta-main',
-        title: 'هل مشروعك هو التالي؟ دعنا نبني لك واجهة تخطف الأنظار!',
-        description: 'نحوّل فكرتك إلى تجربة رقمية متكاملة تجمع الأداء، الجمال، والوضوح البيعي من أول زيارة.',
-        category: 'video',
+        title: 'هل تريد تصميماً قريباً من هذه النماذج؟',
+        description: 'أرسل نوع مشروعك وسنقترح عليك خدمة أو باقة مناسبة كبداية واضحة.',
+        category: 'custom',
         cardStyle: 'cta',
         isStaticCard: true,
         mediaType: 'placeholder',
@@ -407,10 +388,10 @@ const DEFAULT_PORTFOLIO_ITEMS = [
         imageAlt: '',
         badgeText: '',
         actionType: 'open_order_modal',
-        actionLabel: 'تواصل معنا',
+        actionLabel: 'اطلب عملاً مشابهاً',
         actionUrl: '',
         openInNewTab: false,
-        orderServiceName: 'طلب موقع أو هوية بصرية',
+        orderServiceName: 'طلب عمل مشابه من المعرض',
         sortOrder: 999,
         enabled: true,
     },
@@ -2939,8 +2920,18 @@ function normalizeStringList(value) {
 
 function normalizePortfolioCategory(value) {
     const safe = String(value || '').trim().toLowerCase();
-    const allowed = ['web', 'design', 'video', 'custom'];
-    return allowed.includes(safe) ? safe : 'web';
+    const aliases = {
+        design: 'identity',
+        logo: 'identity',
+        brand: 'identity',
+        branding: 'identity',
+        social_media: 'social',
+        socialmedia: 'social',
+        reels: 'video',
+    };
+    const normalized = aliases[safe] || safe;
+    const allowed = ['web', 'social', 'identity', 'video', 'custom'];
+    return allowed.includes(normalized) ? normalized : 'web';
 }
 
 function normalizePortfolioCardStyle(value) {
@@ -3414,9 +3405,10 @@ function resolveLocalizedInlineText(value) {
 
 function getPortfolioCategoryLabel(category) {
     const labels = {
-        web: 'مواقع وصفحات هبوط',
-        design: 'تصميم جرافيك وشعارات',
-        video: 'مونتاج فيديوهات',
+        web: 'صفحات هبوط',
+        social: 'سوشيال ميديا',
+        identity: 'شعارات وهوية',
+        video: 'فيديو قصير',
         custom: 'أخرى',
     };
 
@@ -3602,6 +3594,7 @@ function renderPortfolioForHome() {
 function renderOffersForHome() {
     const container = document.getElementById('offersGrid');
     if (!container) return;
+    const section = container.closest('[data-offers-section]');
 
     const offers = getStoredOffers();
     const email = normalizeEmail(currentSessionUser?.email);
@@ -3619,16 +3612,18 @@ function renderOffersForHome() {
     container.innerHTML = '';
 
     if (visibleOffers.length === 0) {
-        container.innerHTML = `<div class="water-card rounded-2xl p-6 text-center text-gray-500">${escapeHtml(t('offerEmpty'))}</div>`;
+        if (section) section.hidden = true;
         return;
     }
+
+    if (section) section.hidden = false;
 
     visibleOffers.forEach((offer) => {
         const safeTitle = escapeHtml(resolveLocalizedInlineText(offer.title) || t('offerTitleFallback'));
         const safeDescription = escapeHtml(resolveLocalizedInlineText(offer.description) || '');
         const safeBadge = escapeHtml(resolveLocalizedInlineText(offer.badge) || t('offerBadgeFallback'));
         container.insertAdjacentHTML('beforeend', `
-            <article class="water-card offer-card rounded-2xl p-6">
+            <article class="card offer-card">
                 <div class="flex justify-between items-start gap-3 mb-4">
                     <h4 class="text-white font-black text-lg">${safeTitle}</h4>
                     <span class="text-[10px] font-en px-3 py-1 rounded-full border border-emerald-400/40 text-emerald-300">${safeBadge}</span>
@@ -4039,6 +4034,8 @@ async function loadServices() {
     renderServices(grid, managedServices.length > 0 ? managedServices : FALLBACK_SERVICES, discountContext);
 }
 
+let lastOrderModalTrigger = null;
+
 window.openOrderModal = async function (serviceName, meta = {}) {
     const modal = document.getElementById('orderModal');
     const selectedServiceText = document.getElementById('selectedServiceText');
@@ -4049,6 +4046,8 @@ window.openOrderModal = async function (serviceName, meta = {}) {
     const orderPriceTag = document.getElementById('orderPriceTag');
 
     if (!modal || !selectedServiceText || !hiddenServiceName || !orderForm || !orderMsgBox) return;
+
+    lastOrderModalTrigger = document.activeElement instanceof HTMLElement ? document.activeElement : null;
 
     const { data: { user } } = await _supabase.auth.getUser();
     currentSessionUser = user || null;
@@ -4115,6 +4114,10 @@ window.closeOrderModal = function () {
         modal.classList.remove('active');
         modal.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = '';
+        if (lastOrderModalTrigger && document.contains(lastOrderModalTrigger)) {
+            lastOrderModalTrigger.focus({ preventScroll: true });
+        }
+        lastOrderModalTrigger = null;
     }
 };
 
@@ -8105,31 +8108,35 @@ function injectSiteNavIfMissing() {
     nav.setAttribute('aria-label', 'التنقل الرئيسي');
 
     nav.innerHTML = `
-        <a href="index.html" class="logo-container">
-            <span class="logo-p text-3xl">P</span>
-            <span class="text-xl font-black tracking-tighter hidden sm:block uppercase font-en text-white">Pixel One</span>
+        <a href="index.html" class="logo-container" aria-label="Pixel One Visuals - الصفحة الرئيسية">
+            <span class="logo-p">P</span>
+            <span class="logo-wordmark">Pixel One</span>
         </a>
-        <div class="site-nav-links hidden md:flex items-center gap-8">
-            <a href="about.html" class="text-sm font-bold nav-link">من نحن</a>
-            <a href="services.html" class="text-sm font-bold nav-link">خدماتنا</a>
-            <a href="how-we-work.html" class="text-sm font-bold nav-link">كيف نعمل</a>
-            <a href="privacy-policy.html" class="text-sm font-bold nav-link">الخصوصية</a>
+        <div class="site-nav-links hidden md:flex">
+            <a href="index.html#portfolio" class="nav-link">الأعمال</a>
+            <a href="index.html#services" class="nav-link">الخدمات</a>
+            <a href="index.html#pricing" class="nav-link">الأسعار</a>
+            <a href="index.html#process" class="nav-link">كيف نعمل</a>
+            <a href="index.html#faq" class="nav-link">الأسئلة</a>
+            <a href="index.html#contact" class="nav-link">تواصل</a>
         </div>
-        <div class="site-nav-cta hidden md:flex gap-4 items-center">
-            <a id="loginNavLink" data-role="client-auth-link" href="client-login.html" class="text-sm font-bold text-gray-300 hover:text-white transition">دخول العملاء</a>
-            <button type="button" data-action="open-order-modal" data-service-name="طلب خدمة مخصص" class="btn-filled-red px-6 py-2 rounded-md text-sm font-bold">طلب خدمة</button>
+        <div class="site-nav-cta hidden md:flex">
+            <a id="loginNavLink" data-role="client-auth-link" href="client-login.html" class="account-link">دخول العملاء</a>
+            <button type="button" data-action="open-order-modal" data-service-name="طلب تصميم جديد" class="btn-primary nav-primary">اطلب تصميمك</button>
         </div>
         <details class="mobile-nav-menu md:hidden">
             <summary class="mobile-nav-toggle" aria-label="فتح القائمة">
                 <span></span><span></span><span></span>
             </summary>
             <div class="mobile-nav-panel">
-                <a href="about.html" data-action="close-mobile-menu" class="mobile-nav-link">من نحن</a>
-                <a href="services.html" data-action="close-mobile-menu" class="mobile-nav-link">خدماتنا</a>
-                <a href="how-we-work.html" data-action="close-mobile-menu" class="mobile-nav-link">كيف نعمل</a>
-                <a href="privacy-policy.html" data-action="close-mobile-menu" class="mobile-nav-link">الخصوصية</a>
+                <a href="index.html#portfolio" data-action="close-mobile-menu" class="mobile-nav-link">الأعمال</a>
+                <a href="index.html#services" data-action="close-mobile-menu" class="mobile-nav-link">الخدمات</a>
+                <a href="index.html#pricing" data-action="close-mobile-menu" class="mobile-nav-link">الأسعار</a>
+                <a href="index.html#process" data-action="close-mobile-menu" class="mobile-nav-link">كيف نعمل</a>
+                <a href="index.html#faq" data-action="close-mobile-menu" class="mobile-nav-link">الأسئلة</a>
+                <a href="index.html#contact" data-action="close-mobile-menu" class="mobile-nav-link">تواصل</a>
                 <a href="client-login.html" data-action="close-mobile-menu" class="mobile-nav-link mobile-nav-link-accent">دخول العملاء</a>
-                <button type="button" data-action="mobile-open-order-modal" data-service-name="طلب خدمة مخصص" class="btn-filled-red mobile-nav-btn">طلب خدمة</button>
+                <button type="button" data-action="mobile-open-order-modal" data-service-name="طلب تصميم جديد" class="btn-primary mobile-nav-btn">اطلب تصميمك</button>
             </div>
         </details>
     `;
@@ -8220,10 +8227,6 @@ const HOME_RENDER_SERVICE_ORDER = [
     'svc-digital-banners',
     'svc-pitch-deck',
     'svc-short-video',
-    'svc-professional-design',
-    'svc-brand-identity',
-    'svc-short-videos-premium',
-    'svc-advanced-promo-video',
     'svc-web-landing-page',
 ];
 const HOME_RENDER_SERVICE_ALIASES = {
@@ -8238,9 +8241,9 @@ const HOME_RENDER_SERVICE_ALIASES = {
 const HOME_RENDER_SERVICE_FALLBACKS = [
     {
         id: 'svc-social-media-designs',
-        titles: { ar: 'تصاميم سوشيال ميديا ثابتة' },
+        titles: { ar: 'تصميم منشورات سوشيال ميديا' },
         price: '60',
-        descriptions: { ar: 'منشورات إعلانية احترافية جاهزة للنشر على Instagram وFacebook وLinkedIn.' },
+        descriptions: { ar: 'منشورات احترافية جاهزة للنشر على Instagram وFacebook وLinkedIn بمقاسات مناسبة.' },
         category: 'سوشيال ميديا',
         serviceType: 'خدمة لمرة واحدة',
         is_coming_soon: false,
@@ -8249,9 +8252,9 @@ const HOME_RENDER_SERVICE_FALLBACKS = [
     },
     {
         id: 'svc-logo-design',
-        titles: { ar: 'تصميم شعار احترافي' },
+        titles: { ar: 'تصميم شعار وهوية بسيطة' },
         price: '150',
-        descriptions: { ar: 'شعار واضح وقابل للاستخدام على جميع المنصات مع تصدير بخلفية شفافة.' },
+        descriptions: { ar: 'شعار واضح مع تطبيق بصري بسيط يصلح للصفحات التجارية والمتاجر الناشئة.' },
         category: 'هوية بصرية',
         serviceType: 'خدمة لمرة واحدة',
         is_coming_soon: false,
@@ -8260,7 +8263,7 @@ const HOME_RENDER_SERVICE_FALLBACKS = [
     },
     {
         id: 'svc-digital-banners',
-        titles: { ar: 'بانرات وإعلانات رقمية' },
+        titles: { ar: 'بانرات إعلانية' },
         price: '80',
         descriptions: { ar: 'بانرات جاهزة للحملات الإعلانية بمقاسات النشر المعتمدة.' },
         category: 'إعلانات رقمية',
@@ -8271,7 +8274,7 @@ const HOME_RENDER_SERVICE_FALLBACKS = [
     },
     {
         id: 'svc-pitch-deck',
-        titles: { ar: 'تصميم عرض تقديمي' },
+        titles: { ar: 'عروض تقديمية' },
         price: '200',
         descriptions: { ar: 'شرائح احترافية للأعمال والمستثمرين بتسلسل بصري قوي يعكس هوية مشروعك.' },
         category: 'أعمال تجارية',
@@ -8282,7 +8285,7 @@ const HOME_RENDER_SERVICE_FALLBACKS = [
     },
     {
         id: 'svc-short-video',
-        titles: { ar: 'فيديو قصير (Reels/TikTok)' },
+        titles: { ar: 'مونتاج فيديو قصير' },
         price: '120',
         descriptions: { ar: 'مونتاج خفيف وسريع لمحتوى يومي قصير يناسب جميع المنصات.' },
         category: 'مونتاج فيديو',
@@ -8292,61 +8295,25 @@ const HOME_RENDER_SERVICE_FALLBACKS = [
         enabled: true,
     },
     {
-        id: 'svc-professional-design',
-        titles: { ar: 'خدمة تصميم احترافية' },
-        price: '500',
-        descriptions: { ar: 'باقة تصميم متقدمة تشمل الهوية البصرية وصناعة المحتوى المتكامل.' },
-        category: 'تصميم احترافي',
-        serviceType: 'باقة تنفيذ احترافية',
+        id: 'svc-web-landing-page',
+        titles: { ar: 'صفحات هبوط' },
+        price: '1500',
+        descriptions: { ar: 'صفحة هبوط واضحة تعرض الخدمة أو المنتج وتقود الزائر إلى التواصل أو الطلب.' },
+        category: 'تصميم مواقع',
+        serviceType: 'مشروع كامل',
         is_coming_soon: false,
         popularity: 6,
         enabled: true,
     },
-    {
-        id: 'svc-brand-identity',
-        titles: { ar: 'هوية بصرية أساسية' },
-        price: '400',
-        descriptions: { ar: 'تصميم شعار احترافي مع لوحة ألوان وهوية تطبيقية مبدئية للمنصات الأساسية.' },
-        category: 'هوية بصرية',
-        serviceType: 'خدمة لمرة واحدة',
-        is_coming_soon: false,
-        popularity: 7,
-        enabled: true,
-    },
-    {
-        id: 'svc-short-videos-premium',
-        titles: { ar: 'فيديوهات قصيرة (أقل من دقيقة)' },
-        price: '300',
-        descriptions: { ar: 'مونتاج فيديو قصير عالي الجودة لمنصات التواصل الاجتماعي.' },
-        category: 'مونتاج فيديو',
-        serviceType: 'خدمة لمرة واحدة',
-        is_coming_soon: false,
-        popularity: 8,
-        enabled: true,
-    },
-    {
-        id: 'svc-advanced-promo-video',
-        titles: { ar: 'فيديو ترويجي متقدم' },
-        price: '0',
-        descriptions: { ar: 'خدمة إنتاج فيديو احترافي بجودة إنتاجية عالية للمشاريع التي تحتاج إخراجاً إعلانياً متقدماً.' },
-        category: 'فيديو متقدم',
-        serviceType: 'خدمة مخصصة',
-        is_coming_soon: true,
-        popularity: 9,
-        enabled: true,
-    },
-    {
-        id: 'svc-web-landing-page',
-        titles: { ar: 'تصميم مواقع وصفحات هبوط' },
-        price: '1500',
-        descriptions: { ar: 'تصميم صفحات هبوط ومواقع احترافية عالية التحويل.' },
-        category: 'تصميم مواقع',
-        serviceType: 'مشروع كامل',
-        is_coming_soon: false,
-        popularity: 10,
-        enabled: true,
-    },
 ];
+const HOME_RENDER_SERVICE_DELIVERY_HINTS = {
+    'svc-social-media-designs': 'تسليم غالباً خلال 24-48 ساعة حسب المحتوى.',
+    'svc-logo-design': 'تسليم أولي غالباً خلال 2-4 أيام عمل.',
+    'svc-digital-banners': 'تسليم غالباً خلال 24-48 ساعة بعد استلام المقاسات.',
+    'svc-pitch-deck': 'المدة حسب عدد الشرائح والمحتوى المتوفر.',
+    'svc-short-video': 'المدة حسب طول الفيديو والمواد المتاحة.',
+    'svc-web-landing-page': 'يتم تحديد المدة بعد مراجعة المحتوى والنطاق.',
+};
 const HOME_RENDER_SERVICE_FALLBACK_MAP = new Map(
     HOME_RENDER_SERVICE_FALLBACKS.map((service, index) => [service.id, normalizeManagedService(service, index)])
 );
@@ -8631,84 +8598,87 @@ function buildServiceCard(service, index, bestRule) {
         : { finalPrice: numericPrice, discountAmount: 0 };
     const hasDiscount = Number.isFinite(numericPrice) && discountResult.discountAmount > 0;
     const finalPrice = hasDiscount ? discountResult.finalPrice.toFixed(2) : String(service.price || '0');
-    const statusClass = isSoon
-        ? 'bg-white/5 border-white/10 text-gray-400'
-        : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300';
+    const displayPrice = Number.isFinite(numericPrice)
+        ? (hasDiscount ? discountResult.finalPrice.toFixed(0) : String(numericPrice))
+        : String(service.price || '');
+    const priceText = displayPrice && displayPrice !== '0'
+        ? displayPrice
+        : 'حسب الطلب';
+    const deliveryHint = service.turnaround
+        || HOME_RENDER_SERVICE_DELIVERY_HINTS[resolveRenderableServiceId(service.id)]
+        || 'نطاق واضح وتسليم منظم حسب تفاصيل الطلب.';
+    const detailLabel = currentLang === 'en' ? 'More' : currentLang === 'fr' ? 'Plus' : 'شاهد الخدمة';
+    const orderLabel = isSoon ? t('serviceComingSoonBtn') : 'اطلب الخدمة';
     const metaChips = [
         createUiElement('span', {
-            className: `text-[10px] px-3 py-1 rounded-full border w-fit ${statusClass}`.trim(),
-            text: isSoon ? t('serviceSoon') : t('serviceAvailable'),
-        }),
-        createUiElement('span', {
-            className: 'text-[10px] px-3 py-1 rounded-full border border-white/10 bg-white/5 text-gray-300',
+            className: 'chip',
             text: localized.serviceType || 'خدمة لمرة واحدة',
         }),
     ];
 
-    if (hasDiscount && bestRule) {
+    if (isSoon) {
+        metaChips.push(createUiElement('span', {
+            className: 'chip chip--muted',
+            text: t('serviceSoon'),
+        }));
+    } else if (hasDiscount && bestRule) {
         metaChips.push(buildDiscountChip(bestRule));
     }
 
     return createUiElement('article', {
-        className: `p-8 md:p-9 flex flex-col justify-between water-card service-card ${isSoon ? 'coming-soon-card' : ''}`.trim(),
+        className: `card service-card ${isSoon ? 'coming-soon-card' : ''}`.trim(),
         attrs: {
             'data-reveal': 'service',
             'data-reveal-index': index,
         },
         children: [
             createUiElement('div', {
+                className: 'service-card__top',
                 children: [
                     createUiElement('div', {
-                        className: 'service-card__head flex justify-between items-start gap-4 mb-6',
                         children: [
-                            createUiElement('div', {
-                                className: 'flex flex-col gap-3',
-                                children: [
-                                    createUiElement('span', {
-                                        className: 'text-[11px] font-bold tracking-[0.18em] text-red-500 uppercase',
-                                        text: localized.category || 'خدمة رقمية',
-                                    }),
-                                    createUiElement('div', {
-                                        className: 'flex gap-2 items-center flex-wrap',
-                                        children: metaChips,
-                                    }),
-                                ],
+                            createUiElement('span', {
+                                className: 'service-category',
+                                text: localized.category || 'خدمة رقمية',
                             }),
-                            createUiElement('div', {
-                                className: 'service-card__price text-left',
-                                children: [
-                                    buildServicePriceBlock(numericPrice ?? String(service.price || '0'), discountResult, hasDiscount),
-                                ],
+                            createUiElement('h3', {
+                                text: localized.title || 'خدمة',
                             }),
                         ],
                     }),
-                    createUiElement('h3', {
-                        className: 'text-2xl font-black mb-3',
-                        text: localized.title || 'خدمة',
-                    }),
-                    createUiElement('p', {
-                        className: 'text-gray-400 text-sm leading-relaxed mb-5',
-                        text: localized.description || '',
-                    }),
                     createUiElement('div', {
-                        className: 'text-xs text-gray-500',
-                        text: 'نطاق واضح، تواصل مباشر، وتسليم جاهز للتشغيل خلال مسار عمل منظم.',
+                        className: 'service-card__price',
+                        children: [
+                            createUiElement('span', { text: priceText === 'حسب الطلب' ? '' : 'ابتداءً من' }),
+                            createUiElement('strong', { text: priceText === 'حسب الطلب' ? priceText : `${priceText} DH` }),
+                        ],
                     }),
                 ],
             }),
             createUiElement('div', {
-                className: 'grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6',
+                className: 'portfolio-meta',
+                children: metaChips,
+            }),
+            createUiElement('p', {
+                text: localized.description || '',
+            }),
+            createUiElement('div', {
+                className: 'service-card__hint',
+                text: deliveryHint,
+            }),
+            createUiElement('div', {
+                className: 'service-card__actions',
                 children: [
                     createUiElement('a', {
-                        className: 'w-full py-4 rounded-lg font-black transition text-sm text-center border border-white/20 text-gray-200 hover:bg-white/10',
-                        text: currentLang === 'en' ? 'More' : currentLang === 'fr' ? 'Plus' : 'المزيد',
+                        className: 'btn-secondary',
+                        text: detailLabel,
                         attrs: {
                             href: getServiceDetailUrl(service.id),
                         },
                     }),
                     createUiElement('button', {
-                        className: `w-full py-4 rounded-lg font-black transition text-sm ${isSoon ? 'btn-disabled' : 'btn-filled-red'}`.trim(),
-                        text: isSoon ? t('serviceComingSoonBtn') : t('serviceOrderNow'),
+                        className: isSoon ? 'btn-disabled' : 'btn-primary',
+                        text: orderLabel,
                         attrs: {
                             type: 'button',
                             disabled: isSoon ? true : null,
@@ -8775,7 +8745,7 @@ function buildSkeletonCard(type = 'service') {
     }
 
     return createUiElement('article', {
-        className: `water-card po-skeleton-card po-skeleton-card--${type}`,
+        className: `card po-skeleton-card po-skeleton-card--${type}`,
         attrs: {
             'aria-hidden': 'true',
         },
@@ -8907,34 +8877,77 @@ function resolvePortfolioField(item, primaryKey, fallbackKey) {
     return resolveLocalizedInlineText(item?.[fallbackKey]);
 }
 
+function renderPortfolioActionTemplate(item, isCtaCard) {
+    const actionType = normalizePortfolioActionType(item.actionType);
+    const rawActionLabel = resolveLocalizedInlineText(item.actionLabel);
+    const normalizedActionLabel = rawActionLabel === 'معاينة حية'
+        ? 'معاينة المشروع'
+        : (rawActionLabel === 'تكبير الصورة' || rawActionLabel === 'مشاهدة الفيديو' ? 'شاهد الخدمة' : rawActionLabel);
+    const actionLabel = escapeHtml(normalizedActionLabel
+        || (actionType === 'open_order_modal' ? 'اطلب عملاً مشابهاً' : 'شاهد الخدمة'));
+    const className = isCtaCard ? 'portfolio-cta-action' : 'portfolio-action-btn';
+
+    if (actionType === 'open_order_modal') {
+        const serviceName = escapeHtml(resolveLocalizedInlineText(item.orderServiceName)
+            || resolveLocalizedInlineText(item.title)
+            || t('customServiceName'));
+        return `<button type="button" data-action="open-order-modal" data-service-name="${serviceName}" class="${className}">${actionLabel}</button>`;
+    }
+
+    const href = escapeHtml(sanitizePortfolioActionUrl(item.actionUrl || item.action_url));
+    const targetAttrs = actionType === 'external_link' && item.openInNewTab
+        ? ' target="_blank" rel="noopener noreferrer"'
+        : '';
+    return `<a href="${href}" class="${className}"${targetAttrs}>${actionLabel}</a>`;
+}
+
+function renderPortfolioPlaceholderTemplate(category) {
+    const mockClass = category === 'social'
+        ? 'social'
+        : (category === 'identity' ? 'identity' : (category === 'video' ? 'video' : 'web'));
+
+    return `
+        <div class="portfolio-media-placeholder" aria-hidden="true">
+            <div class="portfolio-mock portfolio-mock--${mockClass}"></div>
+        </div>
+    `;
+}
+
 function renderPortfolioCardTemplate(item, options = {}) {
     const category = normalizePortfolioCategory(item.category);
-    const categoryText = escapeHtml(resolvePortfolioField(item, 'category_ar', 'category') || getPortfolioCategoryLabel(category));
+    const categoryText = escapeHtml(getPortfolioCategoryLabel(category));
     const titleText = escapeHtml(resolvePortfolioField(item, 'title_ar', 'title') || 'مشروع بدون عنوان');
     const descriptionText = escapeHtml(resolvePortfolioField(item, 'description_ar', 'description') || '');
     const normalizedImageUrl = normalizeServiceImageUrl(item.imageUrl || item.image_url || '');
-    const actionUrl = escapeHtml(sanitizePortfolioActionUrl(item.actionUrl || item.action_url));
     const imageAlt = escapeHtml(item.imageAlt || item.image_alt || titleText || 'عنصر من معرض الأعمال');
     const loadingMode = options.prioritizeImage ? 'eager' : 'lazy';
     const fetchPriority = options.prioritizeImage ? 'high' : 'auto';
     const staticAttr = item.isStaticCard ? ' data-static-card="true"' : '';
     const revealIndex = Number.isFinite(options.revealIndex) ? options.revealIndex : 0;
+    const layoutTier = String(options.layoutTier || item.cardStyle || 'standard').trim().toLowerCase();
+    const tierClass = item.cardStyle === 'cta'
+        ? 'portfolio-card--cta'
+        : (['featured', 'medium', 'compact'].includes(layoutTier) ? `portfolio-card--${layoutTier}` : 'portfolio-card--standard');
+    const useImage = normalizePortfolioMediaType(item.mediaType) === 'image' && Boolean(normalizedImageUrl);
+    const mediaClass = `portfolio-media is-${category}`.trim();
+    const actionMarkup = renderPortfolioActionTemplate(item, item.cardStyle === 'cta');
 
     return `
-        <article class="portfolio-card portfolio-item water-card group flex h-full w-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl transition-all duration-300 transform-gpu hover:-translate-y-2 hover:shadow-2xl hover:border-red-500/30" role="listitem" data-category="${escapeHtml(category)}" data-reveal="portfolio" data-reveal-index="${escapeHtml(String(revealIndex))}"${staticAttr}>
-            <div class="portfolio-media relative h-56 overflow-hidden rounded-2xl">
-                ${normalizedImageUrl
-            ? `<img src="${escapeHtml(normalizedImageUrl)}" alt="${imageAlt}" width="1200" height="750" loading="${loadingMode}" decoding="async" fetchpriority="${fetchPriority}" referrerpolicy="no-referrer" class="h-full w-full object-cover transition-transform duration-500 ease-out transform-gpu group-hover:scale-110">`
-            : `<div class="portfolio-media-placeholder h-full w-full bg-gradient-to-br from-slate-900 to-slate-800" aria-hidden="true"></div>`}
-                <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent"></div>
-                <div class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 [padding-inline:1rem]">
-                    <span class="inline-flex rounded-full border border-white/25 bg-black/35 px-3 py-1 text-xs font-bold text-white/90">${categoryText}</span>
+        <article class="portfolio-card portfolio-item portfolio-reveal ${tierClass}" role="listitem" data-category="${escapeHtml(category)}" data-reveal="portfolio" data-reveal-index="${escapeHtml(String(revealIndex))}"${staticAttr}>
+            ${item.cardStyle === 'cta' ? '' : `
+                <figure class="${mediaClass}">
+                    ${useImage
+            ? `${renderPortfolioPlaceholderTemplate(category)}<img src="${escapeHtml(normalizedImageUrl)}" alt="${imageAlt}" width="1200" height="900" loading="${loadingMode}" decoding="async" fetchpriority="${fetchPriority}" referrerpolicy="no-referrer">`
+            : renderPortfolioPlaceholderTemplate(category)}
+                </figure>
+            `}
+            <div class="portfolio-body">
+                <div class="portfolio-meta">
+                    <span class="portfolio-category">${categoryText}</span>
                 </div>
-            </div>
-            <div class="portfolio-body flex grow flex-col gap-3 p-5 [padding-inline:1.25rem]">
-                <h3 class="text-lg font-extrabold leading-snug text-white">${titleText}</h3>
-                <p class="text-sm leading-7 text-gray-200">${descriptionText}</p>
-                <a href="${actionUrl}" class="btn-filled-red portfolio-action-btn mt-auto inline-flex min-h-11 items-center justify-center rounded-xl px-4 py-2 text-sm font-extrabold" target="_blank" rel="noopener noreferrer">معاينة حية</a>
+                <h3>${titleText}</h3>
+                <p>${descriptionText}</p>
+                ${actionMarkup}
             </div>
         </article>
     `;
@@ -8961,10 +8974,21 @@ function buildPortfolioCardElement(item, options = {}) {
     if (!isCtaCard) {
         const normalizedImageUrl = normalizeServiceImageUrl(item.imageUrl || '');
         const media = createUiElement('figure', {
-            className: `portfolio-media ${layoutTier === 'featured' ? 'portfolio-media--featured' : layoutTier === 'compact' ? 'portfolio-media--compact' : ''}`.trim(),
+            className: `portfolio-media is-${category} ${layoutTier === 'featured' ? 'portfolio-media--featured' : layoutTier === 'compact' ? 'portfolio-media--compact' : ''}`.trim(),
         });
 
         if (item.mediaType === 'image' && normalizedImageUrl) {
+            media.appendChild(createUiElement('div', {
+                className: 'portfolio-media-placeholder',
+                attrs: {
+                    'aria-hidden': 'true',
+                },
+                children: [
+                    createUiElement('div', {
+                        className: `portfolio-mock portfolio-mock--${category === 'social' ? 'social' : category === 'identity' ? 'identity' : category === 'video' ? 'video' : 'web'}`,
+                    }),
+                ],
+            }));
             media.appendChild(createUiElement('img', {
                 attrs: {
                     src: normalizedImageUrl,
@@ -9010,6 +9034,31 @@ function buildPortfolioCardElement(item, options = {}) {
     return article;
 }
 
+function hydratePortfolioImageStates(scope = document) {
+    scope.querySelectorAll('.portfolio-media img').forEach((img) => {
+        const media = img.closest('.portfolio-media');
+        if (!media) return;
+
+        const markLoaded = () => {
+            media.classList.add('is-loaded');
+            media.classList.remove('is-failed');
+        };
+        const markFailed = () => {
+            media.classList.add('is-failed');
+            media.classList.remove('is-loaded');
+        };
+
+        if (img.complete) {
+            if (img.naturalWidth > 0) markLoaded();
+            else markFailed();
+            return;
+        }
+
+        img.addEventListener('load', markLoaded, { once: true });
+        img.addEventListener('error', markFailed, { once: true });
+    });
+}
+
 function renderPortfolioForHome() {
     const section = document.getElementById('portfolio');
     if (!section) return;
@@ -9026,9 +9075,9 @@ function renderPortfolioForHome() {
     grid.setAttribute('aria-busy', 'false');
 
     if (!activeItems.length) {
-        grid.className = 'portfolio-grid grid w-full grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3';
+        grid.className = 'portfolio-grid';
         grid.innerHTML = `
-            <article class="portfolio-card portfolio-item water-card rounded-3xl p-6" role="listitem" data-category="all">
+            <article class="portfolio-card portfolio-item card" role="listitem" data-category="all">
                 <div class="portfolio-body">
                     <h3>لا توجد عناصر في المعرض حالياً</h3>
                     <p>أضف عناصر معرض الأعمال من لوحة الإدارة أو فعّل العناصر الحالية.</p>
@@ -9042,7 +9091,7 @@ function renderPortfolioForHome() {
 
     const filterableItems = activeItems.filter((item) => !item.isStaticCard);
     const categories = Array.from(new Set(filterableItems.map((item) => normalizePortfolioCategory(item.category))));
-    const orderedCategories = ['web', 'design', 'video', 'custom'].filter((category) => categories.includes(category));
+    const orderedCategories = ['web', 'social', 'identity', 'video', 'custom'].filter((category) => categories.includes(category));
     const filtersFragment = document.createDocumentFragment();
 
     const allFilterButton = createUiElement('button', {
@@ -9081,7 +9130,9 @@ function renderPortfolioForHome() {
     let imagePriorityAssigned = false;
     const cardsMarkup = itemsToRender.map((item, index) => {
         const normalizedImageUrl = normalizeServiceImageUrl(item.imageUrl || item.image_url || '');
-        const prioritizeImage = !imagePriorityAssigned && item.mediaType === 'image' && Boolean(normalizedImageUrl);
+        const prioritizeImage = !imagePriorityAssigned
+            && normalizePortfolioMediaType(item.mediaType) === 'image'
+            && Boolean(normalizedImageUrl);
         if (prioritizeImage) {
             imagePriorityAssigned = true;
         }
@@ -9092,9 +9143,10 @@ function renderPortfolioForHome() {
         });
     }).join('');
 
-    grid.className = 'portfolio-grid grid w-full grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3';
-    grid.style.paddingInline = '0.25rem';
+    grid.className = 'portfolio-grid';
+    grid.style.paddingInline = '';
     grid.innerHTML = cardsMarkup;
+    hydratePortfolioImageStates(grid);
 
     if (typeof window.initPortfolioInteractions === 'function') {
         window.initPortfolioInteractions();
@@ -9173,7 +9225,6 @@ function refreshHomeStructuredData() {
         priceRange: 'MAD',
         areaServed: [
             { '@type': 'Country', name: 'Morocco' },
-            { '@type': 'Place', name: 'Gulf Cooperation Council' },
         ],
     };
 

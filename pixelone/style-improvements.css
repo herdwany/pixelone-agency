@@ -23,7 +23,7 @@
 h1[class*="hero"],
 .hero-title {
     font-size: var(--text-h1-improved) !important;
-    letter-spacing: -0.011em;
+    letter-spacing: 0;
     line-height: 1.2;
     word-break: break-word;
 }
@@ -127,7 +127,7 @@ html[data-site-theme='light'] .form-label {
     .btn-filled-red {
         font-size: 0.85rem !important;
         padding: 0.6rem 0.9rem !important;
-        letter-spacing: -0.005em;
+        letter-spacing: 0;
     }
 
     button[data-action="close-order-modal"] {

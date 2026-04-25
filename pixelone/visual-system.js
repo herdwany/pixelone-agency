@@ -37,19 +37,9 @@
         applyThemeToDocument('dark');
     }
 
-    var GSAP_URL = 'https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js';
-    var SCROLLTRIGGER_URL = 'https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js';
-    var PREMIUM_REFRESH_URL = 'premium-refresh.css';
-
     function ensurePremiumRefreshStylesheet() {
-        if (!document.head) return;
-        if (document.querySelector('link[data-premium-refresh="true"]')) return;
-
-        var link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = PREMIUM_REFRESH_URL;
-        link.dataset.premiumRefresh = 'true';
-        document.head.appendChild(link);
+        // The active design system is consolidated in style.css. Keep this as
+        // a no-op so old runtime calls cannot reintroduce a competing CSS layer.
     }
 
     function applySiteTheme(theme, options) {
@@ -567,29 +557,8 @@
         initGlobalHomeButton();
         cleanHeadingDecorations();
         window.setTimeout(cleanHeadingDecorations, 900);
-
-        try {
-            await loadExternalScript(GSAP_URL);
-            await loadExternalScript(SCROLLTRIGGER_URL);
-
-            var gsap = window.gsap;
-            var ScrollTrigger = window.ScrollTrigger;
-
-            if (!gsap || !ScrollTrigger) {
-                runLoaderFallback();
-                return;
-            }
-
-            gsap.registerPlugin(ScrollTrigger);
-            runLoaderWithGsap(gsap);
-            initPageTransitions(gsap);
-            initActiveNavState();
-            initRevealAnimations(gsap, ScrollTrigger);
-            initTypographyMotion(gsap);
-        } catch (_err) {
-            runLoaderFallback();
-            initActiveNavState();
-        }
+        initActiveNavState();
+        document.body.classList.add('vs-enhanced');
     }
 
     if (document.readyState === 'loading') {

@@ -188,7 +188,7 @@ h6 {
     /* Premium scale for Arabic/RTL: Space below each heading rebalanced for 16/24/32px steps; always readable, never crowded. */
     margin-block-end: 0.6em;
     margin-block-start: 0.25em;
-    letter-spacing: -0.011em;
+    letter-spacing: 0;
     line-height: 1.21;
 }
 
@@ -220,7 +220,7 @@ h3 {
 .number-font {
     font-family: 'Alexandria', sans-serif;
     line-height: 1.28;
-    letter-spacing: -0.012em;
+    letter-spacing: 0;
 }
 
 p,
@@ -351,7 +351,7 @@ html[data-site-theme='light'] body.site-shell ::selection {
     line-height: 1.24;
     margin: 0.85rem 0 1rem;
     max-width: 26ch;
-    letter-spacing: -0.02em;
+    letter-spacing: 0;
 }
 
 .page-hero__body {
