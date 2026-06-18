@@ -103,10 +103,10 @@
         </a>
 
         <div class="site-nav-links hidden md:flex" aria-label="روابط الصفحة">
-            <a href="#portfolio" class="nav-link">الأعمال</a>
             <a href="#services" class="nav-link">الخدمات</a>
+            <a href="#portfolio" class="nav-link">الأعمال</a>
             <a href="#pricing" class="nav-link">الأسعار</a>
-            <a href="#process" class="nav-link">كيف نعمل</a>
+            <a href="#process" class="nav-link">طريقة العمل</a>
             <a href="#faq" class="nav-link">الأسئلة</a>
             <a href="#contact" class="nav-link">تواصل</a>
         </div>
@@ -124,10 +124,10 @@
                 <span></span>
             </summary>
             <div class="mobile-nav-panel">
-                <a href="#portfolio" data-action="close-mobile-menu" class="mobile-nav-link">الأعمال</a>
                 <a href="#services" data-action="close-mobile-menu" class="mobile-nav-link">الخدمات</a>
+                <a href="#portfolio" data-action="close-mobile-menu" class="mobile-nav-link">الأعمال</a>
                 <a href="#pricing" data-action="close-mobile-menu" class="mobile-nav-link">الأسعار</a>
-                <a href="#process" data-action="close-mobile-menu" class="mobile-nav-link">كيف نعمل</a>
+                <a href="#process" data-action="close-mobile-menu" class="mobile-nav-link">طريقة العمل</a>
                 <a href="#faq" data-action="close-mobile-menu" class="mobile-nav-link">الأسئلة</a>
                 <a href="#contact" data-action="close-mobile-menu" class="mobile-nav-link">تواصل</a>
                 <a href="client-login.html" class="mobile-nav-link mobile-nav-link-accent" data-role="client-auth-link">دخول العملاء</a>
@@ -138,105 +138,48 @@
     </nav>
 
     <main id="mainContent">
-        <section class="hero-section" aria-labelledby="homeHeroTitle">
-            <div class="page-frame hero-grid">
-                <div class="hero-copy">
-                    <span class="hero-badge">Pixel One Visuals — Digital Design Studio</span>
-                    <h1 id="homeHeroTitle" class="hero-title">تصاميم احترافية جاهزة للنشر لمشروعك</h1>
-                    <p class="hero-subtitle">
-                        نساعد أصحاب المشاريع الصغيرة، المتاجر، المطاعم، المدربين، والصفحات التجارية على الظهور بشكل أقوى عبر تصاميم سوشيال ميديا، شعارات، بانرات، مونتاج قصير، وصفحات هبوط واضحة.
-                    </p>
-                    <div class="hero-actions">
-                        <button type="button" data-action="open-order-modal" data-service-name="طلب تصميم عبر واتساب"
-                            class="btn-whatsapp">اطلب تصميمك عبر واتساب</button>
-                        <a href="#portfolio" class="btn-secondary">شاهد الأعمال</a>
-                        <a href="#services" class="btn-ghost">استعرض الخدمات</a>
-                    </div>
-                    <ul class="hero-trust-list" aria-label="مزايا سريعة">
-                        <li class="trust-chip">تسليم سريع</li>
-                        <li class="trust-chip">أسعار واضحة</li>
-                        <li class="trust-chip">ملفات جاهزة للنشر</li>
-                        <li class="trust-chip">مناسب للمشاريع الصغيرة</li>
-                    </ul>
+        <section class="hero-section clean-hero" aria-labelledby="homeHeroTitle">
+            <img class="clean-hero__image" src="og/social-media-designs-1200x630.png"
+                alt="نموذج بصري من أعمال Pixel One Visuals" width="1200" height="630" fetchpriority="high">
+            <div class="clean-hero__overlay" aria-hidden="true"></div>
+            <div class="page-frame clean-hero__content">
+                <span class="hero-badge" dir="ltr">Pixel One Visuals</span>
+                <h1 id="homeHeroTitle" class="hero-title"><span>تصاميم رقمية</span><span>واضحة لمشروعك</span></h1>
+                <p class="hero-subtitle">
+                    نجهز تصاميم سوشيال ميديا، شعارات، بانرات، فيديوهات قصيرة وصفحات هبوط للمشاريع الصغيرة والمتاجر في المغرب. طلب مباشر، نطاق مفهوم، وملفات جاهزة للنشر.
+                </p>
+                <div class="hero-actions">
+                    <button type="button" data-action="open-order-modal" data-service-name="طلب تصميم جديد"
+                        class="btn-primary">ابدأ طلبك</button>
+                    <a href="#services" class="btn-secondary">الخدمات والأسعار</a>
+                    <a class="btn-ghost"
+                        href="https://wa.me/212751201626?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%20Pixel%20One%20Visuals%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%B7%D9%84%D8%A8%20%D8%AA%D8%B5%D9%85%D9%8A%D9%85%20%D9%84%D9%85%D8%B4%D8%B1%D9%88%D8%B9%D9%8A."
+                        target="_blank" rel="noopener noreferrer">واتساب</a>
                 </div>
-
-                <aside class="hero-visual" aria-label="نماذج مختصرة من خدمات التصميم">
-                    <div class="mock-canvas mock-canvas--post">
-                        <span class="mock-label">Social Post</span>
-                        <div class="mock-post">
-                            <span></span>
-                            <strong>عرض الأسبوع</strong>
-                            <small>تصميم جاهز للنشر</small>
-                        </div>
-                    </div>
-                    <div class="mock-canvas mock-canvas--logo">
-                        <span class="mock-label">Logo</span>
-                        <div class="mock-logo-mark">P1</div>
-                        <div class="mock-lines">
-                            <span></span>
-                            <span></span>
-                        </div>
-                    </div>
-                    <div class="mock-canvas mock-canvas--banner">
-                        <span class="mock-label">Banner</span>
-                        <div class="mock-banner">
-                            <strong>Launch</strong>
-                            <span>Campaign visual</span>
-                        </div>
-                    </div>
-                    <div class="mock-canvas mock-canvas--landing">
-                        <span class="mock-label">Landing Page</span>
-                        <div class="mock-browser">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </div>
-                    </div>
-                </aside>
+                <ul class="hero-trust-list clean-facts" aria-label="معلومات سريعة">
+                    <li><strong>48-72h</strong><span>للتصاميم البسيطة</span></li>
+                    <li><strong>MAD</strong><span>أسعار واضحة قبل التنفيذ</span></li>
+                    <li><strong>RTL</strong><span>تصميم عربي مناسب للسوق المحلي</span></li>
+                </ul>
             </div>
         </section>
 
         <section class="trust-strip" aria-label="إشارات الثقة">
             <div class="section-shell trust-strip__grid">
                 <span>طلب مباشر عبر واتساب</span>
-                <span>تسليم منظم للملفات</span>
-                <span>مقاسات مناسبة للمنصات</span>
-                <span>عرض سعر للمشاريع الأكبر</span>
+                <span>تسليم ملفات منظم</span>
+                <span>مقاسات جاهزة للمنصات</span>
+                <span>متابعة للطلبات الأكبر</span>
             </div>
         </section>
 
-        <section id="portfolio" class="portfolio-section section" aria-labelledby="portfolioTitle">
-            <div class="portfolio-shell section-shell">
-                <div class="section-header portfolio-head">
-                    <span class="section-eyebrow portfolio-kicker" data-portfolio-key="kicker">نماذج مختارة</span>
-                    <h2 id="portfolioTitle" class="section-title portfolio-title" data-portfolio-key="title">أعمال تساعدك على تخيل النتيجة</h2>
-                    <p class="section-description portfolio-intro" data-portfolio-key="intro">
-                        نماذج منظمة لصفحات هبوط، منشورات، شعارات، وفيديوهات قصيرة. الفكرة هنا أن ترى كيف يمكن لخدمتك أن تبدو قبل أن تطلبها.
-                    </p>
-                </div>
-                <div class="portfolio-filters" role="tablist" aria-label="تصفية معرض الأعمال"></div>
-                <div class="portfolio-grid" role="list" aria-busy="true">
-                    <article class="portfolio-card portfolio-item card" role="listitem" data-category="all">
-                        <div class="portfolio-body">
-                            <h3>جاري تحميل الأعمال</h3>
-                            <p>سيتم عرض النماذج النشطة هنا خلال لحظات.</p>
-                        </div>
-                    </article>
-                </div>
-                <div class="section-cta">
-                    <button type="button" data-action="open-order-modal" data-service-name="تصميم مشابه للأعمال المعروضة"
-                        class="btn-secondary">أريد تصميماً مشابهاً</button>
-                </div>
-            </div>
-        </section>
-
-        <section id="services" class="section" aria-labelledby="servicesTitle">
+        <section id="services" class="section services-section" aria-labelledby="servicesTitle">
             <div class="section-shell">
                 <div class="section-header">
                     <span class="section-eyebrow">الخدمات</span>
-                    <h2 id="servicesTitle" class="section-title">خدمات واضحة للطلب السريع</h2>
+                    <h2 id="servicesTitle" class="section-title">اختر ما تحتاجه الآن</h2>
                     <p class="section-description">
-                        اختر ما تحتاجه الآن. كل خدمة تعرض النطاق، السعر الابتدائي، وخطوة الطلب بدون تعقيد.
+                        خدمات محددة وواضحة: تعرف ماذا ستطلب، وما السعر التقريبي، وما الخطوة التالية.
                     </p>
                 </div>
                 <div id="servicesGrid" class="services-grid" aria-busy="true">
@@ -259,13 +202,38 @@
             </div>
         </section>
 
+        <section id="portfolio" class="portfolio-section section" aria-labelledby="portfolioTitle">
+            <div class="portfolio-shell section-shell">
+                <div class="section-header portfolio-head">
+                    <span class="section-eyebrow portfolio-kicker" data-portfolio-key="kicker">الأعمال</span>
+                    <h2 id="portfolioTitle" class="section-title portfolio-title" data-portfolio-key="title">نماذج حقيقية تساعدك على القرار</h2>
+                    <p class="section-description portfolio-intro" data-portfolio-key="intro">
+                        شاهد أمثلة قريبة من الخدمات التي يمكن طلبها: منشورات، هوية، صفحة هبوط، أو فيديو قصير.
+                    </p>
+                </div>
+                <div class="portfolio-filters" role="tablist" aria-label="تصفية معرض الأعمال"></div>
+                <div class="portfolio-grid" role="list" aria-busy="true">
+                    <article class="portfolio-card portfolio-item card" role="listitem" data-category="all">
+                        <div class="portfolio-body">
+                            <h3>جاري تحميل الأعمال</h3>
+                            <p>سيتم عرض النماذج النشطة هنا خلال لحظات.</p>
+                        </div>
+                    </article>
+                </div>
+                <div class="section-cta">
+                    <button type="button" data-action="open-order-modal" data-service-name="تصميم مشابه للأعمال المعروضة"
+                        class="btn-secondary">أريد نتيجة مشابهة</button>
+                </div>
+            </div>
+        </section>
+
         <section id="pricing" class="section pricing-section" aria-labelledby="pricingTitle">
             <div class="section-shell">
                 <div class="section-header">
                     <span class="section-eyebrow">الأسعار</span>
-                    <h2 id="pricingTitle" class="section-title">باقات بداية تساعدك على اتخاذ القرار</h2>
+                    <h2 id="pricingTitle" class="section-title">باقات بداية بسيطة</h2>
                     <p class="section-description">
-                        الأسعار بصيغة “ابتداءً من” لأن بعض الطلبات تحتاج مقاسات أو تعديلات أو محتوى إضافي.
+                        الأسعار التالية للبداية فقط. الطلبات الأكبر يتم تسعيرها بعد معرفة النطاق والمحتوى المطلوب.
                     </p>
                 </div>
                 <div class="pricing-grid">
@@ -276,14 +244,14 @@
                         <ul>
                             <li>3 تصاميم سوشيال ميديا</li>
                             <li>مناسبة لبداية صفحة تجارية</li>
-                            <li>تسليم غالباً خلال 48-72 ساعة</li>
+                            <li>تسليم غالبا خلال 48-72 ساعة</li>
                         </ul>
                         <button type="button" data-action="open-order-modal" data-service-name="باقة البداية - 3 تصاميم سوشيال ميديا"
                             data-final-price="150" class="btn-primary">اطلب الباقة</button>
                     </article>
                     <article class="card pricing-card pricing-card--featured">
                         <span class="service-category">Business</span>
-                        <span class="recommended-badge">الأكثر طلباً</span>
+                        <span class="recommended-badge">الأكثر طلبا</span>
                         <h3>باقة الأعمال</h3>
                         <p class="pricing-price">ابتداءً من <strong>350 DH</strong></p>
                         <ul>
@@ -301,7 +269,7 @@
                         <ul>
                             <li>شعار، هوية، فيديو، صفحة هبوط، أو حملة كاملة</li>
                             <li>مناسب للمشاريع الخاصة</li>
-                            <li>نحدد السعر بعد فهم النطاق</li>
+                            <li>نحدد السعر بعد فهم التفاصيل</li>
                         </ul>
                         <a class="btn-whatsapp"
                             href="https://wa.me/212751201626?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%20Pixel%20One%20Visuals%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D9%85%D9%86%D8%A7%D9%82%D8%B4%D8%A9%20%D9%85%D8%B4%D8%B1%D9%88%D8%B9%20%D9%85%D8%AE%D8%B5%D8%B5."
@@ -315,8 +283,8 @@
             <div class="section-shell">
                 <div class="section-header">
                     <span class="section-eyebrow">عروض متاحة</span>
-                    <h2 id="offersTitle" class="section-title">خصومات أو عروض محدثة</h2>
-                    <p class="section-description">إذا كان هناك عرض نشط، سيظهر هنا تلقائياً دون التأثير على الأسعار الأساسية.</p>
+                    <h2 id="offersTitle" class="section-title">خصومات محدثة</h2>
+                    <p class="section-description">إذا كان هناك عرض نشط، سيظهر هنا تلقائيا دون التأثير على الأسعار الأساسية.</p>
                 </div>
                 <div id="offersGrid" class="offers-grid" aria-busy="true"></div>
             </div>
@@ -325,61 +293,47 @@
         <section id="process" class="section process-section" aria-labelledby="processTitle">
             <div class="section-shell">
                 <div class="section-header">
-                    <span class="section-eyebrow">كيف نعمل</span>
-                    <h2 id="processTitle" class="section-title">ثلاث خطوات بسيطة</h2>
+                    <span class="section-eyebrow">طريقة العمل</span>
+                    <h2 id="processTitle" class="section-title">من الفكرة إلى الملفات النهائية</h2>
                     <p class="section-description">
-                        لا تحتاج إلى شرح طويل أو إعدادات معقدة. نبدأ من الفكرة وننتهي بملفات جاهزة للنشر.
+                        مسار قصير وواضح، بدون خطوات غير ضرورية.
                     </p>
                 </div>
-                <div class="process-grid">
-                    <article class="card process-card">
+                <ol class="process-grid clean-process-list">
+                    <li class="card process-card">
                         <span class="step-number">01</span>
-                        <h3>ترسل الفكرة أو نوع التصميم</h3>
-                        <p>أرسل رابط الصفحة، الصور، النصوص، أو وصفاً مختصراً لما تريد نشره.</p>
-                    </article>
-                    <article class="card process-card">
+                        <h3>ترسل الطلب</h3>
+                        <p>نوع التصميم، النصوص، الصور، رابط الصفحة، وأي مرجع بصري مهم.</p>
+                    </li>
+                    <li class="card process-card">
                         <span class="step-number">02</span>
-                        <h3>نجهز التصميم ونرسله للمراجعة</h3>
-                        <p>ننفذ النسخة الأولى ونرسلها لك مع مساحة واضحة للملاحظات.</p>
-                    </article>
-                    <article class="card process-card">
+                        <h3>ننفذ ونراجع</h3>
+                        <p>نجهز النسخة الأولى ثم نراجع الملاحظات داخل النطاق المتفق عليه.</p>
+                    </li>
+                    <li class="card process-card">
                         <span class="step-number">03</span>
-                        <h3>تستلم الملفات الجاهزة للنشر</h3>
-                        <p>تحصل على الملفات النهائية بالمقاسات المناسبة للمنصة المطلوبة.</p>
-                    </article>
-                </div>
-                <p class="process-note">
-                    للمشاريع الأكبر، نوفر عرض سعر وفاتورة وتتبع داخل لوحة العميل.
-                </p>
+                        <h3>تستلم الملفات</h3>
+                        <p>نرسل الملفات النهائية بالمقاسات المناسبة للاستخدام أو النشر.</p>
+                    </li>
+                </ol>
             </div>
         </section>
 
         <section class="section why-section" aria-labelledby="whyTitle">
-            <div class="section-shell why-grid">
+            <div class="section-shell clean-split">
                 <div class="section-header">
-                    <span class="section-eyebrow">لماذا Pixel One</span>
-                    <h2 id="whyTitle" class="section-title">تصميم عملي لا يضيع وقتك</h2>
-                    <p class="section-description">
-                        نركز على ما يحتاجه مشروعك فعلاً: مظهر احترافي، رسالة واضحة، ملفات منظمة، وخطوة طلب سهلة.
-                    </p>
+                    <span class="section-eyebrow">ما الذي يميز العمل</span>
+                    <h2 id="whyTitle" class="section-title">تصميم يخدم الهدف قبل الشكل</h2>
                 </div>
-                <div class="why-cards">
-                    <article class="card">
-                        <h3>وضوح قبل الزخرفة</h3>
-                        <p>كل تصميم يبدأ من هدفه: إعلان، عرض، ثقة، أو تحويل.</p>
-                    </article>
-                    <article class="card">
-                        <h3>مناسب للسوق المغربي</h3>
-                        <p>لغة بسيطة، أسعار مفهومة، وتواصل مباشر يناسب المشاريع الصغيرة.</p>
-                    </article>
-                    <article class="card">
-                        <h3>نظام تسليم منظم</h3>
-                        <p>للعمل الأكبر، يمكنك متابعة العروض والفواتير داخل لوحة العميل.</p>
-                    </article>
-                    <article class="card">
-                        <h3>قابل للتوسع</h3>
-                        <p>تبدأ بتصميم واحد، ثم تبني هوية ومحتوى وصفحات عند الحاجة.</p>
-                    </article>
+                <div class="clean-copy-block">
+                    <p>
+                        لا نبدأ من الزخرفة. نبدأ من الرسالة: ماذا تريد أن يعرف العميل؟ ما التصرف الذي تريده منه؟ ثم نبني تصميما بسيطا، مقروءا، ومناسبا للمنصة.
+                    </p>
+                    <ul class="plain-check-list">
+                        <li>لغة عربية واضحة ومناسبة للسوق المحلي.</li>
+                        <li>مقاسات جاهزة للمنصات المطلوبة.</li>
+                        <li>ملفات منظمة للرجوع إليها لاحقا.</li>
+                    </ul>
                 </div>
             </div>
         </section>
@@ -388,12 +342,12 @@
             <div class="section-shell">
                 <div class="section-header">
                     <span class="section-eyebrow">الأسئلة الشائعة</span>
-                    <h2 id="faqTitle" class="section-title">إجابات سريعة قبل الطلب</h2>
-                    <p class="section-description">أهم ما يسأل عنه العملاء قبل بدء تصميم جديد.</p>
+                    <h2 id="faqTitle" class="section-title">قبل أن تطلب</h2>
+                    <p class="section-description">إجابات قصيرة على أكثر الأسئلة تكرارا.</p>
                 </div>
                 <div class="faq-list">
                     <details class="faq-card">
-                        <summary>هل أحتاج حساباً لطلب خدمة؟</summary>
+                        <summary>هل أحتاج حسابا لطلب خدمة؟</summary>
                         <p>لا. يمكنك طلب الخدمة مباشرة عبر النموذج أو واتساب. الحساب مفيد فقط لمتابعة المشاريع الأكبر.</p>
                     </details>
                     <details class="faq-card">
@@ -402,15 +356,11 @@
                     </details>
                     <details class="faq-card">
                         <summary>كم يستغرق التنفيذ؟</summary>
-                        <p>التصاميم البسيطة غالباً خلال 48-72 ساعة. الصفحات والفيديوهات تعتمد على النطاق والمواد المتوفرة.</p>
+                        <p>التصاميم البسيطة غالبا خلال 48-72 ساعة. الصفحات والفيديوهات تعتمد على النطاق والمواد المتوفرة.</p>
                     </details>
                     <details class="faq-card">
                         <summary>هل تقدمون تعديلات؟</summary>
                         <p>نعم، ضمن النطاق المتفق عليه قبل بدء التنفيذ حتى تصل النتيجة لاحتياجك.</p>
-                    </details>
-                    <details class="faq-card">
-                        <summary>هل تصممون صفحات هبوط أيضاً؟</summary>
-                        <p>نعم، نصمم صفحات هبوط واضحة للمنتجات والخدمات والحملات، مع تركيز على الرسالة وطلب التواصل.</p>
                     </details>
                 </div>
             </div>
@@ -419,8 +369,8 @@
         <section id="contact" class="section final-cta-section" aria-labelledby="finalCtaTitle">
             <div class="section-shell">
                 <div class="final-cta">
-                    <span class="section-eyebrow">الخطوة التالية</span>
-                    <h2 id="finalCtaTitle" class="section-title">أرسل فكرتك ونقترح عليك أفضل بداية</h2>
+                    <span class="section-eyebrow">ابدأ الآن</span>
+                    <h2 id="finalCtaTitle" class="section-title">أرسل فكرتك وسنقترح أفضل بداية</h2>
                     <p class="section-description">
                         أخبرنا بنوع التصميم أو رابط صفحتك، وسنساعدك على اختيار خدمة مناسبة بدون إطالة.
                     </p>
@@ -454,7 +404,7 @@
                     <a href="#services">الخدمات</a>
                     <a href="#portfolio">الأعمال</a>
                     <a href="#pricing">الأسعار</a>
-                    <a href="#process">كيف نعمل</a>
+                    <a href="#process">طريقة العمل</a>
                 </div>
                 <div>
                     <h2>الحساب والسياسات</h2>
@@ -481,7 +431,7 @@
     <div id="orderModal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true"
         aria-labelledby="orderModalTitle" aria-describedby="orderModalDescription">
         <button type="button" class="modal-close-btn" data-action="close-order-modal" aria-label="إغلاق نافذة الطلب">×</button>
-        <div class="modal-content water-card p-8 md:p-10 rounded-[2rem] relative border border-white/10">
+        <div class="modal-content order-panel p-8 md:p-10 relative">
             <h2 id="orderModalTitle" class="text-2xl font-black mb-1 text-center text-white">إتمام طلب الخدمة</h2>
             <p id="orderModalDescription" class="text-center mb-6 text-sm text-gray-400">
                 املأ البيانات الأساسية وسنحوّل الطلب إلى محادثة واتساب للمتابعة.
