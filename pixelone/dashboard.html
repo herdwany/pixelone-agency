@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="tw.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="ui-overhaul.css?v=20260816.10">
 </head>
 <!-- إخفاء محتوى البودي بالكامل بـ CSS حتى نتأكد من صلاحيات المستخدم في الجافاسكريبت -->
 <body id="view-dashboard" style="display: none;" class="dashboard-layout">
@@ -112,7 +113,8 @@
                 <div id="profileMsgBox" class="msg-box" aria-live="polite"></div>
                 <form id="updatePhoneForm" class="water-card p-5 rounded-xl space-y-4 max-w-md">
                     <h4 class="text-white font-black">رقم الهاتف</h4>
-                    <input id="profilePhone" type="tel" class="input-luxury font-en text-left" dir="ltr" placeholder="+212 6XX XXXXXX">
+                    <label for="profilePhone" class="form-label">رقم الهاتف</label>
+                    <input id="profilePhone" type="tel" class="input-luxury font-en text-left" dir="ltr" inputmode="tel" autocomplete="tel" placeholder="+212 6XX XXXXXX">
                     <button type="submit" class="btn-filled-red w-full py-3 rounded-lg font-black">حفظ رقم الهاتف</button>
                 </form>
             </div>
@@ -128,16 +130,21 @@
                 <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
                     <form id="changeEmailForm" class="water-card p-5 rounded-xl space-y-4">
                         <h4 class="text-white font-black">تغيير البريد الإلكتروني</h4>
-                        <input id="newEmail" type="email" class="input-luxury font-en text-left" dir="ltr" placeholder="new@email.com" required>
-                        <input id="reauthPasswordForEmail" type="password" class="input-luxury font-en text-left" dir="ltr" placeholder="كلمة المرور الحالية" required>
+                        <label for="newEmail" class="form-label">البريد الإلكتروني الجديد</label>
+                        <input id="newEmail" type="email" class="input-luxury font-en text-left" dir="ltr" autocomplete="email" placeholder="new@email.com" required>
+                        <label for="reauthPasswordForEmail" class="form-label">كلمة المرور الحالية</label>
+                        <input id="reauthPasswordForEmail" type="password" class="input-luxury font-en text-left" dir="ltr" autocomplete="current-password" placeholder="كلمة المرور الحالية" required>
                         <button type="submit" class="btn-filled-red w-full py-3 rounded-lg font-black">حفظ البريد الجديد</button>
                     </form>
 
                     <form id="changePasswordForm" class="water-card p-5 rounded-xl space-y-4">
                         <h4 class="text-white font-black">تغيير كلمة المرور</h4>
-                        <input id="currentPassword" type="password" class="input-luxury font-en text-left" dir="ltr" placeholder="كلمة المرور الحالية" required>
-                        <input id="newPassword" type="password" class="input-luxury font-en text-left" dir="ltr" placeholder="كلمة المرور الجديدة (8 أحرف على الأقل)" minlength="8" required>
-                        <input id="confirmNewPassword" type="password" class="input-luxury font-en text-left" dir="ltr" placeholder="تأكيد كلمة المرور الجديدة" minlength="8" required>
+                        <label for="currentPassword" class="form-label">كلمة المرور الحالية</label>
+                        <input id="currentPassword" type="password" class="input-luxury font-en text-left" dir="ltr" autocomplete="current-password" placeholder="كلمة المرور الحالية" required>
+                        <label for="newPassword" class="form-label">كلمة المرور الجديدة</label>
+                        <input id="newPassword" type="password" class="input-luxury font-en text-left" dir="ltr" autocomplete="new-password" placeholder="كلمة المرور الجديدة (8 أحرف على الأقل)" minlength="8" required>
+                        <label for="confirmNewPassword" class="form-label">تأكيد كلمة المرور الجديدة</label>
+                        <input id="confirmNewPassword" type="password" class="input-luxury font-en text-left" dir="ltr" autocomplete="new-password" placeholder="تأكيد كلمة المرور الجديدة" minlength="8" required>
                         <button type="submit" class="btn-filled-red w-full py-3 rounded-lg font-black">تحديث كلمة المرور</button>
                     </form>
                 </div>
@@ -148,7 +155,7 @@
     </main>
 
     <!-- استدعاء ملف الجافاسكريبت الموحد -->
-    <script src="app.js" defer></script>
-    <script src="visual-system.js" defer></script>
+    <script src="app.js?v=20260816.6" defer></script>
+    <script src="visual-system.js?v=20260816.6" defer></script>
 </body>
 </html>

@@ -16,11 +16,10 @@
         if (stored === 'light' || stored === 'dark') {
             return stored;
         }
-        try {
-            return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-        } catch (_e) {
-            return 'dark';
-        }
+        // Pixel One is intentionally dark-first: the black/red identity must not
+        // change silently with the operating system preference. A light mode is
+        // still respected only when the user explicitly chose it and it is stored.
+        return 'dark';
     }
 
     function applyThemeToDocument(theme) {
@@ -164,6 +163,20 @@
         if (document.getElementById('globalHomeButton')) return;
 
         var path = normalizePathname(window.location.pathname);
+        var fileName = path.split('/').pop() || 'index.html';
+        var hiddenPageNames = new Set([
+            'index.html',
+            'about.html',
+            'services.html',
+            'how-we-work.html',
+            'client-login.html',
+            'login.html',
+            'privacy-policy.html',
+            'refund-policy.html',
+            'terms-of-service.html'
+        ]);
+        if (hiddenPageNames.has(fileName)) return;
+
         var hiddenOnPages = {
             '/': true,
             '/pixelone': true,

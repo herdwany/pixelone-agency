@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
 <head>
@@ -35,6 +35,7 @@
     <link rel="stylesheet" href="tw.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="ui-overhaul.css?v=20260816.10">
 </head>
 
 <body id="view-service-detail" class="site-shell">
@@ -42,9 +43,12 @@
 
     <main id="mainContent" class="page-frame page-section">
         <section id="serviceDetailRoot" class="animate-fade-up">
-            <article class="water-card rounded-3xl p-8 text-center text-gray-400">
-                جاري تجهيز تفاصيل الخدمة والمعلومات المرتبطة بها...
-            </article>
+            <article class="page-hero__copy service-fallback-card">
+    <span class="section-eyebrow">صفحة خدمة</span>
+    <h1 class="page-hero__headline">تفاصيل الخدمة من Pixel One Visuals</h1>
+    <p class="page-hero__body">نجهز تفاصيل الخدمة والمخرجات والمتطلبات في لحظات. إذا لم تظهر التفاصيل تلقائياً، يمكنك العودة إلى قائمة الخدمات واختيار ما يناسب مشروعك.</p>
+    <a href="services.html" class="btn-filled-red">العودة إلى الخدمات</a>
+</article>
         </section>
     </main>
 
@@ -91,8 +95,8 @@
         </div>
     </div>
 
-    <script src="app.js" defer></script>
-    <script src="visual-system.js" defer></script>
+    <script src="app.js?v=20260816.6" defer></script>
+    <script src="visual-system.js?v=20260816.6" defer></script>
 </body>
 
 </html>

@@ -88,9 +88,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preload" as="image" href="og/social-media-designs-1200x630.png" fetchpriority="high">
     <link rel="stylesheet" href="tw.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="ui-overhaul.css?v=20260816.10">
 </head>
 
 <body data-page-text-mode="off" class="site-shell home-page">
@@ -348,7 +350,7 @@
                 <div class="faq-list">
                     <details class="faq-card">
                         <summary>هل أحتاج حسابا لطلب خدمة؟</summary>
-                        <p>لا. يمكنك طلب الخدمة مباشرة عبر النموذج أو واتساب. الحساب مفيد فقط لمتابعة المشاريع الأكبر.</p>
+                        <p>يمكنك البدء من نموذج الطلب أو واتساب. وقد نطلب بيانات تواصل إضافية عند الحاجة، بينما يفيد الحساب في متابعة المشاريع الأكبر والوثائق.</p>
                     </details>
                     <details class="faq-card">
                         <summary>كيف يتم التسليم؟</summary>
@@ -448,37 +450,39 @@
                 <input type="hidden" id="hiddenDiscountCode" name="discountCode">
                 <div>
                     <label for="orderName" class="form-label">الاسم الكامل</label>
-                    <input type="text" id="orderName" name="name" required autocomplete="name" placeholder="اكتب اسمك هنا"
+                    <input type="text" id="orderName" name="name" required autocomplete="name" enterkeyhint="next" placeholder="اكتب اسمك هنا"
                         class="input-luxury">
                 </div>
                 <div>
                     <label for="orderPhone" class="form-label">رقم الواتساب</label>
-                    <input type="tel" id="orderPhone" name="phone" required autocomplete="tel" dir="ltr"
-                        placeholder="+212 6XX XXX XXX" class="input-luxury font-en text-left">
+                    <input type="tel" id="orderPhone" name="phone" required autocomplete="tel" inputmode="tel" enterkeyhint="next" dir="ltr"
+                        placeholder="+212 6XX XXX XXX" class="input-luxury font-en text-left" aria-describedby="orderPhoneHelp orderPhoneHint">
+                    <p id="orderPhoneHelp" class="field-hint">سنستخدم الرقم فقط للتواصل حول نطاق الطلب والتسليم.</p>
                     <p id="orderPhoneHint" class="text-xs text-emerald-400 mt-1 hidden">تم تعبئة رقمك تلقائياً، تأكد فقط من صحته.</p>
                 </div>
                 <div>
                     <label for="orderProjectName" class="form-label">اسم المشروع أو الشركة</label>
-                    <input type="text" id="orderProjectName" name="projectName" required
+                    <input type="text" id="orderProjectName" name="projectName" required autocomplete="organization" enterkeyhint="next"
                         placeholder="مثال: متجر، مطعم، صفحة تجارية" class="input-luxury">
                 </div>
                 <div>
                     <label for="orderSpecs" class="form-label">ملاحظات إضافية <span class="text-gray-500 font-normal">(اختياري)</span></label>
-                    <textarea id="orderSpecs" name="specifications" rows="3" placeholder="ما الذي تحتاجه بالضبط؟"
-                        class="input-luxury"></textarea>
+                    <textarea id="orderSpecs" name="specifications" rows="3" autocomplete="off" enterkeyhint="send" placeholder="ما الذي تحتاجه بالضبط؟"
+                        class="input-luxury" aria-describedby="orderSpecsHelp"></textarea>
+                    <p id="orderSpecsHelp" class="field-hint">أضف المقاسات، الروابط، النصوص، المراجع، أو أي تفاصيل تساعدنا على فهم النتيجة المطلوبة.</p>
                 </div>
                 <input type="hidden" id="orderEmail" name="email">
                 <button type="submit" id="btnOrderSubmit" class="btn-primary w-full py-5 rounded-xl text-lg mt-6 font-black">
                     إرسال الطلب
                 </button>
             </form>
-            <div class="mt-6 text-xs text-gray-500 text-center">سيتم حفظ الطلب بشكل آمن ومتابعته عبر واتساب أو لوحة العميل عند الحاجة.</div>
+            <div class="order-privacy-note" role="note">سيتم استخدام هذه البيانات فقط لفهم طلبك والتواصل بشأنه، ثم متابعة المشروع عبر واتساب أو لوحة العميل عند الحاجة.</div>
         </div>
     </div>
 
-    <script src="app.js" defer></script>
+    <script src="app.js?v=20260816.6" defer></script>
     <script src="page-text-loader.js" defer></script>
-    <script src="visual-system.js" defer></script>
+    <script src="visual-system.js?v=20260816.6" defer></script>
     <script src="portfolio-content-loader.js" defer></script>
 </body>
 

@@ -3476,7 +3476,7 @@ function renderPortfolioCardMarkup(item, options = {}) {
 
     if (isCtaCard) {
         return `
-            <article class="portfolio-card portfolio-item portfolio-cta-card portfolio-reveal${tierClass}" role="listitem" data-category="${escapeHtml(category)}"${staticAttr}>
+            <article class="portfolio-card portfolio-item portfolio-cta-card portfolio-reveal${tierClass}" data-category="${escapeHtml(category)}"${staticAttr}>
                 <div class="portfolio-body">
                     <h3>${safeTitle}</h3>
                     <p>${safeDescription}</p>
@@ -3507,7 +3507,7 @@ function renderPortfolioCardMarkup(item, options = {}) {
         `;
 
     return `
-        <article class="portfolio-card portfolio-item portfolio-reveal${tierClass}" role="listitem" data-category="${escapeHtml(category)}"${staticAttr}>
+        <article class="portfolio-card portfolio-item portfolio-reveal${tierClass}" data-category="${escapeHtml(category)}"${staticAttr}>
             ${mediaMarkup}
             <div class="portfolio-body">
                 <h3>${safeTitle}</h3>
@@ -3540,9 +3540,9 @@ function renderPortfolioForHome() {
     const orderedCategories = preferredOrder.filter((category) => detectedCategories.includes(category));
 
     const filtersMarkup = [
-        '<button type="button" class="portfolio-filter-btn is-active" role="tab" data-filter="all" aria-selected="true" aria-pressed="true">الكل</button>',
+        '<button type="button" class="portfolio-filter-btn is-active" role="tab" data-filter="all" aria-selected="true">الكل</button>',
         ...orderedCategories.map((category) => (`
-            <button type="button" class="portfolio-filter-btn" role="tab" data-filter="${escapeHtml(category)}" aria-selected="false" aria-pressed="false">
+            <button type="button" class="portfolio-filter-btn" role="tab" data-filter="${escapeHtml(category)}" aria-selected="false">
                 ${escapeHtml(getPortfolioCategoryLabel(category))}
             </button>
         `)),
@@ -3625,7 +3625,7 @@ function renderOffersForHome() {
         container.insertAdjacentHTML('beforeend', `
             <article class="card offer-card">
                 <div class="flex justify-between items-start gap-3 mb-4">
-                    <h4 class="text-white font-black text-lg">${safeTitle}</h4>
+                    <h3 class="text-white font-black text-lg">${safeTitle}</h3>
                     <span class="text-[10px] font-en px-3 py-1 rounded-full border border-emerald-400/40 text-emerald-300">${safeBadge}</span>
                 </div>
                 <p class="text-gray-300 text-sm leading-relaxed mb-4">${safeDescription}</p>
@@ -8201,7 +8201,14 @@ function injectStickyWhatsappButton() {
 
     const stickyButton = document.createElement('a');
     stickyButton.id = 'floatingWhatsappBtn';
-    stickyButton.className = 'floating-whatsapp-btn';
+    stickyButton.className = 'floating-whatsapp-btn po-whatsapp-fab';
+    stickyButton.style.setProperty('width', 'max-content', 'important');
+    stickyButton.style.setProperty('inline-size', 'max-content', 'important');
+    stickyButton.style.setProperty('left', 'auto', 'important');
+    stickyButton.style.setProperty('right', '1rem', 'important');
+    stickyButton.style.setProperty('inset-inline-start', 'auto', 'important');
+    stickyButton.style.setProperty('inset-inline-end', '1rem', 'important');
+    stickyButton.style.setProperty('display', 'inline-flex', 'important');
     stickyButton.href = whatsappHref;
     stickyButton.target = '_blank';
     stickyButton.rel = 'noopener noreferrer';
@@ -8933,7 +8940,7 @@ function renderPortfolioCardTemplate(item, options = {}) {
     const actionMarkup = renderPortfolioActionTemplate(item, item.cardStyle === 'cta');
 
     return `
-        <article class="portfolio-card portfolio-item portfolio-reveal ${tierClass}" role="listitem" data-category="${escapeHtml(category)}" data-reveal="portfolio" data-reveal-index="${escapeHtml(String(revealIndex))}"${staticAttr}>
+        <article class="portfolio-card portfolio-item portfolio-reveal ${tierClass}" data-category="${escapeHtml(category)}" data-reveal="portfolio" data-reveal-index="${escapeHtml(String(revealIndex))}"${staticAttr}>
             ${item.cardStyle === 'cta' ? '' : `
                 <figure class="${mediaClass}">
                     ${useImage
@@ -9077,7 +9084,7 @@ function renderPortfolioForHome() {
     if (!activeItems.length) {
         grid.className = 'portfolio-grid';
         grid.innerHTML = `
-            <article class="portfolio-card portfolio-item card" role="listitem" data-category="all">
+            <article class="portfolio-card portfolio-item card" data-category="all">
                 <div class="portfolio-body">
                     <h3>لا توجد عناصر في المعرض حالياً</h3>
                     <p>أضف عناصر معرض الأعمال من لوحة الإدارة أو فعّل العناصر الحالية.</p>
@@ -9101,7 +9108,6 @@ function renderPortfolioForHome() {
             type: 'button',
             role: 'tab',
             'aria-selected': 'true',
-            'aria-pressed': 'true',
             'data-filter': 'all',
         },
     });
@@ -9115,7 +9121,6 @@ function renderPortfolioForHome() {
                 type: 'button',
                 role: 'tab',
                 'aria-selected': 'false',
-                'aria-pressed': 'false',
                 'data-filter': category,
             },
         }));
@@ -9169,7 +9174,6 @@ window.initPortfolioInteractions = function initPortfolioInteractions() {
             const isActive = candidate === button;
             candidate.classList.toggle('is-active', isActive);
             candidate.setAttribute('aria-selected', isActive ? 'true' : 'false');
-            candidate.setAttribute('aria-pressed', isActive ? 'true' : 'false');
         });
     };
 
