@@ -264,15 +264,15 @@ const DEFAULT_MANAGED_SERVICES = [
 const DEFAULT_PORTFOLIO_ITEMS = [
     {
         id: 'pfs-local-landing',
-        title: 'صفحة هبوط لمشروع محلي',
-        description: 'تخطيط صفحة هبوط يشرح العرض بسرعة، يعرض المزايا الأساسية، ويقود الزائر إلى واتساب أو نموذج الطلب.',
-        category: 'web',
+        title: 'نموذج صفحة هبوط لصالون تجميل',
+        description: 'صفحة خدمة واضحة لعرض الباقات والدفع الزائر إلى طلب واتساب. نموذج تجريبي — البيانات والأسماء والصور افتراضية وليست عميلاً حقيقياً.',
+        category: 'social',
         cardStyle: 'standard',
         isStaticCard: false,
         mediaType: 'placeholder',
         imageUrl: '',
         imageAlt: '',
-        badgeText: 'Landing Page',
+        badgeText: 'Demo',
         actionType: 'internal_link',
         actionLabel: 'شاهد الخدمة',
         actionUrl: 'service-web-landing-page.html',
@@ -283,15 +283,15 @@ const DEFAULT_PORTFOLIO_ITEMS = [
     },
     {
         id: 'pfs-restaurant-preview',
-        title: 'معاينة صفحة مطعم',
-        description: 'نموذج واجهة يبرز الصور، العروض، وطلب التواصل بطريقة واضحة تناسب المطاعم والمقاهي.',
+        title: 'نموذج حضور اجتماعي لمطعم',
+        description: 'سلسلة منشورات بعرض موحّد للمنيو والعروض اليومية. نموذج تجريبي — البيانات والأسماء والصور افتراضية وليست عميلاً حقيقياً.',
         category: 'web',
         cardStyle: 'standard',
         isStaticCard: false,
         mediaType: 'placeholder',
         imageUrl: '',
         imageAlt: '',
-        badgeText: 'Web Preview',
+        badgeText: 'Demo',
         actionType: 'external_link',
         actionLabel: 'معاينة المشروع',
         actionUrl: '/food',
@@ -302,15 +302,15 @@ const DEFAULT_PORTFOLIO_ITEMS = [
     },
     {
         id: 'pfs-social-launch-kit',
-        title: 'منشورات إطلاق عرض',
-        description: 'تصاميم مربعة ومقاسات قصص مناسبة لإعلان منتج أو عرض أسبوعي على Instagram وFacebook.',
-        category: 'social',
+        title: 'نموذج فيديو قصير لخدمة محلية',
+        description: 'معاينة سيناريو فيديو قصير يوضح قبل/بعد مع CTA واتساب. نموذج تجريبي — البيانات والأسماء والصور افتراضية وليست عميلاً حقيقياً.',
+        category: 'video',
         cardStyle: 'standard',
         isStaticCard: false,
         mediaType: 'placeholder',
         imageUrl: '',
         imageAlt: '',
-        badgeText: 'Social Media',
+        badgeText: 'Demo',
         actionType: 'internal_link',
         actionLabel: 'شاهد الخدمة',
         actionUrl: 'service-social-media-designs.html',
@@ -8228,13 +8228,11 @@ function injectStickyWhatsappButton() {
 
 const HOME_RENDER_SCHEMA_SCRIPT_ID = 'pixelone-home-structured-data';
 const HOME_RENDER_PORTFOLIO_EVENT = 'pixelone:portfolio-copy';
+const HOME_RENDER_PORTFOLIO_LIMIT = 3;
 const HOME_RENDER_SERVICE_ORDER = [
     'svc-social-media-designs',
-    'svc-logo-design',
-    'svc-digital-banners',
-    'svc-pitch-deck',
-    'svc-short-video',
     'svc-web-landing-page',
+    'svc-short-video',
 ];
 const HOME_RENDER_SERVICE_ALIASES = {
     'svc-social-media-post': 'svc-social-media-designs',
@@ -8248,78 +8246,42 @@ const HOME_RENDER_SERVICE_ALIASES = {
 const HOME_RENDER_SERVICE_FALLBACKS = [
     {
         id: 'svc-social-media-designs',
-        titles: { ar: 'تصميم منشورات سوشيال ميديا' },
-        price: '60',
-        descriptions: { ar: 'منشورات احترافية جاهزة للنشر على Instagram وFacebook وLinkedIn بمقاسات مناسبة.' },
-        category: 'سوشيال ميديا',
+        titles: { ar: 'حضور اجتماعي' },
+        price: '',
+        descriptions: { ar: 'حزمة منشورات جاهزة للنشر بأسلوب موحّد يساعد مشروعك المحلي على الظهور بشكل احترافي.' },
+        category: 'الخدمات الرئيسية',
         serviceType: 'خدمة لمرة واحدة',
         is_coming_soon: false,
         popularity: 1,
         enabled: true,
     },
     {
-        id: 'svc-logo-design',
-        titles: { ar: 'تصميم شعار وهوية بسيطة' },
-        price: '150',
-        descriptions: { ar: 'شعار واضح مع تطبيق بصري بسيط يصلح للصفحات التجارية والمتاجر الناشئة.' },
-        category: 'هوية بصرية',
-        serviceType: 'خدمة لمرة واحدة',
+        id: 'svc-web-landing-page',
+        titles: { ar: 'صفحة هبوط' },
+        price: '',
+        descriptions: { ar: 'صفحة تعريف واضحة تعرض خدمتك وتقود الزائر مباشرة إلى WhatsApp أو نموذج التواصل.' },
+        category: 'الخدمات الرئيسية',
+        serviceType: 'مشروع كامل',
         is_coming_soon: false,
         popularity: 2,
         enabled: true,
     },
     {
-        id: 'svc-digital-banners',
-        titles: { ar: 'بانرات إعلانية' },
-        price: '80',
-        descriptions: { ar: 'بانرات جاهزة للحملات الإعلانية بمقاسات النشر المعتمدة.' },
-        category: 'إعلانات رقمية',
+        id: 'svc-short-video',
+        titles: { ar: 'فيديو قصير' },
+        price: '',
+        descriptions: { ar: 'فيديو قصير جاهز للنشر بنسخة واضحة ومقاس مناسب للحملات والمنشورات.' },
+        category: 'الخدمات الرئيسية',
         serviceType: 'خدمة لمرة واحدة',
         is_coming_soon: false,
         popularity: 3,
         enabled: true,
     },
-    {
-        id: 'svc-pitch-deck',
-        titles: { ar: 'عروض تقديمية' },
-        price: '200',
-        descriptions: { ar: 'شرائح احترافية للأعمال والمستثمرين بتسلسل بصري قوي يعكس هوية مشروعك.' },
-        category: 'أعمال تجارية',
-        serviceType: 'خدمة لمرة واحدة',
-        is_coming_soon: false,
-        popularity: 4,
-        enabled: true,
-    },
-    {
-        id: 'svc-short-video',
-        titles: { ar: 'مونتاج فيديو قصير' },
-        price: '120',
-        descriptions: { ar: 'مونتاج خفيف وسريع لمحتوى يومي قصير يناسب جميع المنصات.' },
-        category: 'مونتاج فيديو',
-        serviceType: 'خدمة لمرة واحدة',
-        is_coming_soon: false,
-        popularity: 5,
-        enabled: true,
-    },
-    {
-        id: 'svc-web-landing-page',
-        titles: { ar: 'صفحات هبوط' },
-        price: '1500',
-        descriptions: { ar: 'صفحة هبوط واضحة تعرض الخدمة أو المنتج وتقود الزائر إلى التواصل أو الطلب.' },
-        category: 'تصميم مواقع',
-        serviceType: 'مشروع كامل',
-        is_coming_soon: false,
-        popularity: 6,
-        enabled: true,
-    },
 ];
 const HOME_RENDER_SERVICE_DELIVERY_HINTS = {
-    'svc-social-media-designs': 'تسليم غالباً خلال 24-48 ساعة حسب المحتوى.',
-    'svc-logo-design': 'تسليم أولي غالباً خلال 2-4 أيام عمل.',
-    'svc-digital-banners': 'تسليم غالباً خلال 24-48 ساعة بعد استلام المقاسات.',
-    'svc-pitch-deck': 'المدة حسب عدد الشرائح والمحتوى المتوفر.',
-    'svc-short-video': 'المدة حسب طول الفيديو والمواد المتاحة.',
-    'svc-web-landing-page': 'يتم تحديد المدة بعد مراجعة المحتوى والنطاق.',
+    'svc-social-media-designs': 'المدة حسب عدد المنشورات والمواد المتوفرة.',
+    'svc-web-landing-page': 'تحديد المدة يتم بعد تدقيق النطاق والمحتوى.',
+    'svc-short-video': 'المدة تعتمد على طول الفيديو والمواد الجاهزة.',
 };
 const HOME_RENDER_SERVICE_FALLBACK_MAP = new Map(
     HOME_RENDER_SERVICE_FALLBACKS.map((service, index) => [service.id, normalizeManagedService(service, index)])
@@ -8938,6 +8900,8 @@ function renderPortfolioCardTemplate(item, options = {}) {
     const useImage = normalizePortfolioMediaType(item.mediaType) === 'image' && Boolean(normalizedImageUrl);
     const mediaClass = `portfolio-media is-${category}`.trim();
     const actionMarkup = renderPortfolioActionTemplate(item, item.cardStyle === 'cta');
+    const statusLabel = escapeHtml(resolveLocalizedInlineText(item.workType || item.badgeText) || 'Demo');
+    const statusType = /client|عميل/i.test(statusLabel) ? 'client' : 'demo';
 
     return `
         <article class="portfolio-card portfolio-item portfolio-reveal ${tierClass}" data-category="${escapeHtml(category)}" data-reveal="portfolio" data-reveal-index="${escapeHtml(String(revealIndex))}"${staticAttr}>
@@ -8950,6 +8914,7 @@ function renderPortfolioCardTemplate(item, options = {}) {
             `}
             <div class="portfolio-body">
                 <div class="portfolio-meta">
+                    <span class="portfolio-status-badge portfolio-status-badge--${statusType}">${statusLabel}</span>
                     <span class="portfolio-category">${categoryText}</span>
                 </div>
                 <h3>${titleText}</h3>
@@ -8967,6 +8932,8 @@ function buildPortfolioCardElement(item, options = {}) {
     const tierClass = isCtaCard
         ? 'portfolio-card--cta'
         : (['featured', 'medium', 'compact'].includes(layoutTier) ? `portfolio-card--${layoutTier}` : 'portfolio-card--standard');
+    const statusLabel = resolveLocalizedInlineText(item.workType || item.badgeText) || 'Demo';
+    const statusType = /client|عميل/i.test(statusLabel) ? 'client' : 'demo';
     const article = createUiElement('article', {
         className: `portfolio-card portfolio-item portfolio-reveal ${tierClass} ${isCtaCard ? 'portfolio-cta-card' : ''}`.trim(),
         attrs: {
@@ -9028,12 +8995,21 @@ function buildPortfolioCardElement(item, options = {}) {
     article.appendChild(createUiElement('div', {
         className: 'portfolio-body',
         children: [
-            createUiElement('h3', {
-                text: resolveLocalizedInlineText(item.title),
+            createUiElement('div', {
+                className: 'portfolio-meta',
+                children: [
+                    createUiElement('span', {
+                        className: `portfolio-status-badge portfolio-status-badge--${statusType}`,
+                        text: statusLabel,
+                    }),
+                    createUiElement('span', {
+                        className: 'portfolio-category',
+                        text: getPortfolioCategoryLabel(category),
+                    }),
+                ],
             }),
-            createUiElement('p', {
-                text: resolveLocalizedInlineText(item.description),
-            }),
+            createUiElement('h3', { text: resolveLocalizedInlineText(item.title) }),
+            createUiElement('p', { text: resolveLocalizedInlineText(item.description) }),
             buildPortfolioActionElement(item, isCtaCard),
         ],
     }));
@@ -9129,7 +9105,7 @@ function renderPortfolioForHome() {
     filtersContainer.replaceChildren(filtersFragment);
     filtersContainer.hidden = orderedCategories.length === 0;
 
-    const projects = activeItems.filter((item) => !item.isStaticCard).slice(0, 9);
+    const projects = activeItems.filter((item) => !item.isStaticCard).slice(0, HOME_RENDER_PORTFOLIO_LIMIT);
     const staticItems = activeItems.filter((item) => item.isStaticCard);
     const itemsToRender = [...projects, ...staticItems];
     let imagePriorityAssigned = false;

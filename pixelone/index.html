@@ -97,6 +97,7 @@
 
 <body data-page-text-mode="off" class="site-shell home-page">
     <a href="#mainContent" class="skip-link">تخطي إلى المحتوى الرئيسي</a>
+    <div class="top-announcement" role="status">تصاميم وصفحات واضحة للمشروعات المحلية في المغرب — الرد عبر WhatsApp خلال ساعات العمل</div>
 
     <nav class="navbar-glass site-nav" aria-label="التنقل الرئيسي">
         <a href="index.html" class="logo-container" aria-label="Pixel One Visuals - الصفحة الرئيسية">
@@ -106,17 +107,16 @@
 
         <div class="site-nav-links hidden md:flex" aria-label="روابط الصفحة">
             <a href="#services" class="nav-link">الخدمات</a>
+            <a href="#sectors" class="nav-link">القطاعات</a>
             <a href="#portfolio" class="nav-link">الأعمال</a>
             <a href="#pricing" class="nav-link">الأسعار</a>
             <a href="#process" class="nav-link">طريقة العمل</a>
-            <a href="#faq" class="nav-link">الأسئلة</a>
-            <a href="#contact" class="nav-link">تواصل</a>
         </div>
 
         <div class="site-nav-cta hidden md:flex">
             <a href="client-login.html" class="account-link" data-role="client-auth-link">دخول العملاء</a>
-            <button type="button" data-action="open-order-modal" data-service-name="طلب تصميم جديد"
-                class="btn-primary nav-primary">اطلب تصميمك</button>
+            <button type="button" data-action="open-order-modal" data-service-name="تدقيق مجاني"
+                class="btn-primary nav-primary">تدقيق مجاني</button>
         </div>
 
         <details class="mobile-nav-menu md:hidden">
@@ -127,14 +127,14 @@
             </summary>
             <div class="mobile-nav-panel">
                 <a href="#services" data-action="close-mobile-menu" class="mobile-nav-link">الخدمات</a>
+                <a href="#sectors" data-action="close-mobile-menu" class="mobile-nav-link">القطاعات</a>
                 <a href="#portfolio" data-action="close-mobile-menu" class="mobile-nav-link">الأعمال</a>
                 <a href="#pricing" data-action="close-mobile-menu" class="mobile-nav-link">الأسعار</a>
                 <a href="#process" data-action="close-mobile-menu" class="mobile-nav-link">طريقة العمل</a>
                 <a href="#faq" data-action="close-mobile-menu" class="mobile-nav-link">الأسئلة</a>
-                <a href="#contact" data-action="close-mobile-menu" class="mobile-nav-link">تواصل</a>
                 <a href="client-login.html" class="mobile-nav-link mobile-nav-link-accent" data-role="client-auth-link">دخول العملاء</a>
-                <button type="button" data-action="mobile-open-order-modal" data-service-name="طلب تصميم جديد"
-                    class="btn-primary mobile-nav-btn">اطلب تصميمك</button>
+                <button type="button" data-action="mobile-open-order-modal" data-service-name="تدقيق مجاني"
+                    class="btn-primary mobile-nav-btn">تدقيق مجاني</button>
             </div>
         </details>
     </nav>
@@ -146,32 +146,59 @@
             <div class="clean-hero__overlay" aria-hidden="true"></div>
             <div class="page-frame clean-hero__content">
                 <span class="hero-badge" dir="ltr">Pixel One Visuals</span>
-                <h1 id="homeHeroTitle" class="hero-title"><span>تصاميم رقمية</span><span>واضحة لمشروعك</span></h1>
+                <h1 id="homeHeroTitle" class="hero-title"><span>خلّي مشروعك يبان مزيان</span><span>ويستقبل طلبات أكثر عبر WhatsApp.</span></h1>
                 <p class="hero-subtitle">
-                    نجهز تصاميم سوشيال ميديا، شعارات، بانرات، فيديوهات قصيرة وصفحات هبوط للمشاريع الصغيرة والمتاجر في المغرب. طلب مباشر، نطاق مفهوم، وملفات جاهزة للنشر.
+                    نجهز للمشروعات المحلية صفحات تعريف واضحة ومنشورات جاهزة للنشر، بالعربية وبأسلوب مناسب للسوق المغربي، مع نطاق مفهوم وتسليم منظم.
                 </p>
                 <div class="hero-actions">
-                    <button type="button" data-action="open-order-modal" data-service-name="طلب تصميم جديد"
-                        class="btn-primary">ابدأ طلبك</button>
-                    <a href="#services" class="btn-secondary">الخدمات والأسعار</a>
-                    <a class="btn-ghost"
-                        href="https://wa.me/212751201626?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%20Pixel%20One%20Visuals%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%B7%D9%84%D8%A8%20%D8%AA%D8%B5%D9%85%D9%8A%D9%85%20%D9%84%D9%85%D8%B4%D8%B1%D9%88%D8%B9%D9%8A."
-                        target="_blank" rel="noopener noreferrer">واتساب</a>
+                    <button type="button" data-action="open-order-modal" data-service-name="تدقيق مجاني من 3 ملاحظات"
+                        class="btn-primary">احصل على تدقيق مجاني من 3 ملاحظات</button>
+                    <a href="#portfolio" class="btn-secondary">شاهد نموذجاً قريباً من مشروعك</a>
                 </div>
                 <ul class="hero-trust-list clean-facts" aria-label="معلومات سريعة">
-                    <li><strong>48-72h</strong><span>للتصاميم البسيطة</span></li>
-                    <li><strong>MAD</strong><span>أسعار واضحة قبل التنفيذ</span></li>
-                    <li><strong>RTL</strong><span>تصميم عربي مناسب للسوق المحلي</span></li>
+                    <li><strong>أسعار بالدرهم</strong><span>نطاق واضح قبل التنفيذ</span></li>
+                    <li><strong>RTL</strong><span>واجهة عربية للمستخدم المحلي</span></li>
+                    <li><strong>WhatsApp</strong><span>متابعة سريعة خلال ساعات العمل</span></li>
                 </ul>
             </div>
         </section>
 
         <section class="trust-strip" aria-label="إشارات الثقة">
             <div class="section-shell trust-strip__grid">
-                <span>طلب مباشر عبر واتساب</span>
-                <span>تسليم ملفات منظم</span>
-                <span>مقاسات جاهزة للمنصات</span>
-                <span>متابعة للطلبات الأكبر</span>
+                <span>أسعار بالدرهم المغربي</span>
+                <span>تصميم عربي RTL</span>
+                <span>ملفات جاهزة للنشر</span>
+                <span>تواصل مباشر عبر WhatsApp</span>
+                <span>نطاق وتعديلات محددة</span>
+            </div>
+        </section>
+
+        <section class="section outcome-section" aria-labelledby="outcomeTitle">
+            <div class="section-shell">
+                <div class="section-header">
+                    <span class="section-eyebrow">المشكلة والنتيجة</span>
+                    <h2 id="outcomeTitle" class="section-title">من فوضى المحتوى إلى عرض واضح</h2>
+                </div>
+                <div class="problem-outcome-grid">
+                    <article class="card problem-card">
+                        <h3>قبل</h3>
+                        <ul>
+                            <li>المعلومات غير مرتبة.</li>
+                            <li>الزائر لا يعرف ماذا يطلب.</li>
+                            <li>المنشورات غير متناسقة.</li>
+                            <li>الرابط لا يقود لمعلومات عملية.</li>
+                        </ul>
+                    </article>
+                    <article class="card outcome-card">
+                        <h3>بعد</h3>
+                        <ul>
+                            <li>صفحة خدمة واضحة.</li>
+                            <li>زر WhatsApp واضح في المكان الصحيح.</li>
+                            <li>منشورات متناسقة لهوية واحدة.</li>
+                            <li>ملفات منظمة وسهلة الرجوع.</li>
+                        </ul>
+                    </article>
+                </div>
             </div>
         </section>
 
@@ -179,9 +206,9 @@
             <div class="section-shell">
                 <div class="section-header">
                     <span class="section-eyebrow">الخدمات</span>
-                    <h2 id="servicesTitle" class="section-title">اختر ما تحتاجه الآن</h2>
+                    <h2 id="servicesTitle" class="section-title">ثلاث خدمات رئيسية كبداية</h2>
                     <p class="section-description">
-                        خدمات محددة وواضحة: تعرف ماذا ستطلب، وما السعر التقريبي، وما الخطوة التالية.
+                        حضور اجتماعي، صفحة هبوط، وفيديو قصير. خدمات الشعار والعروض الإضافية موجودة داخل صفحة الخدمات الكاملة.
                     </p>
                 </div>
                 <div id="servicesGrid" class="services-grid" aria-busy="true">
@@ -204,13 +231,28 @@
             </div>
         </section>
 
+        <section id="sectors" class="section sectors-section" aria-labelledby="sectorsTitle">
+            <div class="section-shell">
+                <div class="section-header">
+                    <span class="section-eyebrow">القطاعات</span>
+                    <h2 id="sectorsTitle" class="section-title">نبدأ بالقطاعات المحلية الأكثر طلباً</h2>
+                </div>
+                <div class="sectors-grid">
+                    <article class="card sector-card"><h3>الصالونات والتجميل</h3><p>عرض الخدمات والنتائج بطريقة مقنعة وسريعة.</p></article>
+                    <article class="card sector-card"><h3>المطاعم</h3><p>تنسيق عروض المنيو والطلبات اليومية بصرياً.</p></article>
+                    <article class="card sector-card"><h3>العقار</h3><p>تنظيم المحتوى لعرض الوحدات والخدمات بوضوح.</p></article>
+                    <article class="card sector-card"><h3>الخدمات المحلية</h3><p>صفحات تعريف مختصرة مع CTA مباشر للطلب.</p></article>
+                </div>
+            </div>
+        </section>
+
         <section id="portfolio" class="portfolio-section section" aria-labelledby="portfolioTitle">
             <div class="portfolio-shell section-shell">
                 <div class="section-header portfolio-head">
-                    <span class="section-eyebrow portfolio-kicker" data-portfolio-key="kicker">الأعمال</span>
-                    <h2 id="portfolioTitle" class="section-title portfolio-title" data-portfolio-key="title">نماذج حقيقية تساعدك على القرار</h2>
-                    <p class="section-description portfolio-intro" data-portfolio-key="intro">
-                        شاهد أمثلة قريبة من الخدمات التي يمكن طلبها: منشورات، هوية، صفحة هبوط، أو فيديو قصير.
+                    <span class="section-eyebrow portfolio-kicker">الأعمال</span>
+                    <h2 id="portfolioTitle" class="section-title portfolio-title">ثلاثة نماذج فقط تساعدك على القرار</h2>
+                    <p class="section-description portfolio-intro">
+                        نعرض نماذج قريبة من طلبك مع شارة Demo أو Client work حسب الحقيقة.
                     </p>
                 </div>
                 <div class="portfolio-filters" role="tablist" aria-label="تصفية معرض الأعمال"></div>
@@ -223,8 +265,8 @@
                     </article>
                 </div>
                 <div class="section-cta">
-                    <button type="button" data-action="open-order-modal" data-service-name="تصميم مشابه للأعمال المعروضة"
-                        class="btn-secondary">أريد نتيجة مشابهة</button>
+                    <button type="button" data-action="open-order-modal" data-service-name="طلب نموذج قريب من المشروع"
+                        class="btn-secondary">أريد نموذجاً قريباً من مشروعي</button>
                 </div>
             </div>
         </section>
@@ -233,49 +275,59 @@
             <div class="section-shell">
                 <div class="section-header">
                     <span class="section-eyebrow">الأسعار</span>
-                    <h2 id="pricingTitle" class="section-title">باقات بداية بسيطة</h2>
+                    <h2 id="pricingTitle" class="section-title">باقات واضحة حسب النطاق</h2>
                     <p class="section-description">
-                        الأسعار التالية للبداية فقط. الطلبات الأكبر يتم تسعيرها بعد معرفة النطاق والمحتوى المطلوب.
+                        لا يتم تثبيت السعر النهائي قبل تدقيق النطاق والمواد. كل باقة تشمل عدد تعديلات محدد.
                     </p>
                 </div>
                 <div class="pricing-grid">
                     <article class="card pricing-card">
                         <span class="service-category">Starter</span>
-                        <h3>باقة البداية</h3>
-                        <p class="pricing-price">ابتداءً من <strong>150 DH</strong></p>
+                        <h3>Starter</h3>
+                        <p class="pricing-price">ابتداءً من <strong>بعد التدقيق</strong></p>
                         <ul>
-                            <li>3 تصاميم سوشيال ميديا</li>
-                            <li>مناسبة لبداية صفحة تجارية</li>
-                            <li>تسليم غالبا خلال 48-72 ساعة</li>
+                            <li>نطاق أساسي للبداية</li>
+                            <li>تعديلان داخل النطاق</li>
+                            <li>تسليم ملفات منظمة للنشر</li>
                         </ul>
-                        <button type="button" data-action="open-order-modal" data-service-name="باقة البداية - 3 تصاميم سوشيال ميديا"
-                            data-final-price="150" class="btn-primary">اطلب الباقة</button>
+                        <button type="button" data-action="open-order-modal" data-service-name="Starter"
+                            class="btn-primary">اطلب الباقة</button>
                     </article>
                     <article class="card pricing-card pricing-card--featured">
-                        <span class="service-category">Business</span>
-                        <span class="recommended-badge">الأكثر طلبا</span>
-                        <h3>باقة الأعمال</h3>
-                        <p class="pricing-price">ابتداءً من <strong>350 DH</strong></p>
+                        <span class="service-category">Business Presence</span>
+                        <h3>Business Presence</h3>
+                        <p class="pricing-price">ابتداءً من <strong>بعد التدقيق</strong></p>
                         <ul>
-                            <li>6 تصاميم + بانر</li>
-                            <li>تنسيق بصري موحد</li>
-                            <li>مناسبة للعروض والمنتجات</li>
+                            <li>حضور اجتماعي متكامل</li>
+                            <li>3 تعديلات داخل النطاق</li>
+                            <li>دعم تنسيق النشر</li>
                         </ul>
-                        <button type="button" data-action="open-order-modal" data-service-name="باقة الأعمال - 6 تصاميم وبانر"
-                            data-final-price="350" class="btn-primary">اطلب الباقة</button>
+                        <button type="button" data-action="open-order-modal" data-service-name="Business Presence"
+                            class="btn-primary">اطلب الباقة</button>
                     </article>
                     <article class="card pricing-card">
-                        <span class="service-category">Custom</span>
-                        <h3>طلب مخصص</h3>
-                        <p class="pricing-price"><strong>حسب الطلب</strong></p>
+                        <span class="service-category">Launch Page</span>
+                        <h3>Launch Page</h3>
+                        <p class="pricing-price">ابتداءً من <strong>بعد التدقيق</strong></p>
                         <ul>
-                            <li>شعار، هوية، فيديو، صفحة هبوط، أو حملة كاملة</li>
-                            <li>مناسب للمشاريع الخاصة</li>
-                            <li>نحدد السعر بعد فهم التفاصيل</li>
+                            <li>صفحة هبوط واضحة لخدمة واحدة</li>
+                            <li>تعديلان داخل النطاق</li>
+                            <li>تسليم منظم للنصوص والملفات</li>
                         </ul>
-                        <a class="btn-whatsapp"
-                            href="https://wa.me/212751201626?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%20Pixel%20One%20Visuals%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D9%85%D9%86%D8%A7%D9%82%D8%B4%D8%A9%20%D9%85%D8%B4%D8%B1%D9%88%D8%B9%20%D9%85%D8%AE%D8%B5%D8%B5."
-                            target="_blank" rel="noopener noreferrer">ناقش مشروعك</a>
+                        <button type="button" data-action="open-order-modal" data-service-name="Launch Page"
+                            class="btn-primary">اطلب الباقة</button>
+                    </article>
+                    <article class="card pricing-card">
+                        <span class="service-category">Monthly Presence</span>
+                        <h3>Monthly Presence</h3>
+                        <p class="pricing-price">ابتداءً من <strong>بعد التدقيق</strong></p>
+                        <ul>
+                            <li>خطة شهرية بحسب أهداف النشر</li>
+                            <li>4 تعديلات موزعة خلال الشهر</li>
+                            <li>متابعة تسليم وجدولة المواد</li>
+                        </ul>
+                        <button type="button" data-action="open-order-modal" data-service-name="Monthly Presence"
+                            class="btn-primary">اطلب الباقة</button>
                     </article>
                 </div>
             </div>
@@ -296,47 +348,28 @@
             <div class="section-shell">
                 <div class="section-header">
                     <span class="section-eyebrow">طريقة العمل</span>
-                    <h2 id="processTitle" class="section-title">من الفكرة إلى الملفات النهائية</h2>
+                    <h2 id="processTitle" class="section-title">طريقة عمل مختصرة في 3 خطوات</h2>
                     <p class="section-description">
-                        مسار قصير وواضح، بدون خطوات غير ضرورية.
+                        تحديد واضح للنطاق، ثم تنفيذ ومراجعة، ثم تسليم منظم.
                     </p>
                 </div>
                 <ol class="process-grid clean-process-list">
                     <li class="card process-card">
                         <span class="step-number">01</span>
-                        <h3>ترسل الطلب</h3>
-                        <p>نوع التصميم، النصوص، الصور، رابط الصفحة، وأي مرجع بصري مهم.</p>
+                        <h3>تحديد النطاق</h3>
+                        <p>نحدد المطلوب، المواد المتاحة، وحدود التعديل قبل بدء التنفيذ.</p>
                     </li>
                     <li class="card process-card">
                         <span class="step-number">02</span>
-                        <h3>ننفذ ونراجع</h3>
-                        <p>نجهز النسخة الأولى ثم نراجع الملاحظات داخل النطاق المتفق عليه.</p>
+                        <h3>تنفيذ ومراجعة</h3>
+                        <p>نجهز النسخة الأولى ثم نستقبل الملاحظات ضمن النطاق المتفق عليه.</p>
                     </li>
                     <li class="card process-card">
                         <span class="step-number">03</span>
-                        <h3>تستلم الملفات</h3>
-                        <p>نرسل الملفات النهائية بالمقاسات المناسبة للاستخدام أو النشر.</p>
+                        <h3>تسليم منظم</h3>
+                        <p>تستلم ملفات جاهزة للنشر مع تنظيم واضح للنسخ النهائية.</p>
                     </li>
                 </ol>
-            </div>
-        </section>
-
-        <section class="section why-section" aria-labelledby="whyTitle">
-            <div class="section-shell clean-split">
-                <div class="section-header">
-                    <span class="section-eyebrow">ما الذي يميز العمل</span>
-                    <h2 id="whyTitle" class="section-title">تصميم يخدم الهدف قبل الشكل</h2>
-                </div>
-                <div class="clean-copy-block">
-                    <p>
-                        لا نبدأ من الزخرفة. نبدأ من الرسالة: ماذا تريد أن يعرف العميل؟ ما التصرف الذي تريده منه؟ ثم نبني تصميما بسيطا، مقروءا، ومناسبا للمنصة.
-                    </p>
-                    <ul class="plain-check-list">
-                        <li>لغة عربية واضحة ومناسبة للسوق المحلي.</li>
-                        <li>مقاسات جاهزة للمنصات المطلوبة.</li>
-                        <li>ملفات منظمة للرجوع إليها لاحقا.</li>
-                    </ul>
-                </div>
             </div>
         </section>
 
@@ -344,25 +377,37 @@
             <div class="section-shell">
                 <div class="section-header">
                     <span class="section-eyebrow">الأسئلة الشائعة</span>
-                    <h2 id="faqTitle" class="section-title">قبل أن تطلب</h2>
-                    <p class="section-description">إجابات قصيرة على أكثر الأسئلة تكرارا.</p>
+                    <h2 id="faqTitle" class="section-title">الأسئلة قبل بدء التنفيذ</h2>
+                    <p class="section-description">مواد العمل، التعديلات، الوقت، الدفع، الحقوق، Demo، وخدمات النشر.</p>
                 </div>
                 <div class="faq-list">
                     <details class="faq-card">
-                        <summary>هل أحتاج حسابا لطلب خدمة؟</summary>
-                        <p>يمكنك البدء من نموذج الطلب أو واتساب. وقد نطلب بيانات تواصل إضافية عند الحاجة، بينما يفيد الحساب في متابعة المشاريع الأكبر والوثائق.</p>
+                        <summary>ما المواد المطلوبة قبل البدء؟</summary>
+                        <p>نحتاج وصف الخدمة، النصوص الأساسية، الشعار إن توفر، وأي صور أو مراجع تريد اعتمادها.</p>
                     </details>
                     <details class="faq-card">
-                        <summary>كيف يتم التسليم؟</summary>
-                        <p>نرسل الملفات النهائية عبر رابط منظم أو واتساب حسب نوع الخدمة وحجم الملفات.</p>
+                        <summary>كم عدد التعديلات في كل باقة؟</summary>
+                        <p>لكل باقة عدد تعديلات واضح داخل النطاق المتفق عليه قبل التنفيذ.</p>
                     </details>
                     <details class="faq-card">
-                        <summary>كم يستغرق التنفيذ؟</summary>
-                        <p>التصاميم البسيطة غالبا خلال 48-72 ساعة. الصفحات والفيديوهات تعتمد على النطاق والمواد المتوفرة.</p>
+                        <summary>ما وقت التنفيذ المتوقع؟</summary>
+                        <p>المدة تعتمد على النطاق والمواد الجاهزة، ويتم تأكيدها قبل بدء التنفيذ.</p>
                     </details>
                     <details class="faq-card">
-                        <summary>هل تقدمون تعديلات؟</summary>
-                        <p>نعم، ضمن النطاق المتفق عليه قبل بدء التنفيذ حتى تصل النتيجة لاحتياجك.</p>
+                        <summary>كيف يتم الدفع؟</summary>
+                        <p>يتم توضيح طريقة الدفع المتاحة بعد تأكيد النطاق، دون أي Checkout تلقائي داخل الموقع.</p>
+                    </details>
+                    <details class="faq-card">
+                        <summary>من يملك الحقوق بعد التسليم؟</summary>
+                        <p>بعد التسليم النهائي تصبح الملفات المتفق عليها للاستخدام في مشروعك حسب الاتفاق.</p>
+                    </details>
+                    <details class="faq-card">
+                        <summary>ما معنى شارة Demo؟</summary>
+                        <p>أي نموذج يحمل Demo يطابق عبارة: «نموذج تجريبي — البيانات والأسماء والصور افتراضية وليست عميلاً حقيقياً».</p>
+                    </details>
+                    <details class="faq-card">
+                        <summary>هل توفرون خدمات النشر؟</summary>
+                        <p>نعم، نوفر تجهيز الملفات للنشر ويمكن تنسيق النشر حسب الباقة المتفق عليها.</p>
                     </details>
                 </div>
             </div>
@@ -372,17 +417,16 @@
             <div class="section-shell">
                 <div class="final-cta">
                     <span class="section-eyebrow">ابدأ الآن</span>
-                    <h2 id="finalCtaTitle" class="section-title">أرسل فكرتك وسنقترح أفضل بداية</h2>
+                    <h2 id="finalCtaTitle" class="section-title">أرسل رابط صفحتك وسنرجع لك بثلاث ملاحظات عملية</h2>
                     <p class="section-description">
-                        أخبرنا بنوع التصميم أو رابط صفحتك، وسنساعدك على اختيار خدمة مناسبة بدون إطالة.
+                        أرسل الرابط أو نبذة قصيرة عن مشروعك، وسنشاركك 3 نقاط مباشرة قابلة للتنفيذ.
                     </p>
                     <div class="hero-actions">
-                        <button type="button" data-action="open-order-modal" data-service-name="استشارة تصميم جديدة"
-                            class="btn-primary">اطلب تصميمك</button>
+                        <button type="button" data-action="open-order-modal" data-service-name="تدقيق مجاني من 3 ملاحظات"
+                            class="btn-primary">أرسل رابط صفحتك الآن</button>
                         <a class="btn-whatsapp"
-                            href="https://wa.me/212751201626?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%20Pixel%20One%20Visuals%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%B7%D9%84%D8%A8%20%D8%AA%D8%B5%D9%85%D9%8A%D9%85%20%D9%84%D9%85%D8%B4%D8%B1%D9%88%D8%B9%D9%8A."
-                            target="_blank" rel="noopener noreferrer">تواصل عبر واتساب</a>
-                        <a href="client-login.html" class="btn-ghost">دخول العملاء</a>
+                            href="https://wa.me/212751201626?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%20Pixel%20One%20Visuals%D8%8C%20%D9%87%D8%B0%D8%A7%20%D8%B1%D8%A7%D8%A8%D8%B7%20%D8%B5%D9%81%D8%AD%D8%AA%D9%8A%20%D9%88%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%AB%D9%84%D8%A7%D8%AB%20%D9%85%D9%84%D8%A7%D8%AD%D8%B8%D8%A7%D8%AA%20%D8%B9%D9%85%D9%84%D9%8A%D8%A9."
+                            target="_blank" rel="noopener noreferrer">أرسل عبر WhatsApp</a>
                     </div>
                 </div>
             </div>
