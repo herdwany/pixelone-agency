@@ -13,10 +13,12 @@
         href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;800&family=Noto+Sans+Arabic:wght@400;500;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../demo-disclaimer.css">
     <script src="script.js" defer></script>
 </head>
 
 <body>
+    <div class="demo-disclaimer" role="note"><strong>نموذج تجريبي:</strong> الاسم والأرقام والشهادات والصور افتراضية وليست عميلاً حقيقياً.</div>
     <a href="#main-content" class="skip-link">تخطي إلى المحتوى</a>
 
     <header class="site-header" id="top">
@@ -302,7 +304,7 @@
 
                     <label for="phone">رقم الجوال</label>
                     <div class="phone-grid">
-                        <input id="phone-code" name="phoneCode" type="text" dir="ltr" value="+212" readonly>
+                        <input id="phone-code" name="phoneCode" type="text" dir="ltr" value="+212" readonly aria-label="مفتاح الدولة">
                         <input id="phone" name="phone" type="tel" dir="ltr" inputmode="numeric" placeholder="06XXXXXXXX"
                             pattern="^[0-9]{8,10}$" minlength="8" maxlength="10" required>
                     </div>
