@@ -19,11 +19,11 @@
     <meta property="og:title" content="الخدمات | بيكسل ون">
     <meta property="og:description"
         content="باقات وخدمات رقمية مبنية لتوضيح القيمة بسرعة: من الهوية البصرية إلى الصفحات والمحتوى وتجربة الطلب.">
-    <meta property="og:url" content="https://www.pixelonevisuals.tech/services.html">
+    <meta property="og:url" content="https://pixelonevisuals.tech/services.html">
     <meta property="og:site_name" content="Pixel One Visuals">
     <meta property="og:locale" content="ar_MA">
-    <meta property="og:image" content="https://www.pixelonevisuals.tech/og/web-landing-page-1200x630.png">
-    <meta property="og:image:secure_url" content="https://www.pixelonevisuals.tech/og/web-landing-page-1200x630.png">
+    <meta property="og:image" content="https://pixelonevisuals.tech/og/web-landing-page-1200x630.png">
+    <meta property="og:image:secure_url" content="https://pixelonevisuals.tech/og/web-landing-page-1200x630.png">
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -31,8 +31,8 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="الخدمات | بيكسل ون">
     <meta name="twitter:description" content="خدمات رقمية عربية مهيكلة لتساعد الشركات على الظهور بشكل أوضح وأكثر ثقة.">
-    <meta name="twitter:image" content="https://www.pixelonevisuals.tech/og/web-landing-page-1200x630.png">
-    <link rel="canonical" href="https://www.pixelonevisuals.tech/services.html">
+    <meta name="twitter:image" content="https://pixelonevisuals.tech/og/web-landing-page-1200x630.png">
+    <link rel="canonical" href="https://pixelonevisuals.tech/services.html">
     <script type="application/ld+json">
         {
             "@context": "https://schema.org",
@@ -41,12 +41,12 @@
             "provider": {
                 "@type": "Organization",
                 "name": "Pixel One Visuals",
-                "url": "https://www.pixelonevisuals.tech/"
+                "url": "https://pixelonevisuals.tech/"
             },
             "areaServed": "MA",
             "availableChannel": {
                 "@type": "ServiceChannel",
-                "serviceUrl": "https://www.pixelonevisuals.tech/client-login.html"
+                "serviceUrl": "https://pixelonevisuals.tech/client-login.html"
             }
         }
     </script>
@@ -225,7 +225,12 @@
                     <textarea id="orderSpecs" name="specifications" rows="3" placeholder="شارك أي تفاصيل تساعدنا على البدء"
                         class="input-luxury"></textarea>
                 </div>
-                <input type="hidden" id="orderEmail" name="email">
+                <div>
+                    <label for="orderEmail" class="form-label">البريد الإلكتروني <span class="text-gray-500 font-normal">(اختياري)</span></label>
+                    <input type="email" id="orderEmail" name="email" autocomplete="email" inputmode="email" dir="ltr"
+                        placeholder="name@example.com" class="input-luxury font-en text-left">
+                    <p class="field-hint">نستخدمه فقط لإرسال ملخص الطلب إذا رغبت.</p>
+                </div>
                 <button type="submit" id="btnOrderSubmit" class="btn-filled-red w-full py-5 rounded-xl text-lg mt-6 font-black">
                     إرسال الطلب
                 </button>

@@ -105,20 +105,20 @@ const SERVICE_DETAIL_ROUTES = {
 };
 
 const SERVICE_OG_IMAGE_MAP = {
-    'svc-social-media-designs': 'https://www.pixelonevisuals.tech/og/social-media-designs-1200x630.png',
-    'svc-logo-design': 'https://www.pixelonevisuals.tech/og/logo-design-1200x630.png',
-    'svc-digital-banners': 'https://www.pixelonevisuals.tech/og/digital-banners-1200x630.png',
-    'svc-pitch-deck': 'https://www.pixelonevisuals.tech/og/pitch-deck-1200x630.png',
-    'svc-short-video': 'https://www.pixelonevisuals.tech/og/short-video-1200x630.png',
-    'svc-professional-design': 'https://www.pixelonevisuals.tech/og/professional-design-1200x630.png',
-    'svc-short-videos-premium': 'https://www.pixelonevisuals.tech/og/short-videos-premium-1200x630.png',
-    'svc-advanced-promo-video': 'https://www.pixelonevisuals.tech/og/advanced-promo-video-1200x630.png',
-    'svc-web-landing-page': 'https://www.pixelonevisuals.tech/og/web-landing-page-1200x630.png',
-    'svc-brand-identity': 'https://www.pixelonevisuals.tech/og/brand-identity-1200x630.png',
+    'svc-social-media-designs': 'https://pixelonevisuals.tech/og/social-media-designs-1200x630.png',
+    'svc-logo-design': 'https://pixelonevisuals.tech/og/logo-design-1200x630.png',
+    'svc-digital-banners': 'https://pixelonevisuals.tech/og/digital-banners-1200x630.png',
+    'svc-pitch-deck': 'https://pixelonevisuals.tech/og/pitch-deck-1200x630.png',
+    'svc-short-video': 'https://pixelonevisuals.tech/og/short-video-1200x630.png',
+    'svc-professional-design': 'https://pixelonevisuals.tech/og/professional-design-1200x630.png',
+    'svc-short-videos-premium': 'https://pixelonevisuals.tech/og/short-videos-premium-1200x630.png',
+    'svc-advanced-promo-video': 'https://pixelonevisuals.tech/og/advanced-promo-video-1200x630.png',
+    'svc-web-landing-page': 'https://pixelonevisuals.tech/og/web-landing-page-1200x630.png',
+    'svc-brand-identity': 'https://pixelonevisuals.tech/og/brand-identity-1200x630.png',
 };
 
 const SERVICE_OG_IMAGE_LOCAL_MAP = {
-    'svc-social-media-designs': 'og/social-media-designs-1200x630.png',
+    'svc-social-media-designs': 'og/social-media-designs-1200x630.webp',
     'svc-logo-design': 'og/logo-design-1200x630.png',
     'svc-digital-banners': 'og/digital-banners-1200x630.png',
     'svc-pitch-deck': 'og/pitch-deck-1200x630.png',
@@ -898,6 +898,14 @@ function escapeHtml(value) {
 
 function normalizeEmail(email) {
     return String(email || '').trim().toLowerCase();
+}
+
+function normalizeLeadText(value, maxLength = 500) {
+    return String(value || '')
+        .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '')
+        .replace(/[ \t]+/g, ' ')
+        .trim()
+        .slice(0, maxLength);
 }
 
 function normalizeLang(lang) {
@@ -3215,7 +3223,7 @@ function getServiceDetailIdFromPath(pathname) {
 
 function getServiceOgImage(serviceId) {
     const resolvedId = resolveServiceDetailId(serviceId);
-    return SERVICE_OG_IMAGE_MAP[resolvedId] || 'https://www.pixelonevisuals.tech/og/professional-design-1200x630.png';
+    return SERVICE_OG_IMAGE_MAP[resolvedId] || 'https://pixelonevisuals.tech/og/professional-design-1200x630.png';
 }
 
 function getServiceOgImageLocal(serviceId) {
@@ -3269,7 +3277,7 @@ function setMetaTag(selector, attr, value) {
 function updateServiceShareMeta(service, localized, details) {
     const resolvedId = resolveServiceDetailId(service?.id);
     const detailPath = SERVICE_DETAIL_ROUTES[resolvedId] || `service-detail.html?service=${encodeURIComponent(resolvedId || '')}`;
-    const publicUrl = `https://www.pixelonevisuals.tech/${detailPath}`;
+    const publicUrl = `https://pixelonevisuals.tech/${detailPath}`;
     const title = `${localized.title || 'تفاصيل الخدمة'} | Pixel One Visuals`;
     const description = localized.description || 'تفاصيل الخدمة، المخرجات، والمتطلبات قبل الطلب.';
     const ogDescription = `${description} — اطلب الآن واحصل على تنفيذ احترافي من Pixel One Visuals!`;
@@ -3476,7 +3484,7 @@ function renderPortfolioCardMarkup(item, options = {}) {
 
     if (isCtaCard) {
         return `
-            <article class="portfolio-card portfolio-item portfolio-cta-card portfolio-reveal${tierClass}" data-category="${escapeHtml(category)}"${staticAttr}>
+            <article role="listitem" class="portfolio-card portfolio-item portfolio-cta-card portfolio-reveal${tierClass}" data-category="${escapeHtml(category)}"${staticAttr}>
                 <div class="portfolio-body">
                     <h3>${safeTitle}</h3>
                     <p>${safeDescription}</p>
@@ -3507,7 +3515,7 @@ function renderPortfolioCardMarkup(item, options = {}) {
         `;
 
     return `
-        <article class="portfolio-card portfolio-item portfolio-reveal${tierClass}" data-category="${escapeHtml(category)}"${staticAttr}>
+        <article role="listitem" class="portfolio-card portfolio-item portfolio-reveal${tierClass}" data-category="${escapeHtml(category)}"${staticAttr}>
             ${mediaMarkup}
             <div class="portfolio-body">
                 <h3>${safeTitle}</h3>
@@ -3598,12 +3606,16 @@ function renderOffersForHome() {
 
     const offers = getStoredOffers();
     const email = normalizeEmail(currentSessionUser?.email);
+    const activeRule = getBestDiscountRule(getDiscountContextForUser(email));
 
     const visibleOffers = offers
         .filter((offer) => offer.enabled)
         .filter((offer) => {
-            if (offer.target === 'customer') {
-                return normalizeEmail(offer.targetEmail) === email;
+            if (offer.target === 'customer' && normalizeEmail(offer.targetEmail) !== email) return false;
+            const badge = String(offer.badge || '').trim().toUpperCase();
+            if (badge === 'WELCOME10') {
+                return Boolean(activeRule && isRuleActive(activeRule)
+                    && String(activeRule.code || '').trim().toUpperCase() === badge);
             }
             return true;
         })
@@ -3622,6 +3634,10 @@ function renderOffersForHome() {
         const safeTitle = escapeHtml(resolveLocalizedInlineText(offer.title) || t('offerTitleFallback'));
         const safeDescription = escapeHtml(resolveLocalizedInlineText(offer.description) || '');
         const safeBadge = escapeHtml(resolveLocalizedInlineText(offer.badge) || t('offerBadgeFallback'));
+        const badgeCode = String(offer.badge || '').trim().toUpperCase();
+        const note = badgeCode === 'WELCOME10'
+            ? 'يُطبّق العرض المؤهل تلقائياً داخل الطلب.'
+            : 'يمكن التأكد من الأهلية عند إرسال الطلب.';
         container.insertAdjacentHTML('beforeend', `
             <article class="card offer-card">
                 <div class="flex justify-between items-start gap-3 mb-4">
@@ -3631,7 +3647,7 @@ function renderOffersForHome() {
                 <p class="text-gray-300 text-sm leading-relaxed mb-4">${safeDescription}</p>
                 <div class="flex items-center gap-2 text-xs text-gray-500">
                     <span class="inline-flex h-2 w-2 rounded-full bg-emerald-300"></span>
-                    <span>يُطبّق العرض تلقائياً داخل الطلب دون أي خطوة إضافية.</span>
+                    <span>${note}</span>
                 </div>
             </article>
         `);
@@ -3891,7 +3907,7 @@ function renderServiceDetailPage() {
     updateServiceShareMeta(service, localized, details);
     const resolvedId = resolveServiceDetailId(service.id);
     const detailPath = SERVICE_DETAIL_ROUTES[resolvedId] || `service-detail.html?service=${encodeURIComponent(resolvedId || '')}`;
-    const shareUrl = `https://www.pixelonevisuals.tech/${detailPath}`;
+    const shareUrl = `https://pixelonevisuals.tech/${detailPath}`;
     const shareTitle = `${localized.title || 'تفاصيل الخدمة'} | Pixel One Visuals`;
     const shareText = `${localized.description || 'تفاصيل الخدمة والمخرجات والمتطلبات.'}\nاطلع على التفاصيل وابدأ الخدمة عبر Pixel One Visuals.`;
     const fallbackImage = getServiceOgImageLocal(service.id);
@@ -4216,16 +4232,25 @@ async function handleOrderSubmit(e) {
     const serviceId = hiddenServiceId?.value || '';
     const finalPrice = hiddenPrice?.value || '';
     const discountCode = hiddenDiscountCode?.value || '';
-    const name = nameInput.value;
-    const projectName = projectNameInput?.value || '';
-    const phone = phoneInput.value;
-    const email = emailInput?.value || '';
-    const specs = specsInput?.value || '';
+    const name = normalizeLeadText(nameInput.value, 120);
+    const projectName = normalizeLeadText(projectNameInput?.value || '', 160);
+    const phone = normalizeLeadText(phoneInput.value, 40);
+    const email = normalizeEmail(emailInput?.value || '');
+    const specs = normalizeLeadText(specsInput?.value || '', 2400);
     const dynamicFields = collectDynamicOrderFields();
     const dynamicSpecs = Object.entries(dynamicFields)
-        .map(([key, value]) => `${key}: ${value}`)
+        .map(([key, value]) => `${normalizeLeadText(key, 80)}: ${normalizeLeadText(value, 600)}`)
         .join('\n');
-    const mergedSpecs = [specs.trim(), dynamicSpecs.trim()].filter(Boolean).join('\n\n');
+    const mergedSpecs = [specs.trim(), dynamicSpecs.trim()].filter(Boolean).join('\n\n').slice(0, 4000);
+
+    if (!name || !projectName) {
+        msgBox.textContent = '❌ أدخل الاسم واسم المشروع أو النشاط.';
+        msgBox.className = 'msg-box msg-error active';
+        btn.disabled = false;
+        if (btnTextNode) btnTextNode.textContent = ' إرسال ومتابعة عبر واتساب';
+        (name ? projectNameInput : nameInput)?.focus();
+        return;
+    }
 
     // Validate phone is not empty
     if (!phone.trim()) {
@@ -4250,15 +4275,7 @@ async function handleOrderSubmit(e) {
 
     const { data: { user } } = await _supabase.auth.getUser();
     currentSessionUser = user || null;
-    const effectiveEmail = email || currentSessionUser?.email || '';
-
-    if (!normalizeEmail(effectiveEmail)) {
-        msgBox.textContent = t('orderEmailRequired');
-        msgBox.className = 'msg-box msg-error active';
-        btn.disabled = false;
-        if (btnTextNode) btnTextNode.textContent = ' إرسال ومتابعة عبر واتساب';
-        return;
-    }
+    const effectiveEmail = normalizeEmail(email || currentSessionUser?.email || '');
 
     const orderId = generateTrackingCode();
     const orderDateIso = new Date().toISOString();
@@ -4273,7 +4290,7 @@ async function handleOrderSubmit(e) {
         name,
         projectName,
         phone,
-        email: effectiveEmail,
+        email: effectiveEmail || '',
         specs: mergedSpecs,
         status: orderStatus,
         supportEmail,
@@ -4300,7 +4317,7 @@ async function handleOrderSubmit(e) {
             customerName: name,
             projectName,
             customerPhone: phone,
-            customerEmail: effectiveEmail,
+            customerEmail: effectiveEmail || null,
             specs: mergedSpecs,
             finalPrice,
             discountCode,
@@ -8900,11 +8917,11 @@ function renderPortfolioCardTemplate(item, options = {}) {
     const useImage = normalizePortfolioMediaType(item.mediaType) === 'image' && Boolean(normalizedImageUrl);
     const mediaClass = `portfolio-media is-${category}`.trim();
     const actionMarkup = renderPortfolioActionTemplate(item, item.cardStyle === 'cta');
-    const statusLabel = escapeHtml(resolveLocalizedInlineText(item.workType || item.badgeText) || 'Demo');
+    const statusLabel = escapeHtml(resolveLocalizedInlineText(item.workType || item.badgeText) || 'نموذج تجريبي');
     const statusType = /client|عميل/i.test(statusLabel) ? 'client' : 'demo';
 
     return `
-        <article class="portfolio-card portfolio-item portfolio-reveal ${tierClass}" data-category="${escapeHtml(category)}" data-reveal="portfolio" data-reveal-index="${escapeHtml(String(revealIndex))}"${staticAttr}>
+        <article role="listitem" class="portfolio-card portfolio-item portfolio-reveal ${tierClass}" data-category="${escapeHtml(category)}" data-reveal="portfolio" data-reveal-index="${escapeHtml(String(revealIndex))}"${staticAttr}>
             ${item.cardStyle === 'cta' ? '' : `
                 <figure class="${mediaClass}">
                     ${useImage
@@ -8932,7 +8949,7 @@ function buildPortfolioCardElement(item, options = {}) {
     const tierClass = isCtaCard
         ? 'portfolio-card--cta'
         : (['featured', 'medium', 'compact'].includes(layoutTier) ? `portfolio-card--${layoutTier}` : 'portfolio-card--standard');
-    const statusLabel = resolveLocalizedInlineText(item.workType || item.badgeText) || 'Demo';
+    const statusLabel = resolveLocalizedInlineText(item.workType || item.badgeText) || 'نموذج تجريبي';
     const statusType = /client|عميل/i.test(statusLabel) ? 'client' : 'demo';
     const article = createUiElement('article', {
         className: `portfolio-card portfolio-item portfolio-reveal ${tierClass} ${isCtaCard ? 'portfolio-cta-card' : ''}`.trim(),
@@ -9060,7 +9077,7 @@ function renderPortfolioForHome() {
     if (!activeItems.length) {
         grid.className = 'portfolio-grid';
         grid.innerHTML = `
-            <article class="portfolio-card portfolio-item card" data-category="all">
+            <article role="listitem" class="portfolio-card portfolio-item card" data-category="all">
                 <div class="portfolio-body">
                     <h3>لا توجد عناصر في المعرض حالياً</h3>
                     <p>أضف عناصر معرض الأعمال من لوحة الإدارة أو فعّل العناصر الحالية.</p>
@@ -9178,9 +9195,9 @@ window.initPortfolioInteractions = function initPortfolioInteractions() {
 
 function toPublicAbsoluteUrl(pathname) {
     try {
-        return new URL(pathname || '', 'https://www.pixelonevisuals.tech/').href;
+        return new URL(pathname || '', 'https://pixelonevisuals.tech/').href;
     } catch {
-        return 'https://www.pixelonevisuals.tech/';
+        return 'https://pixelonevisuals.tech/';
     }
 }
 
@@ -9193,13 +9210,13 @@ function refreshHomeStructuredData() {
         .sort((a, b) => (a.sortOrder || 999) - (b.sortOrder || 999))
         .slice(0, 8);
 
-    const organizationId = 'https://www.pixelonevisuals.tech/#organization';
-    const websiteId = 'https://www.pixelonevisuals.tech/#website';
+    const organizationId = 'https://pixelonevisuals.tech/#organization';
+    const websiteId = 'https://pixelonevisuals.tech/#website';
     const organization = {
         '@type': ['Organization', 'ProfessionalService'],
         '@id': organizationId,
         name: siteSettings.brand?.name || 'Pixel One Visuals',
-        url: 'https://www.pixelonevisuals.tech/',
+        url: 'https://pixelonevisuals.tech/',
         email: siteSettings.contact?.email || siteSettings.brand?.supportEmail || 'contact@pixelonevisuals.tech',
         telephone: `+${String(siteSettings.contact?.whatsappNumber || DEFAULT_SITE_SETTINGS.contact.whatsappNumber).replace(/\D/g, '')}`,
         priceRange: 'MAD',
@@ -9211,7 +9228,7 @@ function refreshHomeStructuredData() {
     const website = {
         '@type': 'WebSite',
         '@id': websiteId,
-        url: 'https://www.pixelonevisuals.tech/',
+        url: 'https://pixelonevisuals.tech/',
         name: siteSettings.brand?.name || 'Pixel One Visuals',
         inLanguage: 'ar',
         publisher: { '@id': organizationId },
@@ -9234,7 +9251,7 @@ function refreshHomeStructuredData() {
 
         return {
             '@type': 'Service',
-            '@id': `https://www.pixelonevisuals.tech/#service-${service.id}`,
+            '@id': `https://pixelonevisuals.tech/#service-${service.id}`,
             name: localized.title || service.id,
             description: localized.description || '',
             serviceType: localized.category || localized.title || '',
@@ -9246,7 +9263,7 @@ function refreshHomeStructuredData() {
 
     const itemList = {
         '@type': 'ItemList',
-        '@id': 'https://www.pixelonevisuals.tech/#portfolio',
+        '@id': 'https://pixelonevisuals.tech/#portfolio',
         name: 'معرض أعمال Pixel One',
         itemListElement: portfolioItems.map((item, index) => ({
             '@type': item.category === 'web' ? 'WebSite' : 'CreativeWork',
